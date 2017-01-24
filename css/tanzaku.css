@@ -1,3 +1,7 @@
+#waku1, #waku2, #waku3 {
+	margin: 0ex 3ex 1ex;
+	border: solid black 2px
+}
 #canvas {
 	padding: 1ex;
 	height: 10ex;
