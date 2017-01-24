@@ -2,7 +2,7 @@
 var xhr = new XMLHttpRequest();
 var lns = [];
 var lst = [];
-var pre = 0, idc = 1;
+var pre = 0;
 var unit = 0;
 
 //--------------------------------------------------
@@ -21,9 +21,8 @@ function requestFile(method, fname, async) {
 	}
 	xhr.send(null);
 	
-	itemDrag();
-	//dropAction();
 	canvasAction();
+	removeItem();
 }
 
 //--------------------------------------------------
@@ -37,11 +36,9 @@ function buildQuestion(HttpObj){
 	itemList = resHTTP.getElementsByTagName('item');
 	
 	//問題文領域
-	document.getElementById("question").innerHTML += "<h1>問題</h1>";
-	document.getElementById("question").innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + " </p>";
+	document.getElementById("question").innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
 	
 	//選択肢領域
-	document.getElementById("choices").innerHTML += "<h3>選択肢</h3>";
 	for(i = 0; i < itemList.length; i++) {
 		var str = "<div id= \"i"+ i +"\" draggable = \"true\"  ondragstart=\"itemDragStart(event)\">" ;
 		str += buildChoicesParts(itemList[i]);
@@ -52,6 +49,10 @@ function buildQuestion(HttpObj){
 	}
 }
 
+//--------------------------------------------------
+//
+//
+//--------------------------------------------------
 function buildChoicesParts(item){
 	str = item.childNodes[0].nodeValue;
 	
@@ -64,47 +65,57 @@ function buildChoicesParts(item){
 	return str;
 }
 
-//--------------------------------------------------
-//
-//
-//--------------------------------------------------
-function buildAnswerArea(){
-	
-	
-	
-}
-
-var bdy;
-function itemDrag(){
-	bdy = document.getElementById('d');
-	bdy.ondragover = prev;
-	bdy.ondrop = function(e) {
-		var id = e.dataTransfer.getData('text');
-		var elt = document.getElementById(id);
-		//if(id[0] == 'x') {
-		//	rmelt(elt); adjindent(); prev(e);
-		//}
-	}
-}
-
 //選択肢をドラッグした時に
 //データを渡す
 function itemDragStart(e) {
   e.dataTransfer.setData('text',e.target.id);
 }
 
-//キャンバスに追加する
+//キャンバスの処理
+idc = 0;
 function canvasAction(){
 	canvas = document.getElementById('canvas');
 	
 	canvas.ondragover = prev;
 	canvas.ondrag=prev;
+	
+	// キャンバスにドロップされた場合に発火
 	canvas.ondrop = function(e){
+		
+		// ドロップされた選択肢の取得
 		id = e.dataTransfer.getData('text');
 		var elt = document.getElementById(id)
-		alert(document.getElementById(id));
-		canvas.appendChild(document.getElementById(id));
+		
+		// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
+		if(id[0] == 'i'){
+			
+			//元選択肢のクローンを生成
+			//クローンのidを新しく設定
+			//設定するidは c+ドロップされた番号+元id
+			elt = elt.cloneNode(true);
+			elt.id = 'c' + idc++ + id;
+			
+			//キャンバスへ要素を追加
+			canvas.appendChild(elt);
+		}
 	}
+}
+
+//--------------------------------------------------
+//
+//
+//--------------------------------------------------
+function removeItem(){
+	bdy = document.getElementById('waku3');
+	bdy.ondragover = prev;
+	bdy.ondrop = function(e) {
+		var id = e.dataTransfer.getData('text');
+		var elt = document.getElementById(id);
+		
+		if(id[0]=='c'){
+			elt.parentElement.removeChild(elt);
+		}
+	}	
 }
 
 function prev(e) {
