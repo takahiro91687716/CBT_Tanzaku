@@ -3,34 +3,20 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>Tanzaku</title>
-		
 		<!-- JavaScriptの読み込み -->
 		<script type="text/javascript" src="./js/tanzaku.js" ></script>
 		<link rel="stylesheet" type="text/css" href="css/tanzaku.css"/>
 	</head>
 		
 	<body onLoad = "requestFile('GET', 'xml/sample.xml', true)" >
-
+	
+		<div id ="area"></div>
+	
 		<!--
 		- question 問題文
 		- canvas   解答欄
 		- choices  選択肢
 		-->
-		
-		<h3>問題</h3>
-		<div id="waku1">
-		<div id="question"></div>
-		</div>
-		
-		<h3>解答欄</h3>
-		<div id ="waku2">
-		<div id="canvas"></div>
-		</div>
-		
-		<h3>選択肢</h3>
-		<div id ="waku3">
-		<div id="choices"></div>
-		</div>
 		
 	</body>
 </html>

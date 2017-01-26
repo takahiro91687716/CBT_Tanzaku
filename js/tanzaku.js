@@ -1,9 +1,7 @@
 //XMLHttpRequestオブジェクトを生成
 var xhr = new XMLHttpRequest();
-var lns = [];
-var lst = [];
-var pre = 0;
-var unit = 0;
+//問題数
+var num = 0;
 
 //--------------------------------------------------
 //
@@ -16,37 +14,82 @@ function requestFile(method, fname, async) {
 	//無名functionによるイベント処理
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
-			buildQuestion(xhr);
+			buildQuestions(xhr);
 		}
 	}
 	xhr.send(null);
+	for(i=0;i<num;i++){
+		canvasAction(i);
+		removeItem(i);
+	}
+}
+
+//--------------------------------------------------
+//ページ全体に問いを配置する関数
+//
+//--------------------------------------------------
+function buildQuestions(HttpObj){
+	var resHTTP = HttpObj.responseXML;
+	var question = resHTTP.getElementsByTagName('question');
 	
-	canvasAction();
-	removeItem();
+	for(num; num < question.length;num++){
+		buildQuestion(question[num]);
+	}
+}
+
+//--------------------------------------------------
+//一つの問いを作成する関数
+//
+//--------------------------------------------------
+function buildQuestion(question){
+	textList = question.getElementsByTagName('text');
+	itemList = question.getElementsByTagName('item');
+	
+	//問題要素を表示する領域の生成
+	buildArea();
+	
+	//問題文埋め込み
+	document.getElementById("text"+num).innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
+	
+	//選択肢埋め込み
+	for(i = 0; i < itemList.length; i++) {
+		var str = "<div id= \"i"+ i +"\" draggable = \"true\"  ondragstart=\"itemDragStart(event)\">" ;
+		str += buildChoicesParts(itemList[i]);
+		str += "</div>";
+		document.getElementById("choices"+num).innerHTML += str;
+	}
 }
 
 //--------------------------------------------------
 //
 //
 //--------------------------------------------------
-function buildQuestion(HttpObj){
-	var resHTTP = HttpObj.responseXML.documentElement;
-	list = resHTTP.getElementsByTagName('question');
-	textList = resHTTP.getElementsByTagName('text');
-	itemList = resHTTP.getElementsByTagName('item');
+function buildArea(){
+	var area = document.getElementById("area");
 	
-	//問題文領域
-	document.getElementById("question").innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
+	//問題文領域の生成
+	var question = "<h3>問題</h3>";
+	question+= "<div id=\"waku1\">";
+	question+= "<div id=\"text"+num+"\"></div>";
+	question+= "</div>";
+	area.innerHTML += question;
 	
-	//選択肢領域
-	for(i = 0; i < itemList.length; i++) {
-		var str = "<div id= \"i"+ i +"\" draggable = \"true\"  ondragstart=\"itemDragStart(event)\">" ;
-		str += buildChoicesParts(itemList[i]);
-		str += "</div>";
-		document.getElementById("choices").innerHTML += str;
-		
-		lst[i] = buildChoicesParts(itemList[i]);
-	}
+	//解答欄領域の生成
+	var answer = "<h3>解答欄</h3>";
+	answer+= "<div id=\"waku2\">";
+	answer+= "<div id=\"canvas"+num+"\" class=\"canvas\"></div>";
+	answer+= "</div>";
+	area.innerHTML += answer;
+	
+	//選択肢領域の生成
+	var choices = "<h3>選択肢</h3>";
+	choices+= "<div id=\"waku3\">";
+	choices+= "<div id=\"choices"+num+"\"></div>";
+	choices+= "</div>";
+	area.innerHTML += choices;
+	
+	//区切り
+	area.innerHTML+= "<hr>";
 }
 
 //--------------------------------------------------
@@ -73,8 +116,8 @@ function itemDragStart(e) {
 
 //キャンバスの処理
 idc = 0;
-function canvasAction(){
-	canvas = document.getElementById('canvas');
+function canvasAction(numb){
+	canvas = document.getElementById('canvas'+numb);
 	
 	canvas.ondragover = prev;
 	canvas.ondrag=prev;
@@ -83,7 +126,7 @@ function canvasAction(){
 	canvas.ondrop = function(e){
 		
 		// ドロップされた選択肢の取得
-		id = e.dataTransfer.getData('text');
+		id = e.dataTransfer.getData('text'+numb);
 		var elt = document.getElementById(id)
 		
 		// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
@@ -105,11 +148,11 @@ function canvasAction(){
 //
 //
 //--------------------------------------------------
-function removeItem(){
+function removeItem(i){
 	bdy = document.getElementById('waku3');
 	bdy.ondragover = prev;
 	bdy.ondrop = function(e) {
-		var id = e.dataTransfer.getData('text');
+		var id = e.dataTransfer.getData('text'+i);
 		var elt = document.getElementById(id);
 		
 		if(id[0]=='c'){

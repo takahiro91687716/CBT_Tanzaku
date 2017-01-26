@@ -1,8 +1,8 @@
 #waku1, #waku2, #waku3 {
 	margin: 0ex 3ex 1ex;
-	border: solid black 2px
+	border: solid black 1px
 }
-#canvas {
+div.canvas {
 	padding: 1ex;
 	height: 10ex;
 	position: relative
