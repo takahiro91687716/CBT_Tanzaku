@@ -17,11 +17,14 @@ function requestFile(method, fname, async) {
 			buildQuestions(xhr);
 		}
 	}
-	xhr.send(null);
-	for(i=0;i<num;i++){
-		canvasAction(i);
-		removeItem(i);
-	}
+	xhr.send();
+	
+	//buildQuestions呼び出し前の可能性があり、
+	//canvasなどが取得できない
+// 	for(i=0;i<num;i++){
+// 		canvasAction(i);
+// 		removeItem(i);
+// 	}
 }
 
 //--------------------------------------------------
@@ -34,6 +37,8 @@ function buildQuestions(HttpObj){
 	
 	for(num; num < question.length;num++){
 		buildQuestion(question[num]);
+		canvasAction(num);
+		removeItem(num);
 	}
 }
 
@@ -61,7 +66,7 @@ function buildQuestion(question){
 }
 
 //--------------------------------------------------
-//
+//一つの問いの構成要素を設置する
 //
 //--------------------------------------------------
 function buildArea(){
@@ -127,7 +132,7 @@ function canvasAction(numb){
 		
 		// ドロップされた選択肢の取得
 		id = e.dataTransfer.getData('text'+numb);
-		var elt = document.getElementById(id)
+		var elt = document.getElementById(id);
 		
 		// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
 		if(id[0] == 'i'){
@@ -148,11 +153,11 @@ function canvasAction(numb){
 //
 //
 //--------------------------------------------------
-function removeItem(i){
-	bdy = document.getElementById('waku3');
+function removeItem(numb){
+	bdy = document.getElementById('choices'+numb);
 	bdy.ondragover = prev;
 	bdy.ondrop = function(e) {
-		var id = e.dataTransfer.getData('text'+i);
+		var id = e.dataTransfer.getData('text');
 		var elt = document.getElementById(id);
 		
 		if(id[0]=='c'){
