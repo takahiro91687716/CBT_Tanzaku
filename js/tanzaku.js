@@ -15,7 +15,6 @@ function requestFile(method, fname, async) {
 	//無名functionによるイベント処理
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
-			alert(xhr.responseText);
 			buildQuestions(xhr);
 		}
 	}
@@ -39,8 +38,8 @@ function buildQuestions(HttpObj){
 	
 	for(num; num < question.length;num++){
 		buildQuestion(question[num]);
-		canvasAction(num);
-		removeItem(num);
+		//canvasAction(num);
+		//removeItem(num);
 	}
 }
 
@@ -60,7 +59,10 @@ function buildQuestion(question){
 	
 	//選択肢埋め込み
 	for(i = 0; i < itemList.length; i++) {
-		var str = "<div id= \"i"+ i +"\" draggable = \"true\"  ondragstart=\"itemDragStart(event)\">" ;
+		var str = "<div id= \"i"+ i +"\"";
+		str += "class = \""+num+"\"";
+		str += "draggable = \"true\"";
+		str += "ondragstart=\"itemDragStart(event)\">" ;
 		str += buildChoicesParts(itemList[i]);
 		str += "</div>";
 		document.getElementById("choices"+num).innerHTML += str;
@@ -75,7 +77,7 @@ function buildArea(){
 	var area = document.getElementById("area");
 	
 	//問題文領域の生成
-	var question = "<h3>問題</h3>";
+	var question = "<h3>問題 ("+(num+1)+")</h3>";
 	question+= "<div id=\"waku1\">";
 	question+= "<div id=\"text"+num+"\"></div>";
 	question+= "</div>";
@@ -84,14 +86,14 @@ function buildArea(){
 	//解答欄領域の生成
 	var answer = "<h3>解答欄</h3>";
 	answer+= "<div id=\"waku2\">";
-	answer+= "<div id=\"canvas"+num+"\" class=\"canvas\"></div>";
+	answer+= "<div id=\"canvas\" class=\""+num+"\"></div>";
 	answer+= "</div>";
 	area.innerHTML += answer;
 	
 	//選択肢領域の生成
 	var choices = "<h3>選択肢</h3>";
 	choices+= "<div id=\"waku3\">";
-	choices+= "<div id=\"choices"+num+"\"></div>";
+	choices+= "<div id=\"choices\" class=\""+num+"\"></div>";
 	choices+= "</div>";
 	area.innerHTML += choices;
 	
@@ -133,7 +135,7 @@ function canvasAction(numb){
 	canvas.ondrop = function(e){
 		
 		// ドロップされた選択肢の取得
-		id = e.dataTransfer.getData('text'+numb);
+		id = e.dataTransfer.getData('text');
 		var elt = document.getElementById(id);
 		
 		// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
