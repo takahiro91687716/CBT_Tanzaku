@@ -10,10 +10,12 @@ var num = 0;
 function requestFile(method, fname, async) {
 	//openメソッドでXMLファイルを開く
 	xhr.open(method, fname, async);
+	//xhr.setRequestHeader("content-type",'text/xml');
 	
 	//無名functionによるイベント処理
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
+			alert(xhr.responseText);
 			buildQuestions(xhr);
 		}
 	}

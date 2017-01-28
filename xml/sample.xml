@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<doc>
 <question>
 	<text>問題だよー</text>
-	<item>ア #include &lt;stdio.h&gt;</item>
+	<item>ア #include</item>
 	<item>い</item>
 	<item>う</item>
 	<item>え</item>
@@ -11,7 +12,7 @@
 </question>
 <question>
 	<text>問題だよー</text>
-	<item>ア #include &lt;stdio.h&gt;</item>
+	<item>ア #include</item>
 	<item>い</item>
 	<item>う</item>
 	<item>え</item>
@@ -21,7 +22,7 @@
 </question>
 <question>
 	<text>問題だよー</text>
-	<item>ア #include &lt;stdio.h&gt;</item>
+	<item>ア #include</item>
 	<item>い</item>
 	<item>う</item>
 	<item>え</item>
@@ -29,3 +30,4 @@
 	<item>か</item>
 	<item>き</item>
 </question>
+</doc>
