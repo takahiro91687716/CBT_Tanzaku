@@ -38,8 +38,8 @@ function buildQuestions(HttpObj){
 	
 	for(num; num < question.length;num++){
 		buildQuestion(question[num]);
-		//canvasAction(num);
-		//removeItem(num);
+		canvasAction(num);
+		removeItem(num);
 	}
 }
 
@@ -60,7 +60,6 @@ function buildQuestion(question){
 	//選択肢埋め込み
 	for(i = 0; i < itemList.length; i++) {
 		var str = "<div id= \"i"+ i +"\"";
-		str += "class = \""+num+"\"";
 		str += "draggable = \"true\"";
 		str += "ondragstart=\"itemDragStart(event)\">" ;
 		str += buildChoicesParts(itemList[i]);
@@ -86,14 +85,18 @@ function buildArea(){
 	//解答欄領域の生成
 	var answer = "<h3>解答欄</h3>";
 	answer+= "<div id=\"waku2\">";
+	answer+= "<div id=\""+num+"\">";
 	answer+= "<div id=\"canvas\" class=\""+num+"\"></div>";
+	answer+= "</div>";
 	answer+= "</div>";
 	area.innerHTML += answer;
 	
 	//選択肢領域の生成
 	var choices = "<h3>選択肢</h3>";
 	choices+= "<div id=\"waku3\">";
-	choices+= "<div id=\"choices\" class=\""+num+"\"></div>";
+	choices+= "<div id=\""+num+"\">";
+	choices+= "<div id=\"choices"+num+"\"></div>";
+	choices+= "</div>";
 	choices+= "</div>";
 	area.innerHTML += choices;
 	
@@ -120,13 +123,13 @@ function buildChoicesParts(item){
 //選択肢をドラッグした時に
 //データを渡す
 function itemDragStart(e) {
-  e.dataTransfer.setData('text',e.target.id);
+  e.dataTransfer.setData('text/html',e.target.id);
 }
 
 //キャンバスの処理
 idc = 0;
 function canvasAction(numb){
-	canvas = document.getElementById('canvas'+numb);
+	canvas = document.getElementById('canvas');
 	
 	canvas.ondragover = prev;
 	canvas.ondrag=prev;
@@ -135,7 +138,7 @@ function canvasAction(numb){
 	canvas.ondrop = function(e){
 		
 		// ドロップされた選択肢の取得
-		id = e.dataTransfer.getData('text');
+		id = e.dataTransfer.getData('text/html');
 		var elt = document.getElementById(id);
 		
 		// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
