@@ -19,13 +19,6 @@ function requestFile(method, fname, async) {
 		}
 	}
 	xhr.send();
-	
-	//buildQuestions呼び出し前の可能性があり、
-	//canvasなどが取得できない
-// 	for(i=0;i<num;i++){
-// 		canvasAction(i);
-// 		removeItem(i);
-// 	}
 }
 
 //--------------------------------------------------
@@ -38,9 +31,9 @@ function buildQuestions(HttpObj){
 	
 	for(num; num < question.length;num++){
 		buildQuestion(question[num]);
-		canvasAction(num);
-		removeItem(num);
 	}
+	canvasAction();
+	removeItem();
 }
 
 //--------------------------------------------------
@@ -48,8 +41,8 @@ function buildQuestions(HttpObj){
 //
 //--------------------------------------------------
 function buildQuestion(question){
-	textList = question.getElementsByTagName('text');
-	itemList = question.getElementsByTagName('item');
+	var textList = question.getElementsByTagName('text');
+	var itemList = question.getElementsByTagName('item');
 	
 	//問題要素を表示する領域の生成
 	buildArea();
@@ -60,7 +53,8 @@ function buildQuestion(question){
 	//選択肢埋め込み
 	for(i = 0; i < itemList.length; i++) {
 		var str = "<div id= \"i"+ i +"\"";
-		str += "draggable = \"true\"";
+		str +=" class= \"i"+ i +"\""; //クラスは、イベントハンドラでidだと同名のものを識別できないから使った
+		str += "draggable = \"true\""; //ドラッグできるように
 		str += "ondragstart=\"itemDragStart(event)\">" ;
 		str += buildChoicesParts(itemList[i]);
 		str += "</div>";
@@ -86,7 +80,7 @@ function buildArea(){
 	var answer = "<h3>解答欄</h3>";
 	answer+= "<div id=\"waku2\">";
 	answer+= "<div id=\""+num+"\">";
-	answer+= "<div id=\"canvas\" class=\""+num+"\"></div>";
+	answer+= "<div id=\"canvas"+num+"\" class=\"canvas\"></div>";
 	answer+= "</div>";
 	answer+= "</div>";
 	area.innerHTML += answer;
@@ -94,8 +88,8 @@ function buildArea(){
 	//選択肢領域の生成
 	var choices = "<h3>選択肢</h3>";
 	choices+= "<div id=\"waku3\">";
-	choices+= "<div id=\""+num+"\">";
-	choices+= "<div id=\"choices"+num+"\"></div>";
+	choices+= "<div id=\""+num+"\">"; //問題番号
+	choices+= "<div id=\"choices"+num+"\" class=\"choices\"></div>";
 	choices+= "</div>";
 	choices+= "</div>";
 	area.innerHTML += choices;
@@ -109,7 +103,7 @@ function buildArea(){
 //
 //--------------------------------------------------
 function buildChoicesParts(item){
-	str = item.childNodes[0].nodeValue;
+	var str = item.childNodes[0].nodeValue;
 	
 	//正規表現を使ってTagを識別する予定
 	//再帰的に呼び出すメソッドも必要か
@@ -123,35 +117,48 @@ function buildChoicesParts(item){
 //選択肢をドラッグした時に
 //データを渡す
 function itemDragStart(e) {
-  e.dataTransfer.setData('text/html',e.target.id);
+	var tmp = [e.target.parentElement.parentElement.id,e.target.id];
+	e.dataTransfer.setData('text/html',tmp);
 }
 
 //キャンバスの処理
 idc = 0;
-function canvasAction(numb){
-	canvas = document.getElementById('canvas');
+function canvasAction(){
+	var canvas = document.getElementsByClassName('canvas');
 	
-	canvas.ondragover = prev;
-	canvas.ondrag=prev;
-	
-	// キャンバスにドロップされた場合に発火
-	canvas.ondrop = function(e){
+	for(var i =0;i<canvas.length;i++){
+		canvas[i].ondragover = prev;
+		canvas[i].ondrag=prev;
 		
-		// ドロップされた選択肢の取得
-		id = e.dataTransfer.getData('text/html');
-		var elt = document.getElementById(id);
+		// キャンバスにドロップされた場合に発火
+		canvas[i].ondrop = function(e){
 		
-		// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
-		if(id[0] == 'i'){
+			// ドロップされた選択肢の取得
+			// Stringの"親の親id,選択肢id"状態なので、","で分割
+			var id = e.dataTransfer.getData('text/html').split(",");
+			var elt = document.getElementsByClassName(id[1])[id[0]];
 			
-			//元選択肢のクローンを生成
-			//クローンのidを新しく設定
-			//設定するidは c+ドロップされた番号+元id
-			elt = elt.cloneNode(true);
-			elt.id = 'c' + idc++ + id;
-			
-			//キャンバスへ要素を追加
-			canvas.appendChild(elt);
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			//このfor文だと解答欄領域を選ばず
+			//ドロップできてしまうので
+			//考え直さないといけない
+			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			for(var j =0;j<3;j++){
+				if(id[0] == j){
+					
+					// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
+					if(id[1][0] == 'i'){
+						//元選択肢のクローンを生成
+						//クローンのidを新しく設定
+						//設定するidは c+ドロップされた番号+元id
+						elt = elt.cloneNode(true);
+						elt.id = 'c' + idc++ + id[1];
+						
+						//キャンバスへ要素を追加
+						canvas[j].appendChild(elt);
+					}
+				}
+			}
 		}
 	}
 }
@@ -160,17 +167,19 @@ function canvasAction(numb){
 //
 //
 //--------------------------------------------------
-function removeItem(numb){
-	bdy = document.getElementById('choices'+numb);
-	bdy.ondragover = prev;
-	bdy.ondrop = function(e) {
-		var id = e.dataTransfer.getData('text');
-		var elt = document.getElementById(id);
-		
-		if(id[0]=='c'){
-			elt.parentElement.removeChild(elt);
+function removeItem(){
+	var choices = document.getElementsByClassName('choices');
+	for(var i =0;i<choices.length;i++){
+		choices[i].ondragover = prev;
+		choices[i].ondrop = function(e) {
+			var id = e.dataTransfer.getData('text/html').split(",");
+			var elt = document.getElementById(id[1]);
+			
+			if(id[1][0]=='c'){
+				elt.parentElement.removeChild(elt);
+			}
 		}
-	}	
+	}
 }
 
 function prev(e) {
