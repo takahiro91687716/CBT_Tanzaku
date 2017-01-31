@@ -1,7 +1,17 @@
 //XMLHttpRequestオブジェクトを生成
 var xhr = new XMLHttpRequest();
+
 //問題数
 var num = 0;
+//選択肢数
+var cnum = 0;
+var cnums = [];
+
+var initial1 = ["あ","い","う","え","お","か","き","く","け","こ","さ","し","す","せ","そ"];
+var initial2 = ["ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ","サ","シ","ス","セ","ソ"];
+var initial3 = ["い","ろ","は","に","ほ","へ","と","ち","り","ぬ","る","を","わ","か","よ"];
+var initial4 = ["a.","b.","c.","d.","e.","f.","g.","h.","i.","j.","k.","l.","m.","n.","o."];
+var initial5 = ["い","ろ","は","に","ほ","へ","と","ち","り","ぬ","る","を","わ","か","よ"];
 
 //--------------------------------------------------
 //
@@ -52,7 +62,7 @@ function buildQuestion(question){
 	
 	//選択肢埋め込み
 	for(i = 0; i < itemList.length; i++) {
-		var str = "<div id= \"i"+ i +"\"";
+		var str = "<div id= \"i"+ cnum++ +"\"";
 		str +=" class= \"i"+ i +"\""; //クラスは、イベントハンドラでidだと同名のものを識別できないから使った
 		str += "draggable = \"true\""; //ドラッグできるように
 		str += "ondragstart=\"itemDragStart(event)\">" ;
@@ -60,6 +70,9 @@ function buildQuestion(question){
 		str += "</div>";
 		document.getElementById("choices"+num).innerHTML += str;
 	}
+	
+	//選択肢数を換算
+	cnums[num] = itemList.length;
 }
 
 //--------------------------------------------------
@@ -143,9 +156,9 @@ function canvasAction(){
 			//ドロップできてしまうので
 			//考え直さないといけない
 			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			for(var j =0;j<3;j++){
+			for(var j =0;j<canvas.length;j++){
 				if(id[0] == j){
-					
+					alert(elt);
 					// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
 					if(id[1][0] == 'i'){
 						//元選択肢のクローンを生成

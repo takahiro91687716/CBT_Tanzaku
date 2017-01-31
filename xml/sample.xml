@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <doc>
 <question>
-	<text>問題だよー</text>
-	<item>ア #include</item>
+	<text>問題の一つ目です</text>
+	<item>あ こんにちは</item>
 	<item>い</item>
 	<item>う</item>
 	<item>え</item>
@@ -11,23 +11,23 @@
 	<item>き</item>
 </question>
 <question>
-	<text>問題だよー</text>
-	<item>ア #include</item>
-	<item>い</item>
-	<item>う</item>
-	<item>え</item>
-	<item>お</item>
-	<item>か</item>
-	<item>き</item>
+	<text>問題2です</text>
+	<item>ア おはよう</item>
+	<item>イ</item>
+	<item>ウ</item>
+	<item>エ</item>
+	<item>オ</item>
+	<item>カ</item>
+	<item>キ</item>
 </question>
 <question>
-	<text>問題だよー</text>
-	<item>ア #include</item>
-	<item>い</item>
-	<item>う</item>
-	<item>え</item>
-	<item>お</item>
-	<item>か</item>
-	<item>き</item>
+	<text>問題3</text>
+	<item>い こんばんは</item>
+	<item>ろ</item>
+	<item>は</item>
+	<item>に</item>
+	<item>ほ</item>
+	<item>へ</item>
+	<item>と</item>
 </question>
 </doc>
