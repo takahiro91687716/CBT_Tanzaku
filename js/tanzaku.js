@@ -62,8 +62,7 @@ function buildQuestion(question){
 	
 	//選択肢埋め込み
 	for(i = 0; i < itemList.length; i++) {
-		var str = "<div id= \"i"+ cnum++ +"\"";
-		str +=" class= \"i"+ i +"\""; //クラスは、イベントハンドラでidだと同名のものを識別できないから使った
+		var str = "<div id= \"i-"+ cnum++ +"\"";
 		str += "draggable = \"true\""; //ドラッグできるように
 		str += "ondragstart=\"itemDragStart(event)\">" ;
 		str += buildChoicesParts(itemList[i]);
@@ -72,7 +71,7 @@ function buildQuestion(question){
 	}
 	
 	//選択肢数を換算
-	cnums[num] = itemList.length;
+	cnums[num] = cnum;
 }
 
 //--------------------------------------------------
@@ -92,7 +91,6 @@ function buildArea(){
 	//解答欄領域の生成
 	var answer = "<h3>解答欄</h3>";
 	answer+= "<div id=\"waku2\">";
-	answer+= "<div id=\""+num+"\">";
 	answer+= "<div id=\"canvas"+num+"\" class=\"canvas\"></div>";
 	answer+= "</div>";
 	answer+= "</div>";
@@ -101,7 +99,6 @@ function buildArea(){
 	//選択肢領域の生成
 	var choices = "<h3>選択肢</h3>";
 	choices+= "<div id=\"waku3\">";
-	choices+= "<div id=\""+num+"\">"; //問題番号
 	choices+= "<div id=\"choices"+num+"\" class=\"choices\"></div>";
 	choices+= "</div>";
 	choices+= "</div>";
@@ -130,8 +127,7 @@ function buildChoicesParts(item){
 //選択肢をドラッグした時に
 //データを渡す
 function itemDragStart(e) {
-	var tmp = [e.target.parentElement.parentElement.id,e.target.id];
-	e.dataTransfer.setData('text/html',tmp);
+	e.dataTransfer.setData('text/html',e.target.id);
 }
 
 //キャンバスの処理
@@ -148,8 +144,8 @@ function canvasAction(){
 		
 			// ドロップされた選択肢の取得
 			// Stringの"親の親id,選択肢id"状態なので、","で分割
-			var id = e.dataTransfer.getData('text/html').split(",");
-			var elt = document.getElementsByClassName(id[1])[id[0]];
+			var id = e.dataTransfer.getData('text/html').split("-");
+			var elt = document.getElementById(id[0]+"-"+id[1]);
 			
 			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			//このfor文だと解答欄領域を選ばず
@@ -157,18 +153,21 @@ function canvasAction(){
 			//考え直さないといけない
 			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			for(var j =0;j<canvas.length;j++){
-				if(id[0] == j){
-					alert(elt);
-					// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
-					if(id[1][0] == 'i'){
+				// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
+				if(id[0] == 'i'){
+					
+					//選択肢該当範囲の計算
+					if(id[1]<cnums[j]){
+						
 						//元選択肢のクローンを生成
 						//クローンのidを新しく設定
 						//設定するidは c+ドロップされた番号+元id
 						elt = elt.cloneNode(true);
-						elt.id = 'c' + idc++ + id[1];
+						elt.id = 'c-' + idc++ + id[0]+"-"+id[1];
 						
 						//キャンバスへ要素を追加
 						canvas[j].appendChild(elt);
+						break;
 					}
 				}
 			}
@@ -185,10 +184,10 @@ function removeItem(){
 	for(var i =0;i<choices.length;i++){
 		choices[i].ondragover = prev;
 		choices[i].ondrop = function(e) {
-			var id = e.dataTransfer.getData('text/html').split(",");
-			var elt = document.getElementById(id[1]);
+			var id = e.dataTransfer.getData('text/html').split("-");
+			var elt = document.getElementById(id[0]+"-"+id[1]+"-"+id[2]);
 			
-			if(id[1][0]=='c'){
+			if(id[0]=='c'){
 				elt.parentElement.removeChild(elt);
 			}
 		}
