@@ -17,6 +17,9 @@ var initial3 = ["い","ろ","は","に","ほ","へ","と","ち","り","ぬ","る
 var initial4 = ["a.","b.","c.","d.","e.","f.","g.","h.","i.","j.","k.","l.","m.","n.","o."];
 var initial5 = ["1.","2.","3.","4.","5.","6.","7.","8.","9.","10.","11.","12.","13.","14.","15."];
 
+//解答中問題番号
+var currentQuestion = 0;
+
 //--------------------------------------------------
 //
 //
@@ -43,14 +46,33 @@ function buildQuestions(HttpObj){
 	var resHTTP = HttpObj.responseXML;
 	var question = resHTTP.getElementsByTagName('question');
 
-	for(num; num < question.length;num++){
-		buildQuestion(question[num]);
-	}
+	//問題セットの初期化
+	buildQuestion(question[0]);
 
 	//問題数に応じた多次元配列の作成
-	for(var i = 0; i < num ; i++){
+	for(var i = 0; i < question.length ; i++){
 		dropped[i] = [];
 	}
+
+	canvasAction();
+	removeItem();
+}
+
+
+//--------------------------------------------------
+//選択した番号の問題に変える
+//
+//--------------------------------------------------
+function setSelectQuestion(select){
+
+	//1)変える前の問題の解答情報を保持する動作
+	//2)選択した問題に解答情報があれば、呼び出す
+
+	currentQuestion = select;
+
+	//問題要素を表示する領域の生成
+	buildArea();
+	buildQuestion(question[select]);
 
 	canvasAction();
 	removeItem();
@@ -68,7 +90,7 @@ function buildQuestion(question){
 	buildArea();
 
 	//問題文埋め込み
-	document.getElementById("text"+num).innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
+	document.getElementById("text").innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
 
 	//選択肢埋め込み
 	for(i = 0; i < itemList.length; i++) {
@@ -77,7 +99,7 @@ function buildQuestion(question){
 		str += "ondragstart=\"itemDragStart(event)\">" ;
 		str += buildChoicesParts(itemList[i]);
 		str += "</div>";
-		document.getElementById("choices"+num).innerHTML += str;
+		document.getElementById("choices").innerHTML += str;
 	}
 
 	//選択肢数を換算
@@ -92,16 +114,16 @@ function buildArea(){
 	var area = document.getElementById("area");
 
 	//問題文領域の生成
-	var question = "<h3>問題 ("+(num+1)+")</h3>";
+	var question = "<h3>問題 ("+(currentQuestion+1)+")</h3>";
 	question+= "<div id=\"waku1\">";
-	question+= "<div id=\"text"+num+"\"></div>";
+	question+= "<div id=\"text\"></div>";
 	question+= "</div>";
 	area.innerHTML += question;
 
 	//解答欄領域の生成
 	var answer = "<h3>解答欄</h3>";
 	answer+= "<div id=\"waku2\">";
-	answer+= "<div id=\"canvas"+num+"\" class=\"canvas\"></div>";
+	answer+= "<div id=\"canvas\"></div>";
 	answer+= "</div>";
 	answer+= "</div>";
 	area.innerHTML += answer;
@@ -109,7 +131,7 @@ function buildArea(){
 	//選択肢領域の生成
 	var choices = "<h3>選択肢</h3>";
 	choices+= "<div id=\"waku3\">";
-	choices+= "<div id=\"choices"+num+"\" class=\"choices\"></div>";
+	choices+= "<div id=\"choices\"></div>";
 	choices+= "</div>";
 	choices+= "</div>";
 	area.innerHTML += choices;
@@ -143,57 +165,42 @@ function itemDragStart(e) {
 //キャンバスの処理
 var idc = 0;
 function canvasAction(){
-	var canvas = document.getElementsByClassName('canvas');
+	var canvas = document.getElementById('canvas');
 
-	for(var i =0;i<canvas.length;i++){
-		canvas[i].ondragover = prev;
-		canvas[i].ondrag=prev;
+	canvas.ondragover = prev;
+	canvas.ondrag=prev;
 
-		// キャンバスにドロップされた場合に発火
-		canvas[i].ondrop = function(e){
+	// キャンバスにドロップされた場合に発火
+	canvas.ondrop = function(e){
+		// ドロップされた選択肢の取得
+		// Stringの"親の親id,選択肢id"状態なので、","で分割
 
-			// ドロップされた選択肢の取得
-			// Stringの"親の親id,選択肢id"状態なので、","で分割
-			var id = e.dataTransfer.getData('text/html').split("-");
-			var elt = document.getElementById(id[0]+"-"+id[1]);
+		var id = e.dataTransfer.getData('text/html').split("-");
+		var elt = document.getElementById(id[0]+"-"+id[1]);
 
-			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			//このfor文だと解答欄領域を選ばず
-			//ドロップできてしまうので
-			//考え直さないといけない
-			//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-			for(var j =0;j<canvas.length;j++){
-				// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
-				if(id[0] == 'i'){
+		// idが 'i' で始まる要素(選択肢欄からのドロップ)か調べる
+		if(id[0] == 'i'){
 
-					//選択肢該当範囲の計算
-					if(id[1]<cnums[j]){
+			//元選択肢のクローンを生成
+			//クローンのidを新しく設定
+			//設定するidは c+ドロップされた番号+元id
 
-						//元選択肢のクローンを生成
-						//クローンのidを新しく設定
-						//設定するidは c+ドロップされた番号+元id
-						elt = elt.cloneNode(true);
-						elt.id = 'c-' + idc++ + id[0]+"-"+id[1];
+			elt = elt.cloneNode(true);
+			elt.id = 'c-' + idc++ + id[0]+"-"+id[1];
 
-						//キャンバスへ要素を追加
-						canvas[j].appendChild(elt);
-						dropped[j][canvas[j].childElementCount-1] = elt;
-						break;
-					}
-				}//else{
-					// idが 'i' で始まらない要素、つまり、
-					// 'c'の場合(解答欄からのドロップ)
-
-				//}
-			}
-			alert(dropped[0]);
-		}
+			//キャンバスへ要素を追加
+			canvas.appendChild(elt);
+			//dropped[j][canvas.childElementCount-1] = elt;
+		}//else{
+			// idが 'i' で始まらない要素、つまり、
+			// 'c'の場合(解答欄からのドロップ)
+		//}
 	}
 }
 
 //整列
 function tuneLine(){
-	
+
 }
 
 //要素の入れ替え
@@ -218,11 +225,6 @@ function removeItem(){
 			}
 		}
 	}
-}
-
-function moveItem(){
-
-
 }
 
 function prev(e) {
