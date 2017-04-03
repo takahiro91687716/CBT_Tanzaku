@@ -20,6 +20,9 @@ var initial5 = ["1.","2.","3.","4.","5.","6.","7.","8.","9.","10.","11.","12.","
 //解答中問題番号
 var currentQuestion = 0;
 
+//問題一覧
+var question;
+
 //--------------------------------------------------
 //
 //
@@ -37,8 +40,6 @@ function requestFile(method, fname, async) {
 	}
 	xhr.send();
 
-	//canvasAction();
-	removeItem();
 }
 
 //--------------------------------------------------
@@ -47,15 +48,21 @@ function requestFile(method, fname, async) {
 //--------------------------------------------------
 function buildQuestions(HttpObj){
 	var resHTTP = HttpObj.responseXML;
-	var question = resHTTP.getElementsByTagName('question');
+	question = resHTTP.getElementsByTagName('question');
+
+	//問題要素を表示する領域の生成
+	buildArea();
 
 	//問題セットの初期化
-	buildQuestion(question[0]);
+	setSelectQuestion(0);
 
 	//問題数に応じた多次元配列の作成
 	for(var i = 0; i < question.length ; i++){
 		dropped[i] = [];
 	}
+
+	canvasAction();
+	removeItem();
 }
 
 
@@ -65,34 +72,18 @@ function buildQuestions(HttpObj){
 //--------------------------------------------------
 function setSelectQuestion(select){
 
-	//1)変える前の問題の解答情報を保持する動作
-	//2)選択した問題に解答情報があれば、呼び出す
+	var textList = question[select].getElementsByTagName('text');
+	var itemList = question[select].getElementsByTagName('item');
 
-	currentQuestion = select;
+	//1)変える前の問題の解答情報を保持する動作************************************************
+	//2)選択した問題に解答情報があれば、呼び出す**********************************************
 
-	//問題要素を表示する領域の生成
-	buildArea();
-	buildQuestion(question[select]);
+	//問題文を選択中のものへ
+	document.getElementById("text").innerHTML = "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
 
-	canvasAction();
-	removeItem();
-}
-
-//--------------------------------------------------
-//一つの問いを作成する関数
-//
-//--------------------------------------------------
-function buildQuestion(question){
-	var textList = question.getElementsByTagName('text');
-	var itemList = question.getElementsByTagName('item');
-
-	//問題要素を表示する領域の生成
-	buildArea();
-
-	//問題文埋め込み
-	document.getElementById("text").innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
 
 	//選択肢埋め込み
+	document.getElementById("choices").innerHTML = "";//一旦クリア
 	for(i = 0; i < itemList.length; i++) {
 		var str = "<div id= \"i-"+ cnum++ +"\"";
 		str += "draggable = \"true\""; //ドラッグできるように
@@ -102,8 +93,7 @@ function buildQuestion(question){
 		document.getElementById("choices").innerHTML += str;
 	}
 
-	//選択肢数を換算
-	cnums[num] = cnum;
+	currentQuestion = select;
 }
 
 //--------------------------------------------------
@@ -190,7 +180,6 @@ function canvasAction(){
 
 			//キャンバスへ要素を追加
 			canvas.appendChild(elt);
-			//dropped[j][canvas.childElementCount-1] = elt;
 		}//else{
 			// idが 'i' で始まらない要素、つまり、
 			// 'c'の場合(解答欄からのドロップ)
