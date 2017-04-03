@@ -193,7 +193,7 @@ function canvasAction(){
 
 //整列
 function tuneLine(){
-	
+
 }
 
 //要素の入れ替え

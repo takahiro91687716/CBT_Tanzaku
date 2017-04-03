@@ -36,6 +36,9 @@ function requestFile(method, fname, async) {
 		}
 	}
 	xhr.send();
+
+	//canvasAction();
+	removeItem();
 }
 
 //--------------------------------------------------
@@ -53,9 +56,6 @@ function buildQuestions(HttpObj){
 	for(var i = 0; i < question.length ; i++){
 		dropped[i] = [];
 	}
-
-	canvasAction();
-	removeItem();
 }
 
 
@@ -213,16 +213,16 @@ function swapElement(){
 //
 //--------------------------------------------------
 function removeItem(){
-	var choices = document.getElementsByClassName('choices');
-	for(var i =0;i<choices.length;i++){
-		choices[i].ondragover = prev;
-		choices[i].ondrop = function(e) {
-			var id = e.dataTransfer.getData('text/html').split("-");
-			var elt = document.getElementById(id[0]+"-"+id[1]+"-"+id[2]);
+	var choices = document.getElementById('choices');
 
-			if(id[0]=='c'){
-				elt.parentElement.removeChild(elt);
-			}
+	choices.ondragover = prev;
+	choices.ondrop = function(e) {
+
+		var id = e.dataTransfer.getData('text/html').split("-");
+		var elt = document.getElementById(id[0]+"-"+id[1]+"-"+id[2]);
+
+		if(id[0]=='c'){
+			elt.parentElement.removeChild(elt);
 		}
 	}
 }
