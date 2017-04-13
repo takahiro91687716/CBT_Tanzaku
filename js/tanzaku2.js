@@ -23,6 +23,11 @@ var currentQuestion = 0;
 //問題一覧
 var question;
 
+//文字サイズ（入れ替えに使う）
+var blank = 5;
+var offsetX = 0;
+var offsetY = 0;
+
 //--------------------------------------------------
 //
 //
@@ -54,7 +59,7 @@ function buildQuestions(HttpObj){
 	buildArea();
 
 	//問題セットの初期化
-	setSelectQuestion(0);
+	setSelectQuestion(1);
 
 	//問題数に応じた多次元配列の作成
 	for(var i = 0; i < question.length ; i++){
@@ -63,6 +68,7 @@ function buildQuestions(HttpObj){
 
 	canvasAction();
 	removeItem();
+	getPosition();
 }
 
 
@@ -180,10 +186,11 @@ function canvasAction(){
 
 			//キャンバスへ要素を追加
 			canvas.appendChild(elt);
-		}//else{
+		}else{
 			// idが 'i' で始まらない要素、つまり、
 			// 'c'の場合(解答欄からのドロップ)
-		//}
+			alert(Math.floor( offsetY ));
+		}
 	}
 }
 
@@ -214,6 +221,34 @@ function removeItem(){
 			elt.parentElement.removeChild(elt);
 		}
 	}
+}
+
+function getPosition(){
+// マウスイベントを設定
+var mouseEvent = function( e ) {
+	// 動作を停止
+	e.preventDefault() ;
+
+	// マウス位置を取得する
+	var mouseX = e.pageX ;	// X座標
+	var mouseY = e.pageY ;	// Y座標
+
+	// 要素の位置を取得
+	var element = document.getElementById( "canvas" ) ;
+	var rect = element.getBoundingClientRect() ;
+
+	// 要素の位置座標を計算
+	var positionX = rect.left + window.pageXOffset ;	// 要素のX座標
+	var positionY = rect.top + window.pageYOffset ;	// 要素のY座標
+
+	// 要素の左上からの距離を計算
+	offsetX = mouseX - positionX ;
+	offsetY = mouseY - positionY ;
+}
+
+var element = document.getElementById( "canvas" ) ;
+//element.addEventListener( "mouseup", mouseEvent ) ;
+element.addEventListener( "mousemove", mouseEvent ) ;
 }
 
 function prev(e) {

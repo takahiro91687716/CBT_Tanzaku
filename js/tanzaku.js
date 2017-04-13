@@ -150,7 +150,7 @@ function canvasAction(){
 		canvas[i].ondrag=prev;
 
 		// キャンバスにドロップされた場合に発火
-		canvas[i].ondrop = function(e){
+		canvas[i].ondrop = function(e,i){
 
 			// ドロップされた選択肢の取得
 			// Stringの"親の親id,選択肢id"状態なので、","で分割

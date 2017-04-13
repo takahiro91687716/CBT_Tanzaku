@@ -1,0 +1,22 @@
+#waku1, #waku2, #waku3 {
+	margin: 0ex 3ex 1ex;
+	border: solid black 1px;
+}
+
+#waku2{
+	height: 20ex;
+	overflow: scroll;
+}
+
+.canvas {
+	padding: 1ex;
+	height: 10ex;
+	/*position: relative;*/
+}
+
+.littleCanvas {
+	padding: 1ex;
+	height: 1.5ex;
+	position: relative;
+	border: solid black 1px;
+}
