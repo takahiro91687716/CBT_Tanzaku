@@ -211,14 +211,13 @@ function canvasAction(canvas){
 				//canvasId[2]とitemId1[4]の要素を入れかえる、つまり
 				//a-問題番号-canvasId[2]の子とa-問題番号-itemId1[4]をswap
 				var tmpElt = canvas.childNodes[0];
-				var tmpId = tmpElt.id.split("-");//元要素のidを取っておく
-
 
 				elt.id = itemId1[0]+"-"+itemId1[1]+"-"+itemId1[2]+"-"+itemId1[3]+"-"+canvasId[2];//解答欄は変えておく
 				canvas.appendChild(elt);//移動だからクローンの必要無し
 
 				//落としたところに既に要素が存在していた場合
 				if(tmpElt != null){
+					var tmpId = tmpElt.id.split("-");//元要素のidを取っておく
 					//もってきた選択肢のもともとの解答欄に
 					var swapTo = document.getElementById("a"+"-"+itemId1[2]+"-"+itemId1[4]);
 					tmpElt.id = tmpId[0]+"-"+tmpId[1]+"-"+tmpId[2]+"-"+tmpId[3]+"-"+itemId1[4];//解答欄は変えておく
