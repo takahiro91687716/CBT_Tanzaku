@@ -1,12 +1,6 @@
 //XMLHttpRequestオブジェクトを生成
 var xhr = new XMLHttpRequest();
 
-//問題数
-var num = 0;
-//選択肢数
-var cnum = 0;
-var cnums = [];
-
 //選択肢の記号セット
 var initial1 = ["あ","い","う","え","お","か","き","く","け","こ","さ","し","す","せ","そ"];
 var initial2 = ["ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ","サ","シ","ス","セ","ソ"];
@@ -18,8 +12,7 @@ var initial5 = ["1.","2.","3.","4.","5.","6.","7.","8.","9.","10.","11.","12.","
 var question = null;
 
 //--------------------------------------------------
-//
-//
+//xmlのopen ページロードで発火させる
 //--------------------------------------------------
 function requestFile(method, fname, async) {
 	//openメソッドでXMLファイルを開く
@@ -37,14 +30,14 @@ function requestFile(method, fname, async) {
 
 //--------------------------------------------------
 //ページ全体に問いを配置する関数
-//
 //--------------------------------------------------
 function buildQuestions(HttpObj){
+	//xmlからquestion tagのついている内容を取得
 	var resHTTP = HttpObj.responseXML;
 	question = resHTTP.getElementsByTagName('question');
 
-	for(num; num < question.length;num++){
-		buildQuestion(num);
+	for(var number = 0; number < question.length;number++){
+		buildQuestion(number);
 	}
 
 	//全解答欄でアクション指定
@@ -53,7 +46,7 @@ function buildQuestions(HttpObj){
 		canvasAction(canvas[i]);
 	}
 
-	//全解答欄でアクション指定
+	//全選択肢欄でアクション指定
 	var choices = document.getElementsByClassName("choices");
 	for(var i = 0; i < choices.length ; i++){
 		removeItem(choices[i]);
@@ -62,7 +55,6 @@ function buildQuestions(HttpObj){
 
 //--------------------------------------------------
 // "(number)問目"を作成する関数
-//
 //--------------------------------------------------
 function buildQuestion(number){
 	var textList = question[number].getElementsByTagName('text');
@@ -72,15 +64,15 @@ function buildQuestion(number){
 	buildArea(number);
 
 	//問題文埋め込み
-	document.getElementById("text"+num).innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
+	document.getElementById("text"+number).innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
 
-//解答欄埋め込み
-for(i = 0; i < itemList.length; i++) {
-	var str = "<div id= \"a-"+ number + "-" + i + "\"";
-	str += "class=\"littleCanvas\">";//クラスはLittleCanvasにしてる***************************************************
-	str += "</div>";
-	document.getElementById("canvas"+number).innerHTML += str;
-}
+	//解答欄埋め込み
+	for(i = 0; i < itemList.length; i++) {
+		var str = "<div id= \"a-"+ number + "-" + i + "\"";
+		str += "class=\"littleCanvas\">";//クラスはlittleCanvasにしてる***************************************************
+		str += "</div>";
+		document.getElementById("canvas"+number).innerHTML += str;
+	}
 
 	//選択肢埋め込み
 	for(i = 0; i < itemList.length; i++) {
@@ -91,14 +83,10 @@ for(i = 0; i < itemList.length; i++) {
 		str += "</div>";
 		document.getElementById("choices"+number).innerHTML += str;
 	}
-
-	//選択肢数を換算
-	cnums[num] = cnum;
 }
 
 //--------------------------------------------------
 //一つの問いの構成要素を設置する
-//
 //--------------------------------------------------
 function buildArea(number){
 	var area = document.getElementById("area");
@@ -152,7 +140,12 @@ function itemDragStart(e) {
 	e.dataTransfer.setData('text/html',e.target.id);
 }
 
-//キャンバスの処理
+//--------------------------------------------------
+//キャンバスの動作
+//解答欄にドロップされたときに発火させる
+// 1)選択肢欄からの要素ドロップ
+// 2)解答欄からの要素ドロップ
+//--------------------------------------------------
 var idc = 0;
 function canvasAction(canvas){
 
@@ -203,7 +196,8 @@ function canvasAction(canvas){
 				canvas.appendChild(elt);
 			}
 		}else{
-			//idが 'i' で始まらない要素、つまり、// 'c'の場合(解答欄からのドロップ)
+			//idが 'i' で始まらない要素、つまり、
+			// 'c'の場合(解答欄からのドロップ)
 
 			//問題番号合っているか調べる
 			if(canvasId[1] == itemId1[2]){
@@ -223,19 +217,19 @@ function canvasAction(canvas){
 					tmpElt.id = tmpId[0]+"-"+tmpId[1]+"-"+tmpId[2]+"-"+tmpId[3]+"-"+itemId1[4];//解答欄は変えておく
 					swapTo.appendChild(tmpElt);
 				}
-
-			}
 			}
 		}
 	}
+}
 
 //--------------------------------------------------
-//
-//
+//choicesの動作
+//選択肢欄にドロップされたとき発火させる
+// 1)解答済み選択肢の要素ドロップ
 //--------------------------------------------------
-function removeItem(choice){
-	choice.ondragover = prev;
-	choice.ondrop = function(e) {
+function removeItem(choices){
+	choices.ondragover = prev;
+	choices.ondrop = function(e) {
 		choiceId = this.id.split("-");
 		var itemId0 = e.dataTransfer.getData('text/html');
 		var itemId1 = itemId0.split("-");
