@@ -4,6 +4,11 @@ var xhr = new XMLHttpRequest();
 //問題ファイル
 var question = null;
 
+//変数用
+var variable = "変数：<input type=number></input> = <input type=number></input>";
+//自由欄
+var freeLine = "<input type> </input>";
+
 //--------------------------------------------------
 //xmlのopen ページロードで発火させる
 //--------------------------------------------------
@@ -296,6 +301,10 @@ function canvasAction(canvas){
 		// Stringの"親の親id,選択肢id"状態なので、","で分割
 		var elt = document.getElementById(e.dataTransfer.getData('text/html'));
 
+		// if(!elt){
+		// 	alert(e.dataTransfer.getData('text/html'));
+		// }
+
 		//itemId[0]：選択肢識別用 i
 		//itemId[1]：問題番号識別用 問題番号
 		//itemId[2]：選択肢番号識別用 選択肢番号
@@ -364,6 +373,9 @@ function removeItem(choices){
 	choices.ondrop = function(e) {
 		choiceId = this.id.split("-");
 		var rmElt = document.getElementById(e.dataTransfer.getData('text/html'));
+		// if(!rmElt){
+		// 	alert(e.dataTransfer.getData('text/html'));
+		// }
 		var itemId = rmElt.id.split("-");
 
 

@@ -1,0 +1,44 @@
+報告書
+松本嵩大
+
+(1)短冊形式の変更について
+
+・初期状態
+  waku1/textX
+
+  waku2-X/bound-X-0
+  waku2-X/canvas-X-0
+  waku2-X/bound-X-1
+
+  waku3/choicesX/i-X-0
+  waku3/choicesX/i-X-1
+  waku3/choicesX/i-X-2
+  …
+
+解答欄 bound/canvas について
+boundはcanvasを挟むように設置する。bound自体に解答が設置されることはない。
+初期状態ではcanvasは1つ、boundは2つあり、解答されると、次の解答ができるよう、増えていく。
+
+・bound
+  ・put（1回きり）
+    ・iのみ
+  ・insert
+    ・i or c
+
+・canvas
+  ・put（1回きり）
+    iのみ
+  ・replace
+    i or c
+  ・remove
+    cのみ
+
+
+初期状態で空白を1つにする
+jison
+[]は短冊で共有しとけばいい
+  ドラッグでデータ送るときに<input>のデータを変換
+y←(x+1)/(3*y)
+
+タグ
+ QTIググれ
