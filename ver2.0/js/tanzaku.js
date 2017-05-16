@@ -74,7 +74,7 @@ function buildQuestion(number){
 		var str = "<div id= \"i-"+ number + "-" + i + "\"";//idは(i,問題番号,選択肢何個目)
 		str += "draggable = \"true\""; //ドラッグできるように
 		str += "ondragstart=\"itemDragStart(event)\">" ;
-		str += buildChoicesParts(itemList[i]);
+		str += buildChoiceParts(itemList[i]);
 		str += "</div>";
 		document.getElementById("choices"+number).innerHTML += str;
 	}
@@ -97,8 +97,6 @@ function buildArea(number){
 	var answer = "<h3>解答欄</h3>";
 	answer+= "<div id=\"waku2-"+number+"\" class=\"waku2\">";
 	answer+= "<div id=\"bound-"+number+"-"+0+"\" class=\"bound\"></div>";
-	answer+= "<div id=\"canvas-"+number+"-"+0+"\" class=\"canvas\"></div>";
-	answer+= "<div id=\"bound-"+number+"-"+1+"\" class=\"bound\"></div>";
 	answer+= "</div>";
 	answer+= "</div>";
 	area.innerHTML += answer;
@@ -115,20 +113,49 @@ function buildArea(number){
 	area.innerHTML+= "<hr>";
 }
 
-//--------------------------------------------------
-//
-//
-//--------------------------------------------------
-function buildChoicesParts(item){
-	var str = item.childNodes[0].nodeValue;
 
-	//正規表現を使ってTagを識別する予定
-	//再帰的に呼び出すメソッドも必要か
-	//var regexp = /&lt;+.!+&gt/i;
-	//if(item.getElementsByTagName('stdio.h') !=  null){
-	//	str += "&lt;stdio.h&gt;";
-	//}
+function buildChoiceParts(item){
+	var str = item.childNodes[0].nodeValue;
+	return pickBrace(str);
+}
+
+function pickBrace(str){
+	//最短マッチで探す
+	var seq = str.match(/\{(.*?)\}/g);
+	var regExp = null;
+
+	if(seq){
+		for(var i = 0; i < seq.length;i++){
+			var target = seq[i].substring(1, seq[i].length - 1);
+			var pull = target.split(",")
+			var result = "";
+
+			if(1 < pull.length){
+				result = buildBrace(pull);
+			}else if(target == ""){
+				result = "<input type=text style=\"width:30px;\"></input>";
+			}else if(target == "number"){
+				result = "<input type=number style=\"width:30px;\"></input>";
+			}else{
+				result = seq[i];
+			}
+			regExp = new RegExp("{"+target+"}", "g") ;
+			str = str.replace( regExp , result) ;
+		}
+	}
 	return str;
+}
+
+function buildBrace(choices){
+
+	var text = "<select>";
+
+	for(var i = 0; i < choices.length;i++){
+		text += "<option value = \""+choices[i]+"\">"+choices[i]+"</option>";
+	}
+
+	text += "</select>";
+	return text;
 }
 
 //選択肢をドラッグした時に
@@ -171,21 +198,12 @@ function boundAction(bound){
 
 		var number = boundId[1];
 
-		//最初の解答欄を取得
-		var rootCanvas = document.getElementById("canvas-"+boundId[1]+"-"+0);
-
-		if(rootCanvas.childElementCount == 0){
-			var elt = item.cloneNode(true);
-			elt.id = 'c-' + idc++ +"-"+ number+"-"+itemId[2]+"-"+0;
-
-			rootCanvas.appendChild(elt);
-		}else{//最初の解答が終わっている状態
-			if(itemId[0]=="i"){
-				dropI(item,bound);
-			}else{
-				dropC(item,bound);
-			}
+		if(itemId[0]=="i"){
+			dropI(item,bound);
+		}else{
+			dropC(item,bound);
 		}
+		//}
 	}
 }
 
@@ -275,6 +293,8 @@ function dropI(item,bound){
 	var elt = item.cloneNode(true);
 	elt.id = 'c-' + idc++ +"-"+ number+"-"+itemId[2]+"-"+boundId[2];
 	document.getElementById("canvas-"+number+"-"+boundId[2]).appendChild(elt);
+
+	indent(waku2);
 }
 
 //--------------------------------------------------
@@ -335,6 +355,8 @@ function canvasAction(canvas){
 
 				//キャンバスへ要素を追加
 				canvas.appendChild(elt);
+				//インデント調整
+				indent(canvas.parentElement);
 			}
 		}else{
 			//idが 'i' で始まらない要素、つまり、
@@ -357,6 +379,8 @@ function canvasAction(canvas){
 					var swapTo = document.getElementById("canvas"+"-"+itemId[2]+"-"+itemId[4]);
 					tmpElt.id = tmpId[0]+"-"+tmpId[1]+"-"+tmpId[2]+"-"+tmpId[3]+"-"+itemId[4];//解答欄は変えておく
 					swapTo.appendChild(tmpElt);
+					//インデント調整
+					indent(canvas.parentElement);
 				}
 			}
 		}
@@ -384,22 +408,24 @@ function removeItem(choices){
 			var number = itemId[2];
 			var waku2 = document.getElementById("waku2-"+number);
 
-			//最初の枠消さないように
-			if(3<waku2.childElementCount){
-				//例によってずらす
-				for(var i = itemId[4];i<Math.floor(waku2.childElementCount/2)-1;i++){
-					//移動対象要素の取得
-					var elt = document.getElementById("canvas-"+number+"-"+(Number(i)+1)).childNodes[0];
-					//IDの分割
-					var tmpId = elt.id.split("-");
-					//IDの書き換え
-					elt.id = tmpId[0]+"-"+tmpId[1]+"-"+tmpId[2]+"-"+tmpId[3]+"-"+i;
-					document.getElementById("canvas-"+number+"-"+i).appendChild(elt);
-				}
-				//余分な欄を消す
-				waku2.removeChild(document.getElementById("bound-"+number+"-"+Math.floor(waku2.childElementCount/2)));
-				waku2.removeChild(document.getElementById("canvas-"+number+"-"+(Math.floor(waku2.childElementCount/2)-1)));
+			// //最初の枠消さないように
+			// if(3<waku2.childElementCount){
+			//例によってずらす
+			for(var i = itemId[4];i<Math.floor(waku2.childElementCount/2)-1;i++){
+				//移動対象要素の取得
+				var elt = document.getElementById("canvas-"+number+"-"+(Number(i)+1)).childNodes[0];
+				//IDの分割
+				var tmpId = elt.id.split("-");
+				//IDの書き換え
+				elt.id = tmpId[0]+"-"+tmpId[1]+"-"+tmpId[2]+"-"+tmpId[3]+"-"+i;
+				document.getElementById("canvas-"+number+"-"+i).appendChild(elt);
 			}
+			//余分な欄を消す
+			waku2.removeChild(document.getElementById("bound-"+number+"-"+Math.floor(waku2.childElementCount/2)));
+			waku2.removeChild(document.getElementById("canvas-"+number+"-"+(Math.floor(waku2.childElementCount/2)-1)));
+			// }
+			//インデント調整
+			indent(waku2);
 		}
 	}
 }
@@ -408,4 +434,45 @@ function prev(e) {
 	if(e.preventDefault) {
 		e.preventDefault();
 	}
+}
+
+function indent(waku2){
+	//インデントレベル
+	var level = 0;
+	//何問目か取得
+	var number = waku2.id.split("-")[1];
+
+	for(var i = 1; i < Math.floor(waku2.childElementCount); i+= 2){
+		var elt = waku2.childNodes[i];
+		level -= (elt.textContent.match(/を実行/g)||[]).length
+		if(0 < level){
+			elt.childNodes[0].style.position = 'relative';
+			elt.childNodes[0].style.left = (level * 20)+ 'px';
+		}else {
+			elt.childNodes[0].style.position = 'relative';
+			elt.childNodes[0].style.left = '0px';
+			level = 0;
+		}
+		//次のレベルを増やしておく
+		level += (elt.textContent.match(/もし|の間/g)||[]).length;
+	}
+}
+
+function runCode(number){
+	var waku2 = document.getElementById("waku2-"+number);
+	var counter = 0;
+
+	for(var i = 1; i < Math.floor(waku2.childElementCount); i+= 2){
+		var elt = waku2.childNodes[i];
+	}
+}
+
+function getLine(lineNum){
+	var line;
+
+	return line;
+}
+
+function eval(line){
+
 }

@@ -15,13 +15,13 @@
 
 .canvas {
 	padding: 1ex;
-	height: 1.0ex;
+	/*height: 1.75ex;*/
 	line-height: 1.0ex;
 	/*position: relative;*/
 }
 
 .bound {
 	padding: 1ex;
-	height: 0.25ex;
+	height: 1.0ex;
 	background-color: #c8c8c8;
 }
