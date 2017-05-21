@@ -100,6 +100,7 @@ function buildArea(number){
 	answer+= "</div>";
 	answer+= "</div>";
 	area.innerHTML += answer;
+	document.getElementById("bound-"+number+"-0").style.height = 100 + '%';
 
 	//選択肢領域の生成
 	var choices = "<h3>選択肢</h3>";
@@ -261,6 +262,9 @@ function dropI(item,bound){
 
 	var waku2 = document.getElementById("waku2-"+number);
 
+	//縦100%のboundの状態削除
+	document.getElementById("bound-"+number+"-"+Math.floor(waku2.childElementCount/2)).style.height = '';
+
 	//解答欄と空欄を増やす
 	var newDiv0 = document.createElement("div");
 	newDiv0.id = "canvas-"+number+"-"+Math.floor(waku2.childElementCount/2);
@@ -273,6 +277,9 @@ function dropI(item,bound){
 	var waku2 = document.getElementById("waku2-"+number);
 	waku2.appendChild(newDiv0);
 	waku2.appendChild(newDiv1);
+
+	//最下boundの縦を100%へ
+	newDiv1.style.height = 100 + '%';
 
 	//追加した欄にアクションの設定
 	canvasAction(newDiv0);
@@ -423,7 +430,9 @@ function removeItem(choices){
 			//余分な欄を消す
 			waku2.removeChild(document.getElementById("bound-"+number+"-"+Math.floor(waku2.childElementCount/2)));
 			waku2.removeChild(document.getElementById("canvas-"+number+"-"+(Math.floor(waku2.childElementCount/2)-1)));
-			// }
+
+			//boundの大きさ調整
+			document.getElementById("bound-"+number+"-"+Math.floor(waku2.childElementCount/2)).style.height = 100 + '%';
 			//インデント調整
 			indent(waku2);
 		}
@@ -458,21 +467,34 @@ function indent(waku2){
 	}
 }
 
+
+
 function runCode(number){
 	var waku2 = document.getElementById("waku2-"+number);
 	var counter = 0;
+	var code = [];
 
 	for(var i = 1; i < Math.floor(waku2.childElementCount); i+= 2){
 		var elt = waku2.childNodes[i];
+		code[counter] = eval(elt);
 	}
 }
 
-function getLine(lineNum){
-	var line;
+function eval(line){
+	var op = "";
+	if(line.contains("もし")){
 
-	return line;
+	}else if(line.contains("の間")){
+
+	}else if(line.contains("←")){
+
+	}else if(line.contains("表示する")){
+
+	}else if(line.contains("input()")){
+
+	}
 }
 
-function eval(line){
+function calc(){
 
 }
