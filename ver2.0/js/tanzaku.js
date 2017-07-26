@@ -480,6 +480,7 @@ function runCode(number){
 	}
 }
 
+var program = "";
 function eval(line){
 	var op = "";
 	if(line.contains("もし")){
