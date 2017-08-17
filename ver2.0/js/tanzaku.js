@@ -469,33 +469,118 @@ function indent(waku2){
 
 
 
+/**
+number 問題番号
+*/
+var head = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><title>runProg</title></head>";
+var body = "<body onLoad = \"result()\"><form name=\"program\"><textarea name=\"out\" readonly rows=\"8\" cols=\"40\"></textarea></form>";
+var script1 = "<script type=\"text/javascript\">function output(res){program.out.value += res+\"\\n\";}function result(){";
+var script2 = "}</script>";
+var bottom = "</body></html>";
 function runCode(number){
 	var waku2 = document.getElementById("waku2-"+number);
 	var counter = 0;
-	var code = [];
+	var source = "";
 
+	var htmlsource = window.open("", "", "scrollbars=yes, width=600, height=400");
+	htmlsource.document.open();
+	source += head;
+	source += body;
+	source += script1;
+	source += makeJS(number);
+	source += script2;
+	source += bottom;
+	htmlsource.document.write(source);
+	htmlsource.document.close();
+
+}
+
+function makeJS(number){
+
+	//解答プログラムの取得（xDNCL）
+	var code = "";
 	for(var i = 1; i < Math.floor(waku2.childElementCount); i+= 2){
 		var elt = waku2.childNodes[i];
-		code[counter] = eval(elt);
+		code += toJS(elt.value);
 	}
+	return code;
+
 }
 
-var program = "";
-function eval(line){
-	var op = "";
+//1行ごとに返還を行う
+function toJS(line){
+	//xDNCL→JavaScript
+
+	//代入
+	line = line.replace(/←/g,"=");
+
+	if(line.contains("整数")){
+		line = "var "+ line.replace(/整数/g,"");
+	}
+
+	if(line.contains("実数")){
+		line = "var "+ line.replace(/実数/g,"");
+	}
+
+	if(line.contains("文字列")){
+		line = "var "+ line.replace(/文字列/g,"");
+	}
+
+	if(line.contains("を表示する")){
+		line = "output1("+ line.replace(/を表示する/g,"")+")";
+	}
+
+	if(line.contains("を改行なしで表示する")){
+		line = "output2("+ line.replace(/を改行なしで表示する/g,"")+")";
+	}
+
+	if(line.contains("を実行する")||line.contains("を繰り返す")){
+		line = "}";
+	}
+
+	if(line.contains("を実行し、そうでなければ")){
+		line = "} else {";
+	}
+
+	if(line.contains("を実行し，そうでなくもし")){
+		line = line.replace(/を実行し，そうでなくもし/g,"");
+		line = "} else if("+ line.replace(/ならば/g,""); +"){";
+	}
+
 	if(line.contains("もし")){
+		line = line.replace(/もし/g,"");
+		line = "if("+line.replace(/ならば/g,"")+"){";
+	}
 
-	}else if(line.contains("の間")){
+	if(line.contains("の間，")){
+		line = "while(" + line.replace(/の間，/g,"") + "){";
+	}
 
-	}else if(line.contains("←")){
-
-	}else if(line.contains("表示する")){
-
-	}else if(line.contains("input()")){
+	if(line.contains("まで 1 ずつ増やしながら，")){//まだ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 
 	}
-}
 
-function calc(){
+	if(line.contains("まで 1 ずつ減らしながら，")){//まだ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 
+	}
+
+
+
+
+	//number
+	line = line.replace(/整数/g,"var");
+	line = line.replace(/実数/g,"var");
+
+	line = line.replace(/表示する/g,"output");
+
+	// "xxx ← input()" 形式のため、このままでは動かない
+	line = line.replace(/input()/g,"input");
+
+	line = line.replace(/整数/g,"var");
+	line = line.replace(/整数/g,"var");
+	line = line.replace(/整数/g,"var");
+	line = line.replace(/整数/g,"var");
+	line = line.replace(/整数/g,"var");
+
+	return line;
 }
