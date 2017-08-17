@@ -16,14 +16,13 @@ var inputTimes = 0;
 // 入力値の取得を行う
 // 「入力ボタン」で呼び出す
 function setInputValue(){
-  inputValues[inputTimes] = document.in.keyboard.value;
+  inputValues[inputTimes++] = document.in.keyboard.value;
 }
 
 // 入力値の取得
 // これが行われた場合、入力回数をカウントする
-function input(){
-  return inputValues[inputTimes];
-  inputTimes++;
+function input(number){
+  return inputValues[number];
 }
 
 // 入力値の初期化を行う
@@ -44,7 +43,7 @@ function result(){
   if(typeof inputValues[0] == "undefined"){
     setTimeout("result()", 100);
   }else{
-    var i = input();
+    var i = input(0);
     outputWithReturn(i);
   }
   // !!!!!!!!!!ここまでサンプルコード!!!!!!!!!!!

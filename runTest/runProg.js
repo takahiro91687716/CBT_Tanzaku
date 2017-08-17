@@ -1,10 +1,72 @@
-var head = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><title>runProg</title></head>";
-var body = "<body onLoad = \"result()\"><form name=\"in\"><input type=\"text\" name=\"keyboard\"><input type=\"button\" id=\"inpStr\" value=\"文字入力\"><input type=\"button\" id=\"inpNum\" value=\"数値入力\"></form><form name=\"program\"><textarea name=\"out\" readonly rows=\"8\" cols=\"40\"></textarea></form>";
-var script1 = "<script type=\"text/javascript\">function output(res){\nprogram.out.value += res+\"\\n\";\n}\nfunction input(){\nreturn document.in.keyboard.value;\n}\n";
+var script = [
+  "<html>\n",
 
-var script2 = "</script>";
-var bottom = "</body></html>";
+  " <head>\n",
+  "   <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n",
+  "   <title>\n",
+  "    runProg\n",
+  "   </title>\n",
+  " </head>\n",
 
+  " <body onLoad = \"result()\">\n",
+  "   <form name=\"in\">\n",
+  "    <input type=\"text\" name=\"keyboard\">\n",
+  "    <input type=\"button\" value=\"入力\" onclick=\"setInputValue()\">\n",
+  "    <input type=\"button\" value=\"リセット\" onclick=\"clean()\">\n",
+  "   </form>\n",
+
+  "   <form name=\"program\">\n",
+  "    <textarea name=\"out\" readonly rows=\"8\" cols=\"40\"></textarea>\n",
+  "   </form>\n",
+
+  "   <script type=\"text/javascript\">\n",
+  "    \/\/ 改行あり出力\n",
+  "    function outputWithReturn(res){\n",
+  "      program.out.value += res+\"\\n\";\n",
+  "    }\n",
+
+  "    \/\/ 改行なし出力\n",
+  "    function outputLessReturn(res){\n",
+  "      program.out.value += res;\n",
+  "    }\n",
+
+  "    \/\/ 入力値を格納する配列\n",
+  "    var inputValues = [];\n",
+  "    \/\/ 現在入力されている回数\n",
+  "    var inputTimes = 0;\n",
+
+  "    \/\/ 入力値の取得を行う\n",
+  "    \/\/ 「入力ボタン」で呼び出す\n",
+  "    function setInputValue(){\n",
+  "     inputValues[inputTimes++] = document.in.keyboard.value;\n",
+  "    }\n",
+
+  "    \/\/ 入力値の取得\n",
+  "    \/\/ これが行われた場合、入力回数をカウントする\n",
+  "    function input(number){\n",
+  "     return inputValues[number];\n",
+  "    }\n",
+
+  "    \/\/ 入力値の初期化を行う\n",
+  "    \/\/ 「リセットボタン」で呼び出す\n",
+  "    function clean(){\n",
+  "     inputValues.length = 0;\n",
+  "     inputTimes = 0;\n",
+  "     result();\n",
+  "    }\n",
+
+  "    function result(){\n",
+  "     \/\/ 実行コードに入力が含まれていた場合に result() を繰り返すため実行時にコンソールを消す\n",
+  "     program.out.value = \"\";\n",//49番目
+        //！！！！！！！！！！！！！//
+        //ここに生成したコードが入る//
+        //！！！！！！！！！！！！！//
+  "    }\n",
+
+  "   </script>\n",
+  " </body>\n",
+  "</html>\n",
+];
 
 /**
 文字列の数を数える
@@ -18,55 +80,68 @@ function run(){
 
   var source = "";
 
-  code = code.replace(/console.log/g,"output");
-  codes = code.split("\n");
-  //alert(codes[0]);
+  //input()の数を数える
+  //「 } 」の数になるから重要
+  var inputNum = 0;
 
+  // 実行コードを改行で分割する
+  // 短冊の方では行で取得するのでいらない
+  var codes = code.split("\n");
 
   var htmlsource = window.open("", "", "scrollbars=yes, width=600, height=400");
 	htmlsource.document.open();
-  source += head;
-  source += body;
-  source += script1;
 
-  var func = "function result(){\nvar button = document.getElementById(\"inpStr\");\ninstantFunction0();\n";
+  var scriptNumber = 0;
+  for(scriptNumber; scriptNumber < 49; scriptNumber++){
+    source += script[scriptNumber];
+  }
 
   for(var i = 0; i < codes.length; i++){
-    func += "function instantFunction" + i + "(){\n";
+    var tmpLine = "";
 
     //inputの処理
     if(codes[i].includes("input()")){
-      func += "button.onclick = function(){\n";
+      tmpLine += "if(typeof inputValues["+ inputNum +"] == \"undefined\"){\n";
+      tmpLine += "  setTimeout(\"result()\", 100);";
+      tmpLine += "}else{";
+      tmpLine += codes[i].replace(/input\(\)/g,("input("+ inputNum++ +")"))+"\n";
+    }else{
+      tmpLine += codes[i];
     }
-
-    func += codes[i]+";\n";
-
-    if(i<codes.length-1){
-      func += "instantFunction" + (i+1) +"();\n";
-    }
-    func += "}\n";
-    if(0<i){
-      func += "}\n";
-    }
+    source += tmpLine;
   }
 
-  source += func;
-  source += script2;
-  source += bottom;
+  for(var i = 0; i < inputNum; i ++){
+    source += "}\n";
+  }
+
+  for(scriptNumber; scriptNumber < script.length; scriptNumber++){
+    source += script[scriptNumber];
+  }
+
   htmlsource.document.write(source);
 	htmlsource.document.close();
 }
 
 /** 出力テスト
-console.log("6の段を表示する")
+outputWithReturn("6の段を表示する")
 var i = i;
 for(i;i<10;i++){
-console.log(i*6)
+outputWithReturn(i*6)
 }
 */
 
 /** 入力系
-console.log("入力値を表示する")
+outputWithReturn("入力値を表示する");
 var i = input();
-console.log(i)
+outputWithReturn(i);
+*/
+
+/** 入力系
+outputWithReturn("数を入力してください");
+var i = input();
+outputWithReturn("もうひとつ");
+var j = input();
+outputWithReturn("合計は...");
+outputWithReturn(i+j);
 */
