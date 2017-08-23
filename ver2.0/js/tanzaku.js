@@ -74,7 +74,7 @@ function buildQuestion(number){
 		var str = "<div id= \"i-"+ number + "-" + i + "\"";//idは(i,問題番号,選択肢何個目)
 		str += "draggable = \"true\""; //ドラッグできるように
 		str += "ondragstart=\"itemDragStart(event)\">" ;
-		str += buildChoiceParts(itemList[i]);
+		str += buildChoiceParts(itemList[i],number,i);
 		str += "</div>";
 		document.getElementById("choices"+number).innerHTML += str;
 	}
@@ -95,6 +95,7 @@ function buildArea(number){
 
 	//解答欄領域の生成
 	var answer = "<h3>解答欄</h3>";
+	answer+= "<input type=\"button\" value=\"実行\" onclick=\"alert(makeJS("+number+"))\">";//実行テスト！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 	answer+= "<div id=\"waku2-"+number+"\" class=\"waku2\">";
 	answer+= "<div id=\"bound-"+number+"-"+0+"\" class=\"bound\"></div>";
 	answer+= "</div>";
@@ -115,47 +116,98 @@ function buildArea(number){
 }
 
 
-function buildChoiceParts(item){
+function buildChoiceParts(item,number,j){
 	var str = item.childNodes[0].nodeValue;
-	return pickBrace(str);
+	return pickBrace(str,number,j);
 }
 
-function pickBrace(str){
+function searchNormal(str){
+	var normal = [];
+	var braceFlug = false;
+
+	//alert(str.length);
+	for(var i = 0; i < str.length;i++){
+		//alert();
+		if(str.charAt(i) != "{"){
+			//console.log();(i);
+			var tmp = "";
+			for(var j = i; j < str.length;j++){
+				//console.log(j);
+				if(str.charAt(j) == "{"){
+					//console.log("break")
+					break;
+				}
+				tmp += str.charAt(j);
+				i = j;
+			}
+			normal.push(tmp);
+		}else{
+			for(var j = i; j < str.length;j++){
+				if(str.charAt(j) == "}"){
+					i = j++;
+					break;
+				}
+				// "{あいうえお"みたいな時にも対応するようにしなければならない！！！！！！！！！！！！！！！！！！！！！！
+			}
+		}
+	}
+	return normal;
+}
+
+function pickBrace(str,number,j){
 	//最短マッチで探す
 	var seq = str.match(/\{(.*?)\}/g);
 	var regExp = null;
 
+	//普通のも探す
+	var normal = searchNormal(str).concat();
+
+	//普通の文字をDOMにする ******braceより先にやらないと"="などに対応できない
+	console.log(normal);
+	if(normal){
+		for(var i = 0; i < normal.length;i++){
+			console.log(i +",,,,,,,"+ normal[i]);
+			console.log(str.includes(normal[i])+"...."+str);
+			//gいらんかも
+			//regExp = new RegExp(normal[i], "g");
+			str = str.replace(normal[i],"<span>"+normal[i]+"</span>");
+			//str.replace("整数","<span>"+normal[i]+"</span>");
+		}
+	}
+
+	//{}を置き換える
 	if(seq){
 		for(var i = 0; i < seq.length;i++){
 			var target = seq[i].substring(1, seq[i].length - 1);
-			var pull = target.split(",")
+			var pull = target.split(",");
 			var result = "";
 
 			if(1 < pull.length){
-				result = buildBrace(pull);
+				result = buildBrace(pull,number,j);
 			}else if(target == ""){
-				result = "<input type=text style=\"width:30px;\"></input>";
+				result = "<form name = \""+number+"-"+j+"\"  style=\"display: inline\"><input type=text name=\"keyboard\" style=\"width:30px;\"></form>";
 			}else if(target == "number"){
-				result = "<input type=number style=\"width:30px;\"></input>";
-			}else{
-				result = seq[i];
+				result = "<form name = \""+number+"-"+j+"\"  style=\"display: inline\"><input type=number name=\"keyboard\" style=\"width:30px;\"></form>";
+			}else{//いらんかも↓
+				result = "<span>"+ seq[i]+"</span>";
 			}
-			regExp = new RegExp("{"+target+"}", "g") ;
+			regExp = new RegExp("{"+target+"}", "g");
 			str = str.replace( regExp , result) ;
 		}
 	}
+
 	return str;
 }
 
-function buildBrace(choices){
+function buildBrace(choices,number,j){
 
-	var text = "<select>";
+	var text = "<form name = \""+number+"-"+j+"\"  style=\"display: inline\"><select name=\"pd\">";
 
 	for(var i = 0; i < choices.length;i++){
 		text += "<option value = \""+choices[i]+"\">"+choices[i]+"</option>";
 	}
 
-	text += "</select>";
+	text += "</select></form>";
 	return text;
 }
 
@@ -445,6 +497,7 @@ function prev(e) {
 	}
 }
 
+//たまにおかしいかもしれないので要検証
 function indent(waku2){
 	//インデントレベル
 	var level = 0;
@@ -453,7 +506,7 @@ function indent(waku2){
 
 	for(var i = 1; i < Math.floor(waku2.childElementCount); i+= 2){
 		var elt = waku2.childNodes[i];
-		level -= (elt.textContent.match(/を実行/g)||[]).length
+		level -= (elt.textContent.match(/を実行する|を繰り返す|を実行し/g)||[]).length
 		if(0 < level){
 			elt.childNodes[0].style.position = 'relative';
 			elt.childNodes[0].style.left = (level * 20)+ 'px';
@@ -463,7 +516,7 @@ function indent(waku2){
 			level = 0;
 		}
 		//次のレベルを増やしておく
-		level += (elt.textContent.match(/もし|の間/g)||[]).length;
+		level += (elt.textContent.match(/もし|の間|そうでなければ|増やしながら|減らしながら/g)||[]).length;
 	}
 }
 
@@ -495,92 +548,114 @@ function runCode(number){
 
 }
 
-function makeJS(number){
+//canvasからコードにして取得する
+function getElememtOfTanzaku (canvas){
+	var ans = canvas.childNodes[0];
+	var f = 1;
+	//alert(canvas.id+",,,"+ans.innerHTML+",,,"+ans.childNodes[f].pd.value);
+	var line = "";
 
+	for(var i = 0; i < ans.childElementCount; i++){
+		alert(i+",,,"+ans.childElementCount);
+		//alert(ans.childNodes[1].outerHTML);
+		//alert(ans.innerHTML);
+		//alert(i+"..."+ans.childNodes[i].innerHTML);
+		if(typeof ans.childNodes[i].innerHTML != "undefined"){
+			//alert(ans.childNodes[i].innerHTML);
+			if(ans.childNodes[i].outerHTML.includes("<select")){
+				//alert("select");
+				line += ans.childNodes[i].pd.value + " ";
+			}else if(ans.childNodes[i].outerHTML.includes("<input")){
+				alert("input");
+				line += ans.childNodes[i].keyboard.value+ " ";
+			}else if(ans.childNodes[i].outerHTML.includes("<span")){
+				line += ans.childNodes[i].textContent+ " ";
+			}
+		}//else{
+			//alert("text");
+			//line += ans.childNodes[i].innerHTML+ " ";
+		//}
+	}
+
+	// if(0 < ans.childElementCount){
+	// 	if(ans.childNodes[1].innerHTML.includes("select")){
+	// 		line = ans.childNodes[0].textContent + " " + ans.childNodes[1].pd.value;
+	// 	}else if(ans.childNodes[1].innerHTML.includes("input")){
+	// 		line = ans.childNodes[0].textContent + " " + ans.childNodes[1].keyboard.value;
+	// 	}
+	// }else{
+	// 	line = ans.childNodes[0].textContent;
+	// }
+	// alert(line);
+	return line;
+}
+
+function makeJS(number){
+	var waku2 = document.getElementById("waku2-"+number);
 	//解答プログラムの取得（xDNCL）
 	var code = "";
 	for(var i = 1; i < Math.floor(waku2.childElementCount); i+= 2){
-		var elt = waku2.childNodes[i];
-		code += toJS(elt.value);
+		var elt = getElememtOfTanzaku(waku2.childNodes[i]);
+		alert(elt);
+		code += toJS(elt) +"\n";
 	}
 	return code;
 
 }
 
-//1行ごとに返還を行う
+//1行ごとに変換を行う
 function toJS(line){
 	//xDNCL→JavaScript
 
 	//代入
 	line = line.replace(/←/g,"=");
 
-	if(line.contains("整数")){
-		line = "var "+ line.replace(/整数/g,"");
+	//変数
+	line = line.replace(/整数|実数|文字列/g,"var");
+	// line = line.replace(/実数/g,"var");
+	// line = line.replace(/文字列/g,"var");
+	line = line.replace(/「|」/g,"\"");
+
+	//出力
+	if(line.includes("を表示する")){
+		line = "outputWithReturn("+ line.replace(/を表示する/g,"")+")";
 	}
 
-	if(line.contains("実数")){
-		line = "var "+ line.replace(/実数/g,"");
+	if(line.includes("を改行なしで表示する")){
+		line = "outputLessReturn("+ line.replace(/を改行なしで表示する/g,"")+")";
 	}
 
-	if(line.contains("文字列")){
-		line = "var "+ line.replace(/文字列/g,"");
-	}
-
-	if(line.contains("を表示する")){
-		line = "output1("+ line.replace(/を表示する/g,"")+")";
-	}
-
-	if(line.contains("を改行なしで表示する")){
-		line = "output2("+ line.replace(/を改行なしで表示する/g,"")+")";
-	}
-
-	if(line.contains("を実行する")||line.contains("を繰り返す")){
+	if(line.includes("を実行する"||"を繰り返す")){
 		line = "}";
 	}
 
-	if(line.contains("を実行し、そうでなければ")){
+	if(line.includes("を実行し、そうでなければ")){
 		line = "} else {";
 	}
 
-	if(line.contains("を実行し，そうでなくもし")){
+	if(line.includes("を実行し，そうでなくもし")){
 		line = line.replace(/を実行し，そうでなくもし/g,"");
 		line = "} else if("+ line.replace(/ならば/g,""); +"){";
 	}
 
-	if(line.contains("もし")){
+	if(line.includes("もし")){
 		line = line.replace(/もし/g,"");
 		line = "if("+line.replace(/ならば/g,"")+"){";
 	}
 
-	if(line.contains("の間，")){
+	if(line.includes("の間，")){
 		line = "while(" + line.replace(/の間，/g,"") + "){";
 	}
 
-	if(line.contains("まで 1 ずつ増やしながら，")){//まだ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-
+	if(line.includes("まで 1 ずつ増やしながら，")){
+		var equation =  line.replace(/を|から|まで/g,",").replace(/ずつ増やしながら，/g,"").split(",");
+		line = "for("+ equation[0] + " = " +  equation[1] + ";" + equation[0] + "<"+ equation[2] + ";" + equation[0] + "+" +equation[3];
 	}
 
-	if(line.contains("まで 1 ずつ減らしながら，")){//まだ！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
-
+	if(line.includes("まで 1 ずつ減らしながら，")){
+		var equation =  line.replace(/を|から|まで/g,",").replace(/ずつ減らしながら，/g,"").split(",");
+		line = "for(" + equation[0] + " = " + equation[1] + ";" + equation[0] + "<"+ equation[2] + ";" + equation[0] + "-" +equation[3];
 	}
-
-
-
-
-	//number
-	line = line.replace(/整数/g,"var");
-	line = line.replace(/実数/g,"var");
-
-	line = line.replace(/表示する/g,"output");
-
-	// "xxx ← input()" 形式のため、このままでは動かない
-	line = line.replace(/input()/g,"input");
-
-	line = line.replace(/整数/g,"var");
-	line = line.replace(/整数/g,"var");
-	line = line.replace(/整数/g,"var");
-	line = line.replace(/整数/g,"var");
-	line = line.replace(/整数/g,"var");
 
 	return line;
 }
