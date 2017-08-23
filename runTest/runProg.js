@@ -8,7 +8,7 @@ var script = [
   "   </title>\n",
   " </head>\n",
 
-  " <body onLoad = \"result()\">\n",
+  " <body onLoad = \"start()\">\n",
   "   <form name=\"in\">\n",
   "    <input type=\"text\" name=\"keyboard\">\n",
   "    <input type=\"button\" value=\"入力\" onclick=\"setInputValue()\">\n",
@@ -63,19 +63,17 @@ var script = [
         //！！！！！！！！！！！！！//
   "    }\n",
 
+  "    function start(){\n",
+  "     setInterval(\"result()\",1000);\n",
+  "    }\n",
+
   "   </script>\n",
   " </body>\n",
   "</html>\n",
 ];
 
-/**
-文字列の数を数える
-*/
-var counter = function(str,seq){
-  return str.split(seq).length - 1;
-}
-
 function run(){
+  //入力されている実行コードの取得
   var code = program.prog.value;
 
   var source = "";
@@ -91,26 +89,33 @@ function run(){
   var htmlsource = window.open("", "", "scrollbars=yes, width=600, height=400");
 	htmlsource.document.open();
 
+  //入力済みの script[] の数
   var scriptNumber = 0;
+
+  //実行コード配置位置までの script[] を設置
   for(scriptNumber; scriptNumber < 49; scriptNumber++){
     source += script[scriptNumber];
   }
 
+  //実行コードの配置
   for(var i = 0; i < codes.length; i++){
     var tmpLine = "";
 
     //inputの処理
     if(codes[i].includes("input()")){
-      tmpLine += "if(typeof inputValues["+ inputNum +"] == \"undefined\"){\n";
-      tmpLine += "  setTimeout(\"result()\", 100);";
-      tmpLine += "}else{";
+      //tmpLine += "if(typeof inputValues["+ inputNum +"] == \"undefined\"){\n";
+      //tmpLine += "  setTimeout(\"result()\", 100);";
+      //tmpLine += "}else{";
+      tmpLine += "if(typeof inputValues["+ inputNum +"] != \"undefined\"){\n";
       tmpLine += codes[i].replace(/input\(\)/g,("input("+ inputNum++ +")"))+"\n";
     }else{
+      //inputが含まれない場合の処理
       tmpLine += codes[i];
     }
     source += tmpLine;
   }
 
+  //残りの script[] を配置
   for(var i = 0; i < inputNum; i ++){
     source += "}\n";
   }
