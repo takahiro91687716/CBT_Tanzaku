@@ -64,7 +64,7 @@ var script = [
   "    }\n",
 
   "    function start(){\n",
-  "     setInterval(\"result()\",1000);\n",
+  "     setTimeout(\"result()\",1000);\n",
   "    }\n",
 
   "   </script>\n",

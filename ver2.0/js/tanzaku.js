@@ -95,7 +95,7 @@ function buildArea(number){
 
 	//解答欄領域の生成
 	var answer = "<h3>解答欄</h3>";
-	answer+= "<input type=\"button\" value=\"実行\" onclick=\"alert(makeJS("+number+"))\">";//実行テスト！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+	answer+= "<input type=\"button\" value=\"実行\" onclick=\"runCode("+number+")\">";//実行テスト！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 	answer+= "<div id=\"waku2-"+number+"\" class=\"waku2\">";
 	answer+= "<div id=\"bound-"+number+"-"+0+"\" class=\"bound\"></div>";
 	answer+= "</div>";
@@ -199,9 +199,11 @@ function pickBrace(str,number,j){
 	return str;
 }
 
+//フォームの区別用
+var forms = 0;
 function buildBrace(choices,number,j){
 
-	var text = "<form name = \""+number+"-"+j+"\"  style=\"display: inline\"><select name=\"pd\">";
+	var text = "<form name = \""+number+"-"+j+"-"+forms++ +"\"  style=\"display: inline\"><select name=\"pd\">";
 
 	for(var i = 0; i < choices.length;i++){
 		text += "<option value = \""+choices[i]+"\">"+choices[i]+"</option>";
@@ -525,27 +527,59 @@ function indent(waku2){
 /**
 number 問題番号
 */
-var head = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /><title>runProg</title></head>";
-var body = "<body onLoad = \"result()\"><form name=\"program\"><textarea name=\"out\" readonly rows=\"8\" cols=\"40\"></textarea></form>";
-var script1 = "<script type=\"text/javascript\">function output(res){program.out.value += res+\"\\n\";}function result(){";
-var script2 = "}</script>";
-var bottom = "</body></html>";
+
 function runCode(number){
 	var waku2 = document.getElementById("waku2-"+number);
 	var counter = 0;
 	var source = "";
 
+	//input()の数を数える
+  //「 } 」の数になるから重要
+  var inputNum = 0;
+
 	var htmlsource = window.open("", "", "scrollbars=yes, width=600, height=400");
 	htmlsource.document.open();
-	source += head;
-	source += body;
-	source += script1;
-	source += makeJS(number);
-	source += script2;
-	source += bottom;
+
+	//入力済みの script[] の数
+	var scriptNumber = 0;
+
+	//実行コード配置位置までの script[] を設置
+	for(scriptNumber; scriptNumber < 49; scriptNumber++){
+		source += script[scriptNumber];
+	}
+
+	// 実行コードを改行で分割する
+	// 短冊の方では行で取得するのでいらない
+	var codes = makeJS(number).split("\n");
+	//console.log(codes);//コンソールで確認中！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+
+	//実行コードの配置
+	for(var i = 0; i < codes.length; i++){
+		var tmpLine = "";
+
+		//inputの処理
+		if(codes[i].includes("input()")){
+			tmpLine += "if(typeof inputValues["+ inputNum +"] != \"undefined\"){\n";
+			tmpLine += codes[i].replace(/input\(\)/g,("input("+ inputNum++ +")"))+"\n";
+			tmpLine += "console.log(\"fin\");"//コンソールで確認中！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+		}else{
+			//inputが含まれない場合の処理
+			tmpLine += codes[i];
+		}
+		source += tmpLine;
+	}
+
+	//残りの script[] を配置
+	for(var i = 0; i < inputNum; i ++){
+		source += "}\n";
+	}
+
+	for(scriptNumber; scriptNumber < script.length; scriptNumber++){
+		source += script[scriptNumber];
+	}
+
 	htmlsource.document.write(source);
 	htmlsource.document.close();
-
 }
 
 //canvasからコードにして取得する
@@ -556,7 +590,7 @@ function getElememtOfTanzaku (canvas){
 	var line = "";
 
 	for(var i = 0; i < ans.childElementCount; i++){
-		alert(i+",,,"+ans.childElementCount);
+		//alert(i+",,,"+ans.childElementCount);
 		//alert(ans.childNodes[1].outerHTML);
 		//alert(ans.innerHTML);
 		//alert(i+"..."+ans.childNodes[i].innerHTML);
@@ -566,7 +600,7 @@ function getElememtOfTanzaku (canvas){
 				//alert("select");
 				line += ans.childNodes[i].pd.value + " ";
 			}else if(ans.childNodes[i].outerHTML.includes("<input")){
-				alert("input");
+				//alert("input");
 				line += ans.childNodes[i].keyboard.value+ " ";
 			}else if(ans.childNodes[i].outerHTML.includes("<span")){
 				line += ans.childNodes[i].textContent+ " ";
@@ -596,7 +630,6 @@ function makeJS(number){
 	var code = "";
 	for(var i = 1; i < Math.floor(waku2.childElementCount); i+= 2){
 		var elt = getElememtOfTanzaku(waku2.childNodes[i]);
-		alert(elt);
 		code += toJS(elt) +"\n";
 	}
 	return code;
@@ -612,8 +645,6 @@ function toJS(line){
 
 	//変数
 	line = line.replace(/整数|実数|文字列/g,"var");
-	// line = line.replace(/実数/g,"var");
-	// line = line.replace(/文字列/g,"var");
 	line = line.replace(/「|」/g,"\"");
 
 	//出力
@@ -657,5 +688,83 @@ function toJS(line){
 		line = "for(" + equation[0] + " = " + equation[1] + ";" + equation[0] + "<"+ equation[2] + ";" + equation[0] + "-" +equation[3];
 	}
 
+	if(line.charAt(line.length - 1) != "{"){
+		line += ";";
+	}
+
 	return line;
 }
+
+var script = [
+  "<html>\n",
+
+  " <head>\n",
+  "   <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n",
+  "   <title>\n",
+  "    runProg\n",
+  "   </title>\n",
+  " </head>\n",
+
+  " <body onLoad = \"start()\">\n",
+  "   <form name=\"in\">\n",
+  "    <input type=\"text\" name=\"keyboard\">\n",
+  "    <input type=\"button\" value=\"入力\" onclick=\"setInputValue()\">\n",
+  "    <input type=\"button\" value=\"リセット\" onclick=\"clean()\">\n",
+  "   </form>\n",
+
+  "   <form name=\"program\">\n",
+  "    <textarea name=\"out\" readonly rows=\"8\" cols=\"40\"></textarea>\n",
+  "   </form>\n",
+
+  "   <script type=\"text/javascript\">\n",
+  "    \/\/ 改行あり出力\n",
+  "    function outputWithReturn(res){\n",
+  "      program.out.value += res+\"\\n\";\n",
+  "    }\n",
+
+  "    \/\/ 改行なし出力\n",
+  "    function outputLessReturn(res){\n",
+  "      program.out.value += res;\n",
+  "    }\n",
+
+  "    \/\/ 入力値を格納する配列\n",
+  "    var inputValues = [];\n",
+  "    \/\/ 現在入力されている回数\n",
+  "    var inputTimes = 0;\n",
+
+  "    \/\/ 入力値の取得を行う\n",
+  "    \/\/ 「入力ボタン」で呼び出す\n",
+  "    function setInputValue(){\n",
+  "     inputValues[inputTimes++] = document.in.keyboard.value;\n",
+  "    }\n",
+
+  "    \/\/ 入力値の取得\n",
+  "    \/\/ これが行われた場合、入力回数をカウントする\n",
+  "    function input(number){\n",
+  "     return inputValues[number];\n",
+  "    }\n",
+
+  "    \/\/ 入力値の初期化を行う\n",
+  "    \/\/ 「リセットボタン」で呼び出す\n",
+  "    function clean(){\n",
+  "     inputValues.length = 0;\n",
+  "     inputTimes = 0;\n",
+  "     result();\n",
+  "    }\n",
+
+  "    function result(){\n",
+  "     \/\/ 実行コードに入力が含まれていた場合に result() を繰り返すため実行時にコンソールを消す\n",
+  "     program.out.value = \"\";\n",//49番目
+        //！！！！！！！！！！！！！//
+        //ここに生成したコードが入る//
+        //！！！！！！！！！！！！！//
+  "    }\n",
+
+  "    function start(){\n",
+  "     setInterval(\"result()\",1000);\n",
+  "    }\n",
+
+  "   </script>\n",
+  " </body>\n",
+  "</html>\n",
+];
