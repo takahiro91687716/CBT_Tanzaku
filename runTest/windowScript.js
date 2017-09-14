@@ -13,10 +13,14 @@ var inputValues = [];
 // 現在入力されている回数
 var inputTimes = 0;
 
+var g = result();//ジェネレータ
+
 // 入力値の取得を行う
 // 「入力ボタン」で呼び出す
 function setInputValue(){
-  inputValues[inputTimes++] = document.in.keyboard.value;
+  //inputValues[inputTimes++] = document.in.keyboard.value;
+  outputWithReturn("＜入力＞　："+document.in.keyboard.value);
+  g.next();
 }
 
 // 入力値の取得
@@ -33,19 +37,32 @@ function clean(){
   result();
 }
 
-function result(){
+function start(){
+  g.next();
+}
+
+function* result(){
   // 実行コードに入力が含まれていた場合に result() を繰り返すため実行時にコンソールを消す
   program.out.value = "";
+  var inputnum = 0;
 
   // !!!!!!!!!!ここからサンプルコード!!!!!!!!!!!
   outputWithReturn("入力値を足して表示する");
+  outputWithReturn("ひとつめ");
 
-  if(typeof inputValues[0] == "undefined"){
-    setTimeout("result()", 100);
-  }else{
-    var i = input(0);
-    outputWithReturn(i);
-  }
-  // !!!!!!!!!!ここまでサンプルコード!!!!!!!!!!!
+  yield inputnum;
 
+  inputnum++;
+  var i = document.in.keyboard.value;
+
+  outputWithReturn(i);
+
+  outputWithReturn("ふたつめ");
+
+  yield inputnum;
+
+  var j = document.in.keyboard.value;
+  outputWithReturn(i+j);
+
+  yield inputnum;
 }

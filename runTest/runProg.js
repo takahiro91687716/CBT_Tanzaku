@@ -1,4 +1,4 @@
-var script = [
+var scriptBefore = [
   "<html>\n",
 
   " <head>\n",
@@ -38,13 +38,10 @@ var script = [
   "    \/\/ 入力値の取得を行う\n",
   "    \/\/ 「入力ボタン」で呼び出す\n",
   "    function setInputValue(){\n",
-  "     inputValues[inputTimes++] = document.in.keyboard.value;\n",
-  "    }\n",
-
-  "    \/\/ 入力値の取得\n",
-  "    \/\/ これが行われた場合、入力回数をカウントする\n",
-  "    function input(number){\n",
-  "     return inputValues[number];\n",
+  "     var inputValueVirPage = document.in.keyboard.value",
+  "     document.in.keyboard.value = \"\"",
+  "     outputWithReturn(\"＜入力＞　：\"+inputValueVirPage);\n",
+  "     gen.next(inputValueVirPage);\n",
   "    }\n",
 
   "    \/\/ 入力値の初期化を行う\n",
@@ -55,16 +52,20 @@ var script = [
   "     result();\n",
   "    }\n",
 
-  "    function result(){\n",
-  "     \/\/ 実行コードに入力が含まれていた場合に result() を繰り返すため実行時にコンソールを消す\n",
-  "     program.out.value = \"\";\n",//49番目
+  "    function* result(inputValueVirPage){\n",
+];
+
         //！！！！！！！！！！！！！//
         //ここに生成したコードが入る//
         //！！！！！！！！！！！！！//
+
+var scriptAfter = [
   "    }\n",
 
+  "    var gen = result(0);\n",
+
   "    function start(){\n",
-  "     setTimeout(\"result()\",1000);\n",
+  "     gen.next(0);\n",
   "    }\n",
 
   "   </script>\n",
@@ -89,12 +90,9 @@ function run(){
   var htmlsource = window.open("", "", "scrollbars=yes, width=600, height=400");
 	htmlsource.document.open();
 
-  //入力済みの script[] の数
-  var scriptNumber = 0;
-
   //実行コード配置位置までの script[] を設置
-  for(scriptNumber; scriptNumber < 49; scriptNumber++){
-    source += script[scriptNumber];
+  for(var i = 0; i < scriptBefore.length ; i++){
+    source += scriptBefore[i];
   }
 
   //実行コードの配置
@@ -103,9 +101,6 @@ function run(){
 
     //inputの処理
     if(codes[i].includes("input()")){
-      //tmpLine += "if(typeof inputValues["+ inputNum +"] == \"undefined\"){\n";
-      //tmpLine += "  setTimeout(\"result()\", 100);";
-      //tmpLine += "}else{";
       tmpLine += "if(typeof inputValues["+ inputNum +"] != \"undefined\"){\n";
       tmpLine += codes[i].replace(/input\(\)/g,("input("+ inputNum++ +")"))+"\n";
     }else{
@@ -115,13 +110,10 @@ function run(){
     source += tmpLine;
   }
 
-  //残りの script[] を配置
-  for(var i = 0; i < inputNum; i ++){
-    source += "}\n";
-  }
+  source += "yield inputValueVirPage;"
 
-  for(scriptNumber; scriptNumber < script.length; scriptNumber++){
-    source += script[scriptNumber];
+  for(var i = 0; i < scriptAfter.length; i++){
+    source += scriptAfter[i];
   }
 
   htmlsource.document.write(source);

@@ -540,12 +540,9 @@ function runCode(number){
 	var htmlsource = window.open("", "", "scrollbars=yes, width=600, height=400");
 	htmlsource.document.open();
 
-	//入力済みの script[] の数
-	var scriptNumber = 0;
-
 	//実行コード配置位置までの script[] を設置
-	for(scriptNumber; scriptNumber < 49; scriptNumber++){
-		source += script[scriptNumber];
+	for(var i = 0; i < scriptBefore.length; i++){
+		source += scriptBefore[i];
 	}
 
 	// 実行コードを改行で分割する
@@ -559,8 +556,8 @@ function runCode(number){
 
 		//inputの処理
 		if(codes[i].includes("input()")){
-			tmpLine += "if(typeof inputValues["+ inputNum +"] != \"undefined\"){\n";
-			tmpLine += codes[i].replace(/input\(\)/g,("input("+ inputNum++ +")"))+"\n";
+			tmpLine += "yield inputValueVirPage;\n";
+			tmpLine += codes[i]+"\n";
 			tmpLine += "console.log(\"fin\");"//コンソールで確認中！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 		}else{
 			//inputが含まれない場合の処理
@@ -569,13 +566,9 @@ function runCode(number){
 		source += tmpLine;
 	}
 
-	//残りの script[] を配置
-	for(var i = 0; i < inputNum; i ++){
-		source += "}\n";
-	}
-
-	for(scriptNumber; scriptNumber < script.length; scriptNumber++){
-		source += script[scriptNumber];
+	//残りのスクリプト配置
+	for(var i = 0; i < scriptAfter.length; i++){
+		source += scriptAfter[i];
 	}
 
 	htmlsource.document.write(source);
@@ -605,22 +598,8 @@ function getElememtOfTanzaku (canvas){
 			}else if(ans.childNodes[i].outerHTML.includes("<span")){
 				line += ans.childNodes[i].textContent+ " ";
 			}
-		}//else{
-			//alert("text");
-			//line += ans.childNodes[i].innerHTML+ " ";
-		//}
+		}
 	}
-
-	// if(0 < ans.childElementCount){
-	// 	if(ans.childNodes[1].innerHTML.includes("select")){
-	// 		line = ans.childNodes[0].textContent + " " + ans.childNodes[1].pd.value;
-	// 	}else if(ans.childNodes[1].innerHTML.includes("input")){
-	// 		line = ans.childNodes[0].textContent + " " + ans.childNodes[1].keyboard.value;
-	// 	}
-	// }else{
-	// 	line = ans.childNodes[0].textContent;
-	// }
-	// alert(line);
 	return line;
 }
 
@@ -695,7 +674,7 @@ function toJS(line){
 	return line;
 }
 
-var script = [
+var scriptBefore = [
   "<html>\n",
 
   " <head>\n",
@@ -727,41 +706,42 @@ var script = [
   "      program.out.value += res;\n",
   "    }\n",
 
-  "    \/\/ 入力値を格納する配列\n",
-  "    var inputValues = [];\n",
-  "    \/\/ 現在入力されている回数\n",
-  "    var inputTimes = 0;\n",
-
   "    \/\/ 入力値の取得を行う\n",
   "    \/\/ 「入力ボタン」で呼び出す\n",
+	"    var inputValueVirPage;\n",
   "    function setInputValue(){\n",
-  "     inputValues[inputTimes++] = document.in.keyboard.value;\n",
+  "     inputValueVirPage = document.in.keyboard.value;",
+  "     document.in.keyboard.value = \"\";",
+  "     outputWithReturn(\"＜入力＞　：\"+inputValueVirPage);\n",
+  "     gen.next(inputValueVirPage);\n",
   "    }\n",
 
-  "    \/\/ 入力値の取得\n",
-  "    \/\/ これが行われた場合、入力回数をカウントする\n",
-  "    function input(number){\n",
-  "     return inputValues[number];\n",
+	"    \/\/ 入力値の取得\n",
+  "    function input(){\n",
+  "     return inputValueVirPage;",
   "    }\n",
 
   "    \/\/ 入力値の初期化を行う\n",
   "    \/\/ 「リセットボタン」で呼び出す\n",
   "    function clean(){\n",
-  "     inputValues.length = 0;\n",
-  "     inputTimes = 0;\n",
-  "     result();\n",
+  "     program.out.value = \"\";\n",
+  "     gen = result(0);\n",
   "    }\n",
 
-  "    function result(){\n",
-  "     \/\/ 実行コードに入力が含まれていた場合に result() を繰り返すため実行時にコンソールを消す\n",
-  "     program.out.value = \"\";\n",//49番目
+  "    function* result(inputValueVirPage){\n",
+];
+
         //！！！！！！！！！！！！！//
         //ここに生成したコードが入る//
         //！！！！！！！！！！！！！//
+
+var scriptAfter = [
   "    }\n",
 
+  "    var gen = result(0);\n",
+
   "    function start(){\n",
-  "     setInterval(\"result()\",1000);\n",
+  "     gen.next(0);\n",
   "    }\n",
 
   "   </script>\n",
