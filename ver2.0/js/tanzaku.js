@@ -458,9 +458,7 @@ function removeItem(choices){
 	choices.ondrop = function(e) {
 		choiceId = this.id.split("-");
 		var rmElt = document.getElementById(e.dataTransfer.getData('text/html'));
-		// if(!rmElt){
-		// 	alert(e.dataTransfer.getData('text/html'));
-		// }
+
 		var itemId = rmElt.id.split("-");
 
 
@@ -469,8 +467,6 @@ function removeItem(choices){
 			var number = itemId[2];
 			var waku2 = document.getElementById("waku2-"+number);
 
-			// //最初の枠消さないように
-			// if(3<waku2.childElementCount){
 			//例によってずらす
 			for(var i = itemId[4];i<Math.floor(waku2.childElementCount/2)-1;i++){
 				//移動対象要素の取得
@@ -548,7 +544,6 @@ function runCode(number){
 	// 実行コードを改行で分割する
 	// 短冊の方では行で取得するのでいらない
 	var codes = makeJS(number).split("\n");
-	//console.log(codes);//コンソールで確認中！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 
 	//実行コードの配置
 	for(var i = 0; i < codes.length; i++){
@@ -578,22 +573,14 @@ function runCode(number){
 //canvasからコードにして取得する
 function getElememtOfTanzaku (canvas){
 	var ans = canvas.childNodes[0];
-	var f = 1;
-	//alert(canvas.id+",,,"+ans.innerHTML+",,,"+ans.childNodes[f].pd.value);
+	var f = 1;//なんやこれ
 	var line = "";
 
 	for(var i = 0; i < ans.childElementCount; i++){
-		//alert(i+",,,"+ans.childElementCount);
-		//alert(ans.childNodes[1].outerHTML);
-		//alert(ans.innerHTML);
-		//alert(i+"..."+ans.childNodes[i].innerHTML);
 		if(typeof ans.childNodes[i].innerHTML != "undefined"){
-			//alert(ans.childNodes[i].innerHTML);
 			if(ans.childNodes[i].outerHTML.includes("<select")){
-				//alert("select");
 				line += ans.childNodes[i].pd.value + " ";
 			}else if(ans.childNodes[i].outerHTML.includes("<input")){
-				//alert("input");
 				line += ans.childNodes[i].keyboard.value+ " ";
 			}else if(ans.childNodes[i].outerHTML.includes("<span")){
 				line += ans.childNodes[i].textContent+ " ";
@@ -726,6 +713,7 @@ var scriptBefore = [
   "    function clean(){\n",
   "     program.out.value = \"\";\n",
   "     gen = result(0);\n",
+	"     gen.next(0);\n",
   "    }\n",
 
   "    function* result(inputValueVirPage){\n",
