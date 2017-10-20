@@ -259,6 +259,7 @@ function boundAction(bound){
 			dropC(item,bound);
 		}
 		//}
+		indent(bound.parentElement);
 	}
 }
 
@@ -610,7 +611,7 @@ function toJS(line){
 	line = line.replace(/←/g,"=");
 
 	//変数
-	line = line.replace(/整数|実数|文字列/g,"var");
+	line = line.replace(/整数|実数|文字列|変数/g,"var");
 	line = line.replace(/「|」/g,"\"");
 
 	//出力
@@ -637,7 +638,11 @@ function toJS(line){
 
 	if(line.includes("もし")){
 		line = line.replace(/もし/g,"");
-		line = "if("+line.replace(/ならば/g,"")+"){";
+		// for(var i = 0; i < line.length; i ++ ){
+		// 	alert(line.charAt(i));
+		// }
+		line = "if("+line.replace(/ならば/g,"")+"){";//注意！！ 「ならは+ ゙」
+		//alert(line);
 	}
 
 	if(line.includes("の間，")){
@@ -654,11 +659,11 @@ function toJS(line){
 		line = "for(" + equation[0] + " = " + equation[1] + ";" + equation[0] + "<"+ equation[2] + ";" + equation[0] + "-" +equation[3];
 	}
 
-	if(line.charAt(line.length - 1) != "{"){
+	if(line.charAt(line.length - 1) != "{" && line.charAt(line.length - 1) != "}"){
 		line += ";";
 	}
 
-	return line;
+	return line+"\n";
 }
 
 var scriptBefore = [
