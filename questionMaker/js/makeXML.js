@@ -77,17 +77,11 @@ function dropToEditArea(e){
   if(id.includes("valuableText") || id.includes("valuableNumber") || id.includes("pullDown")){
     editArea.value += buildPartsForEdit(id);
   }else if((/t-\d+/).test(id)){
-    editArea.value += backToEdit(id);
+    editArea.value += backToEdit(document.getElementById(id).innerHTML);
   }
   e.preventDefault();
 }
 
-var textInput = "<input type=\"text\" readonly value=\"";
-var numInput = "<input type=\"number\"readonly value=\"";
-var endOfInput = "\"></input>";
-var topOfPullDown = "<select><option>";
-var slash = "</option><option>"
-var endOfPullDown = "</option></select>"
 function buildPartsForEdit(id){
   var str = "";
   if(id.includes("valuableText")){
@@ -101,13 +95,44 @@ function buildPartsForEdit(id){
 }
 
 function backToEdit(str){
-  console.log("good!");
+  var num = str.match(/<input type=\"number\" readonly=\"true\" value=\"\s*\d+\s*\">/g);
+  var text = str.match(/<input type=\"text\" readonly=\"true\" value=\"\s*.*?\s*\">/g);
+  var pd = str.match(/<select><option>\s*.*?\s*<\/option><\/select>/g);
+
+  if(num != null){
+    for(var i = 0; i < num.length;i++){
+      str = str.replace(num[i],"【"+num[i].substring(1,num[i].length-1).replace(/\s+/g,"")+"】");
+    }
+  }
+  if(text != null){
+    for(var i = 0; i < text.length;i++){
+      str = str.replace(text[i],"［"+text[i].substring(1,text[i].length-1)+"］");
+    }
+  }
+  if(pd != null){
+    for(var i = 0; i < pd.length;i++){
+      str = str.replace(pd[i],"｛"+pd[i].substring(16,pd[i].length-18).replace(/<\/option><option>/g,"｜")+"｝");
+      //str = str.replace(/｜/g,slash);
+    }
+  }
+
+  console.log("数値は"+num);
+  console.log("テキストは"+text);
+  console.log("プルダウンは"+pd);
+  console.log(str);
+  return str;
 }
 
+var textInput = "<input type=\"text\" readonly=\"true\" value=\"";
+var numInput = "<input type=\"number\" readonly=\"true\" value=\"";
+var endOfInput = "\">";
+var topOfPullDown = "<select><option>";
+var slash = "</option><option>"
+var endOfPullDown = "</option></select>";
 function buildPartsForBuild(str){
   var num = str.match(/【\s*\d+\s*】/g);
-  var text = str.match(/［\s*[^］]*\s*］/g);
-  var pd = str.match(/｛\s*[^］]*\s*｝/g);
+  var text = str.match(/［\s*.*?\s*］/g);
+  var pd = str.match(/｛\s*.*?\s*｝/g);
 
   if(num != null){
     for(var i = 0; i < num.length;i++){
