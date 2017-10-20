@@ -1,0 +1,16 @@
+.waku{
+	margin: 0ex 3ex 1ex;
+	border: solid black 1px;
+  height: 25ex;
+}
+#buildArea{
+  height: 40ex;
+  overflow: scroll;
+}
+.parts{
+  /*display:inline-block;*/
+}
+
+.tanzaku{
+  border: solid black 1px;
+}
