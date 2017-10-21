@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+<question>
+	<text>自由にプログラムを書いてみよう.</text>
+	<item>もし {} ならば</item>
+	<item>を実行し，そうでなければ</item>
+	<item>を実行し，そうでなくもし {} ならば</item>
+	<item>を実行する</item>
+	<item>{} の間，</item>
+	<item>{} を {} から {} まで {number} ずつ増やしながら</item>
+	<item>{} を {} から {} まで {} ずつ減らしながら</item>
+	<item>を繰り返す</item>
+	<item>{} ← input()</item>
+	<item>{} を表示する</item>
+	<item>{} を改行なしで表示する</item>
+	<item>{} ← {}</item>
+	<item>変数 {}</item>
+	<item>「{}」</item>
+	<item>{}</item>
+</question>
+</doc>
