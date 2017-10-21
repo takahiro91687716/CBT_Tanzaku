@@ -1,16 +1,30 @@
 .waku{
 	margin: 0ex 3ex 1ex;
 	border: solid black 1px;
-  height: 25ex;
+}
+#buildWaku{
+  height: 40ex;
+  width: 50%;
+}
+#editWaku{
+  width:50%;
 }
 #buildArea{
   height: 40ex;
   overflow: scroll;
+  background-color: #F3F3F3;
 }
-.parts{
-  /*display:inline-block;*/
+#setsumei{
+  border: solid black 1px;
 }
-
+#buildAreaFixed{
+  height: 24.5ex;
+}
 .tanzaku{
   border: solid black 1px;
+  background-color: #F3F355;
+}
+.bound{
+  height: 2pt;
+  background-color: #F3F3F3;
 }

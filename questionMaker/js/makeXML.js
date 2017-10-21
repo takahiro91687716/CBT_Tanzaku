@@ -6,37 +6,47 @@ var extention = '.xml';
 var number = 0;
 
 var editArea = null;
-var tanzakuArea = null;
+var buildArea = null;
 
 var title = [
   "<div id=\"titleWaku\" class=\"waku\">",
-  "<h3>問題</h3>",
-  "<p>以下のテキストエリアに問題文を入力してください</p>",
+  "<div id=\"setsumei\">",
+  "<h4>問題文編集エリア</h4>",
+  "<p>以下のテキストエリアに問題文を入力してください。</p>",
+  "</div>",
   "<form name=\"question\">",
-  "<textarea name=\"text\" rows=\"4\" cols=\"80\"></textarea>",
+  "<textarea name=\"text\" rows=\"6\" cols=\"100\"></textarea>",
   "</form>",
   "</div>"
 ];
 
 var buildArea = [
   "<div id=\"buildWaku\" class=\"waku\">",
+  "<div id=\"setsumei\">",
+  "<h4>選択肢設置エリア</h4>",
+  "<p>追加した選択肢の並び替えが行えます。</p>",
+  "</div>",
+  "<div id=\"buildAreaFixed\">",
   "<div id=\"buildArea\" style=\"height:100%;\"></div>",
+  "</div>",
   "</div>"
 ];
 
 var editArea = [
   "<div id=\"editWaku\" class=\"waku\">",
+  "<div id=\"setsumei\">",
+  "<h4>選択肢編集エリア</h4>",
+  "<p>テキストボックスで選択肢を作成し、追加ボタンで。上の３つの部品も選択肢の中で使用することができます。全角の［ ］、【 】、｛ ｝は部品に使用しているので使わないでください。</p>",
+  "</div>",
   "<div id=\"editArea1\" class=\"parts\">",
   "<form name=\"tanzaku\" style=\"display: inline\">",
-  "<textarea id=\"Content\" name=\"text\" rows=\"4\" cols=\"80\" ondrop=\"dropToEditArea(event)\"></textarea>",
+  "<textarea id=\"Content\" name=\"text\" rows=\"2\" cols=\"80\" ondrop=\"dropToEditArea(event)\"></textarea>",
   "</form>",
   "<input type=\"button\" value=\"追加\" style=\"display: inline\" onclick=\"addTanzaku()\"></input>",
   "</div>",
-  "<div id=\"editArea2\" class=\"parts\">",
-  "<div id = \"valuableText\" draggable = \"true\" ondragstart=\"editDrag(event)\">　<input type=\"text\" readonly value=\"自由記入欄\"></input>　</div>",
-  "<div id = \"valuableNumber\" draggable = \"true\" ondragstart=\"editDrag(event)\">　<input type=\"number\"readonly value=\"99999\"></input>　</div>",
-  "<div id = \"pullDown\" draggable = \"true\" ondragstart=\"editDrag(event)\">　<select><option>-未選択-</option><option>選択肢Ａ</option><option>選択肢Ｂ</option></select>　</div>",
-  "</div>",
+  "<div id = \"valuableText\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<input type=\"text\" readonly value=\"自由記入欄\"></input>　</div>",
+  "<div id = \"valuableNumber\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<input type=\"number\"readonly value=\"99999\"></input>　</div>",
+  "<div id = \"pullDown\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<select><option>-未選択-</option><option>選択肢Ａ</option><option>選択肢Ｂ</option></select>　</div>",
   "</div>"
 ];
 
@@ -68,7 +78,10 @@ function editDrag(e) {
 
 function setElement(){
   editArea = document.getElementById("Content");
-  tanzakuArea = document.getElementById("buildArea");
+  buildArea = document.getElementById("buildArea");
+  var newBound = boundOrigin.cloneNode(true);
+  newBound.id = "b-0";
+  buildArea.appendChild(newBound);
 }
 
 function dropToEditArea(e){
@@ -76,12 +89,28 @@ function dropToEditArea(e){
   console.log("idは"+id);
   if(id.includes("valuableText") || id.includes("valuableNumber") || id.includes("pullDown")){
     editArea.value += buildPartsForEdit(id);
-  }else if((/t-\d+/).test(id)){
-    editArea.value += backToEdit(document.getElementById(id).innerHTML);
+  }else if((/t-\d+-\d+/).test(id)){
+    var elm = document.getElementById(id);
+    editArea.value += backToEdit(elm.innerHTML);
+    var rmBound = document.getElementById("b-"+ --numOfChoice);
+    //console.log(numOfChoice);
+    elm.parentElement.removeChild(elm);
+    rmBound.parentElement.removeChild(rmBound);
+
   }
   e.preventDefault();
 }
 
+//並び替えの実装
+function dropToBuildArea(e){
+  var id = e.dataTransfer.getData("text/html");
+  console.log("idは"+id+",thisは"+this);
+
+  // ドロップされた選択肢の取得
+  var item = document.getElementById(e.dataTransfer.getData('text/html'));
+}
+
+//エディットエリアでのパーツ表示に変換
 function buildPartsForEdit(id){
   var str = "";
   if(id.includes("valuableText")){
@@ -94,32 +123,33 @@ function buildPartsForEdit(id){
   return str;
 }
 
+//ビルドエリアからエディットエリアへ移した時のパーツの変換
 function backToEdit(str){
+  //new RegExp(numInput+'\s*\d+\s*'+endOfInput,'g');
   var num = str.match(/<input type=\"number\" readonly=\"true\" value=\"\s*\d+\s*\">/g);
   var text = str.match(/<input type=\"text\" readonly=\"true\" value=\"\s*.*?\s*\">/g);
   var pd = str.match(/<select><option>\s*.*?\s*<\/option><\/select>/g);
 
   if(num != null){
     for(var i = 0; i < num.length;i++){
-      str = str.replace(num[i],"【"+num[i].substring(1,num[i].length-1).replace(/\s+/g,"")+"】");
+      str = str.replace(num[i],"【"+num[i].substring(numInput.length,num[i].length-endOfInput.length).replace(/\s+/g,"")+"】");
     }
   }
   if(text != null){
     for(var i = 0; i < text.length;i++){
-      str = str.replace(text[i],"［"+text[i].substring(1,text[i].length-1)+"］");
+      str = str.replace(text[i],"［"+text[i].substring(textInput.length,text[i].length-endOfInput.length)+"］");
     }
   }
   if(pd != null){
     for(var i = 0; i < pd.length;i++){
-      str = str.replace(pd[i],"｛"+pd[i].substring(16,pd[i].length-18).replace(/<\/option><option>/g,"｜")+"｝");
-      //str = str.replace(/｜/g,slash);
+      str = str.replace(pd[i],"｛"+pd[i].substring(topOfPullDown.length,pd[i].length-endOfPullDown.length).replace(/<\/option><option>/g,"｜")+"｝");
     }
   }
 
-  console.log("数値は"+num);
-  console.log("テキストは"+text);
-  console.log("プルダウンは"+pd);
-  console.log(str);
+  // console.log("数値は"+num);
+  // console.log("テキストは"+text);
+  // console.log("プルダウンは"+pd);
+  // console.log(str);
   return str;
 }
 
@@ -129,6 +159,8 @@ var endOfInput = "\">";
 var topOfPullDown = "<select><option>";
 var slash = "</option><option>"
 var endOfPullDown = "</option></select>";
+
+//エディットエリアからビルドエリアへ移した時のパーツの変換
 function buildPartsForBuild(str){
   var num = str.match(/【\s*\d+\s*】/g);
   var text = str.match(/［\s*.*?\s*］/g);
@@ -147,26 +179,39 @@ function buildPartsForBuild(str){
   if(pd != null){
     for(var i = 0; i < pd.length;i++){
       str = str.replace(pd[i],topOfPullDown+pd[i].substring(1,pd[i].length-1).replace(/｜/g,slash)+endOfPullDown);
-      //str = str.replace(/｜/g,slash);
     }
   }
-  console.log("数値は"+num);
-  console.log("テキストは"+text);
-  console.log("プルダウンは"+pd);
-  console.log(str);
+  // console.log("数値は"+num);
+  // console.log("テキストは"+text);
+  // console.log("プルダウンは"+pd);
+  // console.log(str);
   return str;
 }
 
-var count = 0;
+var boundOrigin = document.createElement("div");
+boundOrigin.classList.add("bound");
+boundOrigin.ondrop = function(e){
+  // ドロップされた選択肢の取得
+  var item = document.getElementById(e.dataTransfer.getData('text/html'));
+};
+var countAdd = 0;
+var numOfChoice = 1;
 function addTanzaku(){
-  var newTanzaku = document.createElement("div");
-  newTanzaku.id = "t-"+ count++;
-  newTanzaku.classList.add("tanzaku");
-  newTanzaku.draggable = true;
-  newTanzaku.ondragstart = function(e){
-    e.dataTransfer.setData('text/html',e.target.id);
-  };
-  newTanzaku.innerHTML += buildPartsForBuild(editArea.value);
-  editArea.value = "";
-  tanzakuArea.appendChild(newTanzaku);
+  if(0 < editArea.value.length){
+    var newBound = boundOrigin.cloneNode(true);
+    newBound.id = "b-"+(numOfChoice);
+    var newTanzaku = document.createElement("div");
+    newTanzaku.id = "t-" + numOfChoice++ + "-" + countAdd++;
+    newTanzaku.classList.add("tanzaku");
+    newTanzaku.draggable = true;
+    newTanzaku.ondragstart = function(e){
+      e.dataTransfer.setData('text/html',e.target.id);
+    };
+    newTanzaku.innerHTML += buildPartsForBuild(editArea.value);
+    editArea.value = "";
+    buildArea.appendChild(newTanzaku);
+    buildArea.appendChild(newBound);
+  }else{
+    alert("空の選択肢は置けません！");
+  }
 }
