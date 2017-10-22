@@ -103,7 +103,7 @@ function dropToEditArea(e){
     // elm.parentElement.removeChild(elm);
     // rmBound.parentElement.removeChild(rmBound);
     removeItem(elm);
-
+    numOfChoice--;
   }
   e.preventDefault();
 }
@@ -290,11 +290,16 @@ function prev(e) {
 }
 
 function dropToTanzaku(e){
-  console.log(this.clientY);
+  console.log(this.getBoundingClientRect());
+  console.log(window.pageYOffset + this.getBoundingClientRect().top)
   console.log(e.clientY);
 }
 
 function toXML(){
-  var xml = "";
-  
+  var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<doc>\n<question>";
+
+  xml += "<text>\n"+editArea.value+"\n</text>\n";
+
+  xml+="</question>\n</doc>";
+
 }

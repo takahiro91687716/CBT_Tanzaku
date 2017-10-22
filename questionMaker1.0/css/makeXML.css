@@ -16,12 +16,14 @@
 }
 #setsumei{
   border: solid black 1px;
+	background-color: #F6E3E3;
 }
 #buildAreaFixed{
   height: 24.5ex;
 }
 .tanzaku{
   border: solid black 1px;
+	height:2em;
 }
 .bound{
   height: 2pt;
@@ -30,4 +32,5 @@
 }
 .canvas{
   background-color: #F3F355;
+	/*height: 2em;*/
 }
