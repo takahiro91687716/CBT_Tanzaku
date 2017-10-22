@@ -266,6 +266,9 @@ function addTanzaku(){
       e.dataTransfer.setData('text/html',e.target.id);
     };
     newTanzaku.innerHTML += buildPartsForBuild(editArea.value);
+    newTanzaku.ondragover = prev;
+  	newTanzaku.ondrag=prev;
+    newTanzaku.ondrop = dropToTanzaku;//テストだよおおおおおおおおおおおおおおおお
     var newBound = boundOrigin.cloneNode(true);
     newBound.id = "bound-"+ ++numOfChoice;
     newBound.ondragover = prev;
@@ -284,4 +287,14 @@ function prev(e) {
 	if(e.preventDefault) {
 		e.preventDefault();
 	}
+}
+
+function dropToTanzaku(e){
+  console.log(this.clientY);
+  console.log(e.clientY);
+}
+
+function toXML(){
+  var xml = "";
+  
 }
