@@ -4,10 +4,10 @@
 }
 #buildWaku{
   height: 40ex;
-  width: 50%;
+  /*width: 50%;*/
 }
 #editWaku{
-  width:50%;
+  /*width:50%;*/
 }
 #buildArea{
   height: 40ex;
@@ -22,9 +22,12 @@
 }
 .tanzaku{
   border: solid black 1px;
-  background-color: #F3F355;
 }
 .bound{
   height: 2pt;
+  /*height:3em;*/
   background-color: #F3F3F3;
+}
+.canvas{
+  background-color: #F3F355;
 }

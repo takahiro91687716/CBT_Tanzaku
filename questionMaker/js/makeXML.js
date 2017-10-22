@@ -80,10 +80,16 @@ function setElement(){
   editArea = document.getElementById("Content");
   buildArea = document.getElementById("buildArea");
   var newBound = boundOrigin.cloneNode(true);
-  newBound.id = "b-0";
+  newBound.id = "bound-0";
+  newBound.ondragover = prev;
+  newBound.ondrag=prev;
+  newBound.ondrop = dropToBuildArea;
   buildArea.appendChild(newBound);
 }
 
+/**
+エディットエリアでの挙動
+*/
 function dropToEditArea(e){
   var id = e.dataTransfer.getData("text/html");
   console.log("idは"+id);
@@ -92,22 +98,76 @@ function dropToEditArea(e){
   }else if((/t-\d+-\d+/).test(id)){
     var elm = document.getElementById(id);
     editArea.value += backToEdit(elm.innerHTML);
-    var rmBound = document.getElementById("b-"+ --numOfChoice);
-    //console.log(numOfChoice);
-    elm.parentElement.removeChild(elm);
-    rmBound.parentElement.removeChild(rmBound);
+    // var rmBound = document.getElementById("bound-"+ --numOfChoice);
+    // //console.log(numOfChoice);
+    // elm.parentElement.removeChild(elm);
+    // rmBound.parentElement.removeChild(rmBound);
+    removeItem(elm);
 
   }
   e.preventDefault();
 }
 
+function removeItem(rmElt){
+  var itemId = rmElt.id.split("-");
+  rmElt.parentElement.removeChild(rmElt);
+
+  //ずらす
+  for(var i = itemId[1];i<Math.floor(buildArea.childElementCount/2)-1;i++){
+    //移動対象要素の取得
+    var elt = document.getElementById("canvas-"+(Number(i)+1)).childNodes[0];
+    //IDの分割
+    var tmpId = elt.id.split("-");
+    //IDの書き換え
+    elt.id = tmpId[0]+"-"+i+"-"+tmpId[1];
+    document.getElementById("canvas-"+i).appendChild(elt);
+  }
+  //余分な欄を消す
+  buildArea.removeChild(document.getElementById("bound-"+Math.floor(buildArea.childElementCount/2)));
+  buildArea.removeChild(document.getElementById("canvas-"+(Math.floor(buildArea.childElementCount/2)-1)));
+}
+
 //並び替えの実装
 function dropToBuildArea(e){
-  var id = e.dataTransfer.getData("text/html");
-  console.log("idは"+id+",thisは"+this);
+  var elm = document.getElementById(e.dataTransfer.getData('text/html'));
 
-  // ドロップされた選択肢の取得
-  var item = document.getElementById(e.dataTransfer.getData('text/html'));
+  //elmId[0] t
+  //elmId[1] ビルドエリアに対しての番号
+  //elmId[2]
+  var elmId= e.dataTransfer.getData('text/html').split("-");
+    //boundId[0] b
+  //boundId[1]ビルドエリアに対しての番号
+  var boundId = this.id.split("-");
+    if(elmId[1] > boundId[1]){
+		for(var i = elmId[1];boundId[1]<i;i--){
+			//移動対象要素の取得
+      console.log("canvas-"+(Number(i)-1)+",,,"+elmId[1]+",,,"+boundId[1]);
+			var elt = document.getElementById("canvas-"+(Number(i)-1)).childNodes[0];
+			//IDの分割
+			var tmpId = elt.id.split("-");
+			//IDの書き換え
+			elt.id = tmpId[0]+"-"+i+"-"+tmpId[2];
+			document.getElementById("canvas-"+i).appendChild(elt);
+		}
+		elm.id = elmId[0]+"-"+boundId[1]+"-"+elmId[2];
+		document.getElementById("canvas-"+boundId[1]).appendChild(elm);
+	}else if((elmId[1]+1) >= boundId[1]){
+		//ここは何もしない
+		//ロジックわかりやすくするために書いてるだけ
+	}else if(elmId[1] < boundId[1]){
+		for(var i = elmId[1];i<boundId[1]-1;i++){
+			//移動対象要素の取得
+      console.log("canvas-"+(Number(i)+1)+",,,"+elmId[1]+",,,"+boundId[1]);
+			var elt = document.getElementById("canvas-"+(Number(i)+1)).childNodes[0];
+			//IDの分割
+			var tmpId = elt.id.split("-");
+			//IDの書き換え
+			elt.id = "t-"+i+"-"+tmpId[2];
+			document.getElementById("canvas-"+i).appendChild(elt);
+		}
+		elm.id = elmId[0]+"-"+(Number(boundId[1])-1)+"-"+elmId[2];
+		document.getElementById("canvas-"+(Number(boundId[1])-1)).appendChild(elm);
+	}
 }
 
 //エディットエリアでのパーツ表示に変換
@@ -190,28 +250,38 @@ function buildPartsForBuild(str){
 
 var boundOrigin = document.createElement("div");
 boundOrigin.classList.add("bound");
-boundOrigin.ondrop = function(e){
-  // ドロップされた選択肢の取得
-  var item = document.getElementById(e.dataTransfer.getData('text/html'));
-};
+var canvasOrigin = document.createElement("div");
+canvasOrigin.classList.add("canvas");
 var countAdd = 0;
-var numOfChoice = 1;
+var numOfChoice = 0;
 function addTanzaku(){
   if(0 < editArea.value.length){
-    var newBound = boundOrigin.cloneNode(true);
-    newBound.id = "b-"+(numOfChoice);
+    var newCanvas = canvasOrigin.cloneNode(true);
+    newCanvas.id = "canvas-"+ numOfChoice;
     var newTanzaku = document.createElement("div");
-    newTanzaku.id = "t-" + numOfChoice++ + "-" + countAdd++;
+    newTanzaku.id = "t-" + numOfChoice + "-" + countAdd++;
     newTanzaku.classList.add("tanzaku");
     newTanzaku.draggable = true;
     newTanzaku.ondragstart = function(e){
       e.dataTransfer.setData('text/html',e.target.id);
     };
     newTanzaku.innerHTML += buildPartsForBuild(editArea.value);
+    var newBound = boundOrigin.cloneNode(true);
+    newBound.id = "bound-"+ ++numOfChoice;
+    newBound.ondragover = prev;
+  	newBound.ondrag=prev;
+    newBound.ondrop = dropToBuildArea;
     editArea.value = "";
-    buildArea.appendChild(newTanzaku);
+    buildArea.appendChild(newCanvas);
+    newCanvas.appendChild(newTanzaku);
     buildArea.appendChild(newBound);
   }else{
     alert("空の選択肢は置けません！");
   }
+}
+
+function prev(e) {
+	if(e.preventDefault) {
+		e.preventDefault();
+	}
 }
