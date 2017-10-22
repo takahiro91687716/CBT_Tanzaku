@@ -611,8 +611,15 @@ function toJS(line){
 	line = line.replace(/←/g,"=");
 
 	//変数
-	line = line.replace(/整数|実数|文字列|変数/g,"var");
 	line = line.replace(/「|」/g,"\"");
+	
+	//文字列は変えといて最後に戻す
+	var strs = line.match(/\".+?\"/);
+	for(var i = 0; i < strs.length ; i++){
+		//console.log(strs[i]+",,,,mojiretsu"+i);
+		line = line.replace(strs[i],"mojiretsu"+i);
+	}
+	line = line.replace(/整数|実数|文字列|変数/g,"var");
 
 	//出力
 	if(line.includes("を表示する")){
@@ -657,6 +664,10 @@ function toJS(line){
 	if(line.includes("まで 1 ずつ減らしながら，")){
 		var equation =  line.replace(/を|から|まで/g,",").replace(/ずつ減らしながら，/g,"").split(",");
 		line = "for(" + equation[0] + " = " + equation[1] + ";" + equation[0] + "<"+ equation[2] + ";" + equation[0] + "-" +equation[3];
+	}
+
+	for(var i = 0; i < strs.length ; i++){
+		line = line.replace("mojiretsu"+i,strs[i]);
 	}
 
 	if(line.charAt(line.length - 1) != "{" && line.charAt(line.length - 1) != "}"){
