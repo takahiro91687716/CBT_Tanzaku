@@ -36,7 +36,7 @@ var editArea = [
   "<div id=\"editWaku\" class=\"waku\">",
   "<div id=\"setsumei\">",
   "<h4>選択肢編集エリア</h4>",
-  "<p>テキストボックスで選択肢を作成し、追加ボタンで。上の３つの部品も選択肢の中で使用することができます。全角の［ ］、【 】、｛ ｝は部品に使用しているので使わないでください。</p>",
+  //"<p>テキストボックスで選択肢を作成し、追加ボタンで。上の３つの部品も選択肢の中で使用することができます。全角の［ ］、【 】、｛ ｝は部品に使用しているので使わないでください。</p>",
   "</div>",
   "<div id=\"editArea1\" class=\"parts\">",
   "<form name=\"tanzaku\" style=\"display: inline\">",
@@ -301,50 +301,76 @@ function dropToTanzaku(e){
   if(mouseY<(divClientRect.top+harfOfdiv)){
     //上半分に落とされた時
     console.log("上半分に落とされました");
-    insert(from[1],to[1],true);
+    insertUpper(from[1],to[1]);
   }else if((divClientRect.top+harfOfdiv)<=mouseY){
     console.log("下半分に落とされました");
     //下半分に落とされた時
-    insert(from[1],to[1],false);
+    insertLower(from[1],to[1]);
 
   }
 }
 
-function insert(from,to,upper){
+/**  */
+function insertUpper(from,to){
   console.log(from+"から"+to);
   var insert = document.getElementById("t-"+from);
   insert.id = "insert";
 
-  if(!upper){
-    to++;
-  }
-
-  //上から下へ持ってきた時
-  for(var i = from; i < to - 1; i++){
-    console.log("上から下へ持ってきました");
-    console.log(i+"を動かす：to"+to+",from"+from);
-    var tmpElt = document.getElementById("t-"+(Number(i)+1));
-    tmpElt.id = "t-"+Number(i);
-    document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
-  }
-
-  //下から上へ持ってきた時
-  for(var i = from; to < i; i--){
-    console.log("下から上へ持ってきました");
-    console.log(i+"を動かす：to"+to+",from"+from);
-    var tmpElt = document.getElementById("t-"+(Number(i)-1));
-    tmpElt.id = "t-"+Number(i);
-    document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
-  }
-
-  if(!upper){
-    insert.id = "t-"+(to-1);
-    document.getElementById("canvas-"+(to-1)).appendChild(insert);
+  if(from<to){
+    //上から下へ持ってきた時
+    to--;
+    for(var i = from; i < to ; i++){
+      console.log("上から下へ持ってきました");
+      console.log(i+"を動かす：to"+to+",from"+from);
+      var tmpElt = document.getElementById("t-"+(Number(i)+1));
+      tmpElt.id = "t-"+Number(i);
+      document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+    }
   }else{
-    insert.id = "t-"+to;
-    document.getElementById("canvas-"+to).appendChild(insert);
+    //下から上へ持ってきた時、または同値
+    for(var i = from; to < i; i--){
+      console.log("下から上へ持ってきました");
+      console.log(i+"を動かす：to"+to+",from"+from);
+      var tmpElt = document.getElementById("t-"+(Number(i)-1));
+      tmpElt.id = "t-"+Number(i);
+      document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+    }
   }
+  insert.id = "t-"+to;
+  document.getElementById("canvas-"+to).appendChild(insert);
 }
+
+/**  */
+function insertLower(from,to){
+  console.log(from+"から"+to);
+  var insert = document.getElementById("t-"+from);
+  insert.id = "insert";
+
+  if(to<from){
+    //下から上へ持ってきた時
+    to++;
+    for(var i = from; to < i; i--){
+      console.log("下から上へ持ってきました");
+      console.log(i+"を動かす：to"+to+",from"+from);
+      var tmpElt = document.getElementById("t-"+(Number(i)-1));
+      tmpElt.id = "t-"+Number(i);
+      document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+    }
+  }else{
+    //上から下へ持ってきた時、または同値
+    for(var i = from; i < to ; i++){
+      console.log("上から下へ持ってきました");
+      console.log(i+"を動かす：to"+to+",from"+from);
+      var tmpElt = document.getElementById("t-"+(Number(i)+1));
+      tmpElt.id = "t-"+Number(i);
+      document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+    }
+  }
+  insert.id = "t-"+to;
+  document.getElementById("canvas-"+to).appendChild(insert);
+}
+
+
 
 
 function toXML(){
