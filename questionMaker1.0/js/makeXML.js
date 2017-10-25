@@ -79,12 +79,12 @@ function editDrag(e) {
 function setElement(){
   editArea = document.getElementById("Content");
   buildArea = document.getElementById("buildArea");
-  var newBound = boundOrigin.cloneNode(true);
-  newBound.id = "bound-0";
-  newBound.ondragover = prev;
-  newBound.ondrag=prev;
-  newBound.ondrop = dropToBuildArea;
-  buildArea.appendChild(newBound);
+  // var newBound = boundOrigin.cloneNode(true);
+  // newBound.id = "bound-0";
+  // newBound.ondragover = prev;
+  // newBound.ondrag=prev;
+  // newBound.ondrop = dropToBuildArea;
+  // buildArea.appendChild(newBound);
 }
 
 /**
@@ -123,7 +123,7 @@ function removeItem(rmElt){
     document.getElementById("canvas-"+i).appendChild(elt);
   }
   //余分な欄を消す
-  buildArea.removeChild(document.getElementById("bound-"+Math.floor(buildArea.childElementCount/2)));
+  //buildArea.removeChild(document.getElementById("bound-"+Math.floor(buildArea.childElementCount/2)));
   buildArea.removeChild(document.getElementById("canvas-"+(Math.floor(buildArea.childElementCount/2)-1)));
 }
 
@@ -141,7 +141,7 @@ function dropToBuildArea(e){
     if(elmId[1] > boundId[1]){
 		for(var i = elmId[1];boundId[1]<i;i--){
 			//移動対象要素の取得
-      console.log("canvas-"+(Number(i)-1)+",,,"+elmId[1]+",,,"+boundId[1]);
+      //console.log("canvas-"+(Number(i)-1)+",,,"+elmId[1]+",,,"+boundId[1]);
 			var elt = document.getElementById("canvas-"+(Number(i)-1)).childNodes[0];
 			//IDの分割
 			var tmpId = elt.id.split("-");
@@ -157,7 +157,7 @@ function dropToBuildArea(e){
 	}else if(elmId[1] < boundId[1]){
 		for(var i = elmId[1];i<boundId[1]-1;i++){
 			//移動対象要素の取得
-      console.log("canvas-"+(Number(i)+1)+",,,"+elmId[1]+",,,"+boundId[1]);
+      //console.log("canvas-"+(Number(i)+1)+",,,"+elmId[1]+",,,"+boundId[1]);
 			var elt = document.getElementById("canvas-"+(Number(i)+1)).childNodes[0];
 			//IDの分割
 			var tmpId = elt.id.split("-");
@@ -252,14 +252,14 @@ var boundOrigin = document.createElement("div");
 boundOrigin.classList.add("bound");
 var canvasOrigin = document.createElement("div");
 canvasOrigin.classList.add("canvas");
-var countAdd = 0;
+
 var numOfChoice = 0;
 function addTanzaku(){
   if(0 < editArea.value.length){
     var newCanvas = canvasOrigin.cloneNode(true);
     newCanvas.id = "canvas-"+ numOfChoice;
     var newTanzaku = document.createElement("div");
-    newTanzaku.id = "t-" + numOfChoice + "-" + countAdd++;
+    newTanzaku.id = "t-" + numOfChoice ++;
     newTanzaku.classList.add("tanzaku");
     newTanzaku.draggable = true;
     newTanzaku.ondragstart = function(e){
@@ -269,15 +269,15 @@ function addTanzaku(){
     newTanzaku.ondragover = prev;
   	newTanzaku.ondrag=prev;
     newTanzaku.ondrop = dropToTanzaku;//テストだよおおおおおおおおおおおおおおおお
-    var newBound = boundOrigin.cloneNode(true);
-    newBound.id = "bound-"+ ++numOfChoice;
-    newBound.ondragover = prev;
-  	newBound.ondrag=prev;
-    newBound.ondrop = dropToBuildArea;
+    // var newBound = boundOrigin.cloneNode(true);
+    // newBound.id = "bound-"+ ++numOfChoice;
+    // newBound.ondragover = prev;
+  	// newBound.ondrag=prev;
+    // newBound.ondrop = dropToBuildArea;
     editArea.value = "";
     buildArea.appendChild(newCanvas);
     newCanvas.appendChild(newTanzaku);
-    buildArea.appendChild(newBound);
+    // buildArea.appendChild(newBound);
   }else{
     alert("空の選択肢は置けません！");
   }
@@ -290,10 +290,62 @@ function prev(e) {
 }
 
 function dropToTanzaku(e){
-  console.log(this.getBoundingClientRect());
-  console.log(window.pageYOffset + this.getBoundingClientRect().top)
-  console.log(e.clientY);
+  var divClientRect = this.getBoundingClientRect();
+  var harfOfdiv = divClientRect.height/2;
+  var mouseY = e.clientY;
+  var from = e.dataTransfer.getData("text/html").split("-");
+  console.log("fromのidは："+from);
+  var to = this.id.split("-");
+  console.log("toのidは："+to);
+
+  if(mouseY<(divClientRect.top+harfOfdiv)){
+    //上半分に落とされた時
+    console.log("上半分に落とされました");
+    insert(from[1],to[1],true);
+  }else if((divClientRect.top+harfOfdiv)<=mouseY){
+    console.log("下半分に落とされました");
+    //下半分に落とされた時
+    insert(from[1],to[1],false);
+
+  }
 }
+
+function insert(from,to,upper){
+  console.log(from+"から"+to);
+  var insert = document.getElementById("t-"+from);
+  insert.id = "insert";
+
+  if(!upper){
+    to++;
+  }
+
+  //上から下へ持ってきた時
+  for(var i = from; i < to - 1; i++){
+    console.log("上から下へ持ってきました");
+    console.log(i+"を動かす：to"+to+",from"+from);
+    var tmpElt = document.getElementById("t-"+(Number(i)+1));
+    tmpElt.id = "t-"+Number(i);
+    document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+  }
+
+  //下から上へ持ってきた時
+  for(var i = from; to < i; i--){
+    console.log("下から上へ持ってきました");
+    console.log(i+"を動かす：to"+to+",from"+from);
+    var tmpElt = document.getElementById("t-"+(Number(i)-1));
+    tmpElt.id = "t-"+Number(i);
+    document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+  }
+
+  if(!upper){
+    insert.id = "t-"+(to-1);
+    document.getElementById("canvas-"+(to-1)).appendChild(insert);
+  }else{
+    insert.id = "t-"+to;
+    document.getElementById("canvas-"+to).appendChild(insert);
+  }
+}
+
 
 function toXML(){
   var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<doc>\n<question>";
