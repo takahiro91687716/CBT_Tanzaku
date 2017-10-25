@@ -95,13 +95,9 @@ function dropToEditArea(e){
   console.log("idは"+id);
   if(id.includes("valuableText") || id.includes("valuableNumber") || id.includes("pullDown")){
     editArea.value += buildPartsForEdit(id);
-  }else if((/t-\d+-\d+/).test(id)){
+  }else if((/t-\d+/).test(id)){
     var elm = document.getElementById(id);
     editArea.value += backToEdit(elm.innerHTML);
-    // var rmBound = document.getElementById("bound-"+ --numOfChoice);
-    // //console.log(numOfChoice);
-    // elm.parentElement.removeChild(elm);
-    // rmBound.parentElement.removeChild(rmBound);
     removeItem(elm);
     numOfChoice--;
   }
@@ -111,63 +107,17 @@ function dropToEditArea(e){
 function removeItem(rmElt){
   var itemId = rmElt.id.split("-");
   rmElt.parentElement.removeChild(rmElt);
-
   //ずらす
-  for(var i = itemId[1];i<Math.floor(buildArea.childElementCount/2)-1;i++){
+  for(var i = itemId[1];i<buildArea.childElementCount-1;i++){
+    console.log((Number(i)+1)+"を移動")
     //移動対象要素の取得
     var elt = document.getElementById("canvas-"+(Number(i)+1)).childNodes[0];
-    //IDの分割
-    var tmpId = elt.id.split("-");
     //IDの書き換え
-    elt.id = tmpId[0]+"-"+i+"-"+tmpId[1];
+    elt.id = "t-"+i;
     document.getElementById("canvas-"+i).appendChild(elt);
   }
   //余分な欄を消す
-  //buildArea.removeChild(document.getElementById("bound-"+Math.floor(buildArea.childElementCount/2)));
-  buildArea.removeChild(document.getElementById("canvas-"+(Math.floor(buildArea.childElementCount/2)-1)));
-}
-
-//並び替えの実装
-function dropToBuildArea(e){
-  var elm = document.getElementById(e.dataTransfer.getData('text/html'));
-
-  //elmId[0] t
-  //elmId[1] ビルドエリアに対しての番号
-  //elmId[2]
-  var elmId= e.dataTransfer.getData('text/html').split("-");
-    //boundId[0] b
-  //boundId[1]ビルドエリアに対しての番号
-  var boundId = this.id.split("-");
-    if(elmId[1] > boundId[1]){
-		for(var i = elmId[1];boundId[1]<i;i--){
-			//移動対象要素の取得
-      //console.log("canvas-"+(Number(i)-1)+",,,"+elmId[1]+",,,"+boundId[1]);
-			var elt = document.getElementById("canvas-"+(Number(i)-1)).childNodes[0];
-			//IDの分割
-			var tmpId = elt.id.split("-");
-			//IDの書き換え
-			elt.id = tmpId[0]+"-"+i+"-"+tmpId[2];
-			document.getElementById("canvas-"+i).appendChild(elt);
-		}
-		elm.id = elmId[0]+"-"+boundId[1]+"-"+elmId[2];
-		document.getElementById("canvas-"+boundId[1]).appendChild(elm);
-	}else if((elmId[1]+1) >= boundId[1]){
-		//ここは何もしない
-		//ロジックわかりやすくするために書いてるだけ
-	}else if(elmId[1] < boundId[1]){
-		for(var i = elmId[1];i<boundId[1]-1;i++){
-			//移動対象要素の取得
-      //console.log("canvas-"+(Number(i)+1)+",,,"+elmId[1]+",,,"+boundId[1]);
-			var elt = document.getElementById("canvas-"+(Number(i)+1)).childNodes[0];
-			//IDの分割
-			var tmpId = elt.id.split("-");
-			//IDの書き換え
-			elt.id = "t-"+i+"-"+tmpId[2];
-			document.getElementById("canvas-"+i).appendChild(elt);
-		}
-		elm.id = elmId[0]+"-"+(Number(boundId[1])-1)+"-"+elmId[2];
-		document.getElementById("canvas-"+(Number(boundId[1])-1)).appendChild(elm);
-	}
+  buildArea.removeChild(document.getElementById("canvas-"+(buildArea.childElementCount-1)));
 }
 
 //エディットエリアでのパーツ表示に変換
