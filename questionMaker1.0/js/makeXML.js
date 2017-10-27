@@ -7,24 +7,83 @@ var number = 0;
 
 var editArea = null;
 var buildArea = null;
+var answerWaku = null;
 
 var title = [
   "<div id=\"titleWaku\" class=\"waku\">",
-  "<div id=\"setsumei\">",
+  "<div id=\"captionForTitle\" class=\"caption\">",
   "<h4>問題文編集エリア</h4>",
-  "<p>以下のテキストエリアに問題文を入力してください。</p>",
+  "<div id=\"titleSizeFix\" class=\"sizeFix\">",
+  "<div id=\"titleSizeFixWidth\">",
+  "<form name=\"titleSize\">",
+  "<label>",
+  "横幅：<input type=\"number\" name=\"titleWidth\">",
+  "</label>",
+  "</form>",
   "</div>",
+  "<div id=\"titleSizeFixHeight\">",
+  "<form name=\"titleSize\">",
+  "<label>",
+  "縦幅：<input type=\"number\"  name=\"titleHeight\">",
+  "</label>",
+  "</form>",
+  "</div>",
+  "</div>",
+  "</div>",
+  "<div id=\"titleEditArea\">",
   "<form name=\"question\">",
   "<textarea name=\"text\" rows=\"6\" cols=\"100\"></textarea>",
   "</form>",
+  "</div>",
+  "</div>"
+];
+
+var answerArea = [
+  "<div id=\"answerWaku\" class=\"waku\">",
+  "<div id=\"captionForAnswer\" class=\"caption\">",
+  "<h4>解答欄</h4>",
+  "<div id=\"answerSizeFix\" class=\"sizeFix\">",
+  "<div id=\"answerSizeFixWidth\">",
+  "<form name=\"answerSize\">",
+  "<label>",
+  "横幅：<input type=\"number\" name=\"answerWidth\">",
+  "</label>",
+  "</form>",
+  "</div>",
+  "<div id=\"answerSizeFixHeight\">",
+  "<form name=\"answerSize\">",
+  "<label>",
+  "縦幅：<input type=\"number\"  name=\"answerHeight\">",
+  "</label>",
+  "</form>",
+  "</div>",
+  "</div>",
+  "</div>",
+  "<div id=\"answerArea\"></div>",
+  "</div>",
   "</div>"
 ];
 
 var buildArea = [
   "<div id=\"buildWaku\" class=\"waku\">",
-  "<div id=\"setsumei\">",
-  "<h4>選択肢設置エリア</h4>",
-  "<p>追加した選択肢の並び替えが行えます。</p>",
+  "<div id=\"captionForBuild\" class=\"caption\">",
+  "<h4>選択肢欄</h4>",
+  "<div id=\"buildSizeFix\" class=\"sizeFix\">",
+  "<div id=\"buildSizeFixWidth\">",
+  "<form name=\"buildSize\">",
+  "<label>",
+  "横幅：<input type=\"number\" name=\"buildWidth\">",
+  "</label>",
+  "</form>",
+  "</div>",
+  "<div id=\"buildSizeFixHeight\">",
+  "<form name=\"buildSize\">",
+  "<label>",
+  "縦幅：<input type=\"number\"  name=\"buildHeight\">",
+  "</label>",
+  "</form>",
+  "</div>",
+  "</div>",
   "</div>",
   "<div id=\"buildAreaFixed\">",
   "<div id=\"buildArea\" style=\"height:100%;\"></div>",
@@ -34,19 +93,27 @@ var buildArea = [
 
 var editArea = [
   "<div id=\"editWaku\" class=\"waku\">",
-  "<div id=\"setsumei\">",
+  "<div id=\"setsumei\" class=\"caption\">",
   "<h4>選択肢編集エリア</h4>",
   //"<p>テキストボックスで選択肢を作成し、追加ボタンで。上の３つの部品も選択肢の中で使用することができます。全角の［ ］、【 】、｛ ｝は部品に使用しているので使わないでください。</p>",
   "</div>",
+  "<div id=\"box\" class=\"parts\">",
   "<div id=\"editArea1\" class=\"parts\">",
+  "<div id=\"editArea2\" class=\"parts\">",
   "<form name=\"tanzaku\" style=\"display: inline\">",
-  "<textarea id=\"Content\" name=\"text\" rows=\"2\" cols=\"80\" ondrop=\"dropToEditArea(event)\"></textarea>",
+  "<textarea id=\"Content\" name=\"text\" rows=\"4\" cols=\"70\" ondrop=\"dropToEditArea(event)\"></textarea>",
   "</form>",
-  "<input type=\"button\" value=\"追加\" style=\"display: inline\" onclick=\"addTanzaku()\"></input>",
+  "<input type=\"button\" class=\"add\" value=\"追加\" style=\"display: inline\" onclick=\"addTanzaku()\"></input>",
   "</div>",
   "<div id = \"valuableText\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<input type=\"text\" readonly value=\"自由記入欄\"></input>　</div>",
   "<div id = \"valuableNumber\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<input type=\"number\"readonly value=\"99999\"></input>　</div>",
   "<div id = \"pullDown\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<select><option>-未選択-</option><option>選択肢Ａ</option><option>選択肢Ｂ</option></select>　</div>",
+  "</div>",
+  "<div id=\"setsumeibun\" class=\"parts\">",
+  "<p>テキストボックスで選択肢を作成し、ボタンで追加します。３つの部品も選択肢の中で使用することができます。</p>",
+  "<p>※ 全角の［ ］、【 】、｛ ｝は使用できません</p>",
+  "</div>",
+  "</div>",
   "</div>"
 ];
 
@@ -60,6 +127,9 @@ function buildMaker(){
   var html = '';
   for(var i = 0; i < title.length; i ++){
     html += title[i];
+  }
+  for(var i = 0; i < answerArea.length; i ++){
+    html += answerArea[i];
   }
   for(var i = 0; i < buildArea.length; i ++){
     html += buildArea[i];
@@ -79,17 +149,10 @@ function editDrag(e) {
 function setElement(){
   editArea = document.getElementById("Content");
   buildArea = document.getElementById("buildArea");
-  // var newBound = boundOrigin.cloneNode(true);
-  // newBound.id = "bound-0";
-  // newBound.ondragover = prev;
-  // newBound.ondrag=prev;
-  // newBound.ondrop = dropToBuildArea;
-  // buildArea.appendChild(newBound);
+  answerWaku = document.getElementById("answerWaku");
 }
 
-/**
-エディットエリアでの挙動
-*/
+/** エディットエリアでの挙動 */
 function dropToEditArea(e){
   var id = e.dataTransfer.getData("text/html");
   console.log("idは"+id);
@@ -260,7 +323,7 @@ function dropToTanzaku(e){
   }
 }
 
-/**  */
+/** 上半分にドロップされた時 */
 function insertUpper(from,to){
   console.log(from+"から"+to);
   var insert = document.getElementById("t-"+from);
@@ -290,7 +353,7 @@ function insertUpper(from,to){
   document.getElementById("canvas-"+to).appendChild(insert);
 }
 
-/**  */
+/** 下半分にドロップされた時 */
 function insertLower(from,to){
   console.log(from+"から"+to);
   var insert = document.getElementById("t-"+from);
@@ -320,13 +383,30 @@ function insertLower(from,to){
   document.getElementById("canvas-"+to).appendChild(insert);
 }
 
-
+var display = false;
+function setAnswerArea(){
+  if(display){
+    console.log("解答欄を非表示にします");
+    answerWaku.style.display = 'none';
+    display = false;
+  }else{
+    console.log("解答欄を表示します");
+    answerWaku.style.display = 'block';
+    display = true;
+  }
+}
 
 
 function toXML(){
   var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<doc>\n<question>";
 
   xml += "<text>\n"+editArea.value+"\n</text>\n";
+
+  for(var i = 0; i < numOfChoice; i++){
+    var elm = document.getElementById("t-"+i);
+    xml += "";
+    xml += "";
+  }
 
   xml+="</question>\n</doc>";
 

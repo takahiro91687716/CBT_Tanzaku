@@ -2,6 +2,22 @@
 	margin: 0ex 3ex 1ex;
 	border: solid black 1px;
 }
+.caption{
+  border: solid black 1px;
+	background-color: #F6E3E3;
+}
+
+/*  */
+#toolsWaku{
+	background-color: #A1A1A1;
+}
+#titleEditArea{
+	background-color: #E4F3E4;
+	/*text-align: center;*/
+}
+#answerWaku{
+	display: none;
+}
 #buildWaku{
   height: 40ex;
   /*width: 50%;*/
@@ -9,28 +25,125 @@
 #editWaku{
   /*width:50%;*/
 }
+
+/*  */
 #buildArea{
   height: 40ex;
   overflow: scroll;
   background-color: #F3F3F3;
 }
-#setsumei{
-  border: solid black 1px;
-	background-color: #F6E3E3;
-}
+/*  */
 #buildAreaFixed{
-  height: 24.5ex;
+  height: 30.5ex;
 }
+
+/*  */
 .tanzaku{
   border: solid black 1px;
 	height:2em;
-}
-.bound{
-  height: 2pt;
-  /*height:3em;*/
-  background-color: #F3F3F3;
+	display: flex;
+	align-items: center;
 }
 .canvas{
   background-color: #F3F355;
 	/*height: 2em;*/
+}
+
+/*  */
+input.tools{
+	font-size: 1.5em;
+}
+input.add{
+	font-size: 1.5em;
+	height: 8em;
+}
+#captionForAnswer{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+}
+#captionForTitle{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+}
+#captionForBuild{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+}
+
+#box{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 背景色 */
+	background-color: #E4E4F3;
+}
+#editArea1{
+	margin-top: 1em;
+}
+#editArea2{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+}
+
+.sizeFix{
+	/*width: 80%;
+	text-align: right;*/
+	margin-left: auto;
+	margin-right: 50px;
+}
+
+#answerArea{
+	height: 15em;
 }
