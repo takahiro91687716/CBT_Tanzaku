@@ -1,0 +1,59 @@
+#waku1, #waku3 {
+	margin: 0ex 3ex 1ex;
+	border: solid black 1px;
+}
+
+.waku2{
+	margin: 0ex 3ex 1ex;
+	border: solid black 1px;
+}
+
+.waku2{
+	height: 40ex;
+	overflow: scroll;
+}
+
+.canvas {
+	padding: 1ex;
+	/*height: 1.75ex;*/
+	line-height: 1.0ex;
+	/*position: relative;*/
+}
+
+.bound {
+	padding: 1ex;
+	/*height: 1.0ex;*/
+	background-color: #c8c8c8;
+}
+
+/*ここから3.0*/
+.caption{
+	background-color: #F6E3E3;
+	border: solid black 1px;
+}
+
+.waku{
+	margin: 0ex 3ex 1ex;
+	border: solid black 1px;
+}
+
+.fixedAnswerArea{
+	/*height: 40ex;*/
+	height: 15ex;
+}
+
+.answerArea{
+	height: 100%;
+	overflow: scroll;
+	background-color: #E8E8E8;
+	/*border: solid black 1px;*/
+}
+
+.tanzaku{
+	border: solid black 1px;
+}
+
+.answer{
+	border: solid black 1px;
+	background-color: #F3F355;
+}

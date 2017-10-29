@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+<question>
+	<text>キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.</text>
+	<item>整数 {a,b} ,b</item>
+	<item>「整数を入力してください:」 を表示する</item>
+	<item>{a,b} ← input()</item>
+	<item>{a,b} ← {a,b} * {number}</item>
+	<item>{a,b} を表示する</item>
+</question>
+<question>
+	<text>キーボードから入力した数が、3で割り切れるかどうかを調べ、割り切れるなら「3 の倍数である」と出力するプログラムを書いてみよう.</text>
+	<item>整数 num</item>
+	<item>「整数を入力: 」 を表示する</item>
+	<item>num ← input()</item>
+	<item>もし num%{number}=={number} ならば</item>
+	<item>{} を表示する</item>
+	<item>を実行する</item>
+</question>
+<question>
+	<text>キーボードから入力した数が，3で割り切れるかどうかを調べ，割り切れるなら「3 の倍数」と出力し，そうでないなら「3 の倍数でない」と出力するプログラムを書いてみよう.</text>
+	<item>整数 num</item>
+	<item>「整数を入力: 」 を改行なしで表示する</item>
+	<item>num ← input()</item>
+	<item>もし num%3==0 ならば</item>
+	<item>「3 の倍数」 を表示する</item>
+	<item>を実行し，そうでなければ</item>
+	<item>「3 の倍数でない」 を表示する</item>
+	<item>を実行する</item>
+</question>
+</doc>

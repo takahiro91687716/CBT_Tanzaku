@@ -95,7 +95,6 @@ var editArea = [
   "<div id=\"editWaku\" class=\"waku\">",
   "<div id=\"setsumei\" class=\"caption\">",
   "<h4>選択肢編集エリア</h4>",
-  //"<p>テキストボックスで選択肢を作成し、追加ボタンで。上の３つの部品も選択肢の中で使用することができます。全角の［ ］、【 】、｛ ｝は部品に使用しているので使わないでください。</p>",
   "</div>",
   "<div id=\"box\" class=\"parts\">",
   "<div id=\"editArea1\" class=\"parts\">",
