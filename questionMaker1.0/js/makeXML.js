@@ -161,7 +161,7 @@ function dropToEditArea(e){
     var elm = document.getElementById(id);
     editArea.value += backToEdit(elm.innerHTML);
     removeItem(elm);
-    numOfChoice--;
+    numOfChoice--;//これbuildArea.childElementCountで代用できるわ
   }
   e.preventDefault();
 }

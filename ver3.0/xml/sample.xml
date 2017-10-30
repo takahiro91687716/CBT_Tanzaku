@@ -23,7 +23,7 @@
 	<item>「整数を入力: 」 を改行なしで表示する</item>
 	<item>num ← input()</item>
 	<item>もし num%3==0 ならば</item>
-	<item>「3 の倍数」 を表示する</item>
+	<item unique="true">「3 の倍数」 を表示する</item>
 	<item>を実行し，そうでなければ</item>
 	<item>「3 の倍数でない」 を表示する</item>
 	<item>を実行する</item>

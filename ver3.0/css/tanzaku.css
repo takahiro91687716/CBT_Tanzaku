@@ -50,10 +50,26 @@
 }
 
 .tanzaku{
-	border: solid black 1px;
+	/*border: solid black 1px;*/
+	height: 100%;
 }
 
 .answer{
 	border: solid black 1px;
 	background-color: #F3F355;
+	height: 2.5em;
+}
+
+html,body {
+	height:100%;
+}
+/*area{
+	height: 100%;
+}*/
+.unique{
+	font-weight: bold;
+}
+.box{
+	height: 2.0em;
+	border: solid black 1px;
 }
