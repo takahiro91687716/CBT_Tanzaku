@@ -473,8 +473,8 @@ function addAnswer(id,number){
 
 	// number以降をずらしていく
 	console.log(number+"番から"+(numOfAnswer-1)+"をずらして");
-	for(var i = number; i < numOfAnswer; i++){
-		var to = document.getElementById("canvas-" + idElm[1] + "-" + ( i + 1 ));
+	for(var i = number; i < numOfAnswer ; i++){
+		var to = document.getElementById("canvas-" + idElm[1] + "-" + ( Number(i) + 1 ));
 		var elm = document.getElementById("canvas-" + idElm[1] + "-" + i).childNodes[0];
 		to.appendChild(elm);
 	}

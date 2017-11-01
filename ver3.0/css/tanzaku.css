@@ -71,5 +71,5 @@ html,body {
 }
 .box{
 	height: 2.0em;
-	border: solid black 1px;
+	border: solid black 0.1px;
 }
