@@ -4,7 +4,23 @@
 }
 .caption{
   border: solid black 1px;
-	background-color: #F6E3E3;
+	/*background-color: #F6E3E3;*/
+
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+
+	height: 2em;
 }
 
 /*  */
@@ -34,7 +50,7 @@
 }
 /*  */
 #buildAreaFixed{
-  height: 30.5ex;
+  height: 35ex;
 }
 
 /*  */
@@ -57,50 +73,18 @@ input.add{
 	font-size: 1.5em;
 	height: 8em;
 }
-#captionForAnswer{
-	display: flex;
-	display: -moz-flex;
-	display: -o-flex;
-	display: -webkit-flex;
-	display: -ms-flex;
-	flex-direction: row;
-	-moz-flex-direction: row;
-	-o-flex-direction: row;
-	-webkit-flex-direction: row;
-	-ms-flex-direction: row;
+/*#captionForAnswer{
+}*/
 
-	/* 縦中央 */
-	align-items: center;
-}
 #captionForTitle{
-	display: flex;
-	display: -moz-flex;
-	display: -o-flex;
-	display: -webkit-flex;
-	display: -ms-flex;
-	flex-direction: row;
-	-moz-flex-direction: row;
-	-o-flex-direction: row;
-	-webkit-flex-direction: row;
-	-ms-flex-direction: row;
-
-	/* 縦中央 */
-	align-items: center;
+	background-color: #D4F3D4;
 }
 #captionForBuild{
-	display: flex;
-	display: -moz-flex;
-	display: -o-flex;
-	display: -webkit-flex;
-	display: -ms-flex;
-	flex-direction: row;
-	-moz-flex-direction: row;
-	-o-flex-direction: row;
-	-webkit-flex-direction: row;
-	-ms-flex-direction: row;
+	background-color: #D4D4D4;
+}
 
-	/* 縦中央 */
-	align-items: center;
+#captionForEdit{
+	background-color: #D4D4F3;
 }
 
 #box{
