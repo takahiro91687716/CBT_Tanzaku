@@ -2,11 +2,11 @@
 <doc>
 <question>
 	<text>キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.</text>
-	<item>整数 {a,b} ,b</item>
+	<item>整数 {a,b} </item>
 	<item>「整数を入力してください:」 を表示する</item>
 	<item>{a,b} ← input()</item>
 	<item>{a,b} ← {a,b} * {number}</item>
-	<item>{a,b} を表示する</item>
+	<item unique="true">{a,b} を表示する</item>
 </question>
 <question>
 	<text>キーボードから入力した数が、3で割り切れるかどうかを調べ、割り切れるなら「3 の倍数である」と出力するプログラムを書いてみよう.</text>

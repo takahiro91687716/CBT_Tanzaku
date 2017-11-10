@@ -11,8 +11,10 @@
 	<body onload="start()">
     <div id="toolsWaku" class="waku">
       <input type="button" class="tools" value="新規作成" onclick="addQuestion()">
-      <input type="button" class="tools" value="保存" onclick="addQuestion()">
-			<input type="button" class="tools" value="解答欄表示" onclick="setAnswerArea()">
+			<input type="text" id="filename" value="sample" size="10">
+			<span>.xml</span>
+      <input type="button" class="tools" value="保存" onclick="save()">
+			<input type="button" id="dispAnswer" class="tools" value="解答欄表示" onclick="setAnswerArea()">
     </div>
 		<div id ="area"></div>
 

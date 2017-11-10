@@ -32,7 +32,7 @@ var title = [
   "</div>",
   "<div id=\"titleEditArea\">",
   "<form name=\"question\">",
-  "<textarea name=\"text\" rows=\"6\" cols=\"100\"></textarea>",
+  "<textarea id=\"questionText\" name=\"text\" rows=\"6\" cols=\"100\"></textarea>",
   "</form>",
   "</div>",
   "</div>"
@@ -41,7 +41,7 @@ var title = [
 var answerArea = [
   "<div id=\"answerWaku\" class=\"waku\">",
   "<div id=\"captionForAnswer\" class=\"caption\">",
-  "<h4>解答欄</h4>",
+  "<h4>解答欄プレビュー</h4>",
   "<div id=\"answerSizeFix\" class=\"sizeFix\">",
   // "<div id=\"answerSizeFixWidth\">",
   "<form name=\"answerSize\">",
@@ -91,7 +91,7 @@ var buildArea = [
   "</div>"
 ];
 
-var editArea = [
+var editAreaList = [
   "<div id=\"editWaku\" class=\"waku\">",
   "<div id=\"captionForEdit\" class=\"caption\">",
   "<h4>選択肢編集エリア</h4>",
@@ -127,14 +127,16 @@ function buildMaker(){
   for(var i = 0; i < title.length; i ++){
     html += title[i];
   }
+  html += "<div id=\"layout\">";
   for(var i = 0; i < answerArea.length; i ++){
     html += answerArea[i];
   }
   for(var i = 0; i < buildArea.length; i ++){
     html += buildArea[i];
   }
-  for(var i = 0; i < editArea.length; i ++){
-    html += editArea[i];
+  html += "</div>";
+  for(var i = 0; i < editAreaList.length; i ++){
+    html += editAreaList[i];
   }
   return html;
 }
@@ -270,6 +272,7 @@ function addTanzaku(){
   if(0 < editArea.value.length){
     var newCanvas = canvasOrigin.cloneNode(true);
     newCanvas.id = "canvas-"+ numOfChoice;
+    //newCanvas.innerHTML += "<input type=\"checkbox\" value=\"unique=\"true\"\">";
     var newTanzaku = document.createElement("div");
     newTanzaku.id = "t-" + numOfChoice ++;
     newTanzaku.classList.add("tanzaku");
@@ -281,6 +284,8 @@ function addTanzaku(){
     newTanzaku.ondragover = prev;
   	newTanzaku.ondrag=prev;
     newTanzaku.ondrop = dropToTanzaku;//テストだよおおおおおおおおおおおおおおおお
+    newTanzaku.ondblclick = changeToUnique;
+    //newTanzaku.style.display = "inline";
     // var newBound = boundOrigin.cloneNode(true);
     // newBound.id = "bound-"+ ++numOfChoice;
     // newBound.ondragover = prev;
@@ -319,6 +324,18 @@ function dropToTanzaku(e){
     //下半分に落とされた時
     insertLower(from[1],to[1]);
 
+  }
+}
+
+function changeToUnique(e){
+  var idSplit = this.id.split("-");
+
+  if(idSplit[2] != null){
+    this.id = idSplit[0] + "-" + idSplit[1];
+    this.style. backgroundColor = '#FFFFCC';
+  }else {
+    this.id += "-unique";
+    this.style.backgroundColor = '#CCFFFF';
   }
 }
 
@@ -387,26 +404,76 @@ function setAnswerArea(){
   if(display){
     console.log("解答欄を非表示にします");
     answerWaku.style.display = 'none';
+    document.getElementById("dispAnswer").value = "解答欄表示";
     display = false;
   }else{
     console.log("解答欄を表示します");
     answerWaku.style.display = 'block';
+    document.getElementById("dispAnswer").value = "解答欄非表示";
     display = true;
   }
 }
 
 
 function toXML(){
-  var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<doc>\n<question>";
+  var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<doc>\n<question>\n";
 
-  xml += "<text>\n"+editArea.value+"\n</text>\n";
+  xml += "<text>\n"+document.getElementById("questionText").value+"\n</text>\n";
 
   for(var i = 0; i < numOfChoice; i++){
-    var elm = document.getElementById("t-"+i);
-    xml += "";
-    xml += "";
+    var elm = document.getElementById("canvas-"+i).childNodes[0];
+    if(elm.id.includes("unique")){
+      xml += "<item unique=\"true\">\n";
+    }else{
+      xml += "<item>\n";
+    }
+    xml += backToEdit(elm.innerHTML)+"\n";
+    xml += "</item>\n";
   }
 
   xml+="</question>\n</doc>";
 
+  return xml;
+}
+
+function download(blob, filename) {
+  var objectURL = (window.URL || window.webkitURL).createObjectURL(blob),
+      a = document.createElement('a');
+      e = document.createEvent('MouseEvent');
+
+  //a要素のdownload属性にファイル名を設定
+  a.download = filename;
+  a.href = objectURL;
+
+  //clickイベントを着火
+  e.initEvent("click", true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
+  a.dispatchEvent(e);
+}
+
+function getFilename(){
+  var str = document.getElementById("filename").value;
+  if(str.includes(".xml")){
+    str = str.replace(/\.xml/g,"");
+  }
+  return str + ".xml";
+}
+
+function save(){
+  download(new Blob([toXML()]), getFilename());
+}
+
+function fixWidth(areaname){
+  var fixArea = document.getElementById(areaname+"Area");
+  var fixValue = document.getElementById(areaname+"Width").value;
+  fixArea.style.width = fixValue + "px";
+}
+
+function fixHeight(areaname){
+  var fixArea = document.getElementById(areaname+"Area");
+  var fixValue = document.getElementById(areaname+"Height").value;
+  fixArea.style.height = fixValue + "px";
+}
+
+function changeHorizontal(areaname){
+  
 }

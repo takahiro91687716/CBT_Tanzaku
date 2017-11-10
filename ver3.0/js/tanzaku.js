@@ -43,6 +43,11 @@ function buildQuestions(HttpObj){
 		document.getElementById("answerArea-"+i).ondrag = prev;
 		document.getElementById("answerArea-"+i).ondrop = dropToAnswerArea;
 	}
+
+	var area = document.getElementById("area");
+	area.ondragover = prev;
+	area.ondrag = prev;
+	area.ondrop = trashItem;
 }
 
 //--------------------------------------------------
@@ -120,7 +125,7 @@ function createTanzaku2(item,number,i){
 	str += "draggable=\"true\" ";
 	str += "ondragstart=\"itemDragStart(event)\">";
 	str += buildChoiceParts(item,number,i);
-	str += "</div>\n";
+	str += "</div>";
 
 	return str;
 }
@@ -163,14 +168,14 @@ function setAnswerAreaAction(answerArea){
 //-----------------------------
 function buildQuestionArea(number){
 	var str = "";
-	str += "<div class=\"waku titleWaku\">\n";
-	str +=  "<div class=\"caption captionForTitle\">\n";
-	str +=   "<h3>問題 "+ ( number + 1 ) +"</h3>\n";
-	str +=   "<button type=\"button\" class=\"executeButton\" onclick=\"runCode("+number+")\">プログラム実行</button>\n";
-	str +=  "</div>\n";
-	str +=  "<div id=\"question-"+number+"\">\n";
-	str +=  "</div>\n";
-	str += "</div>\n";
+	str += "<div class=\"waku titleWaku\">";
+	str +=  "<div class=\"caption captionForTitle\">";
+	str +=   "<h3>問題 "+ ( number + 1 ) +"</h3>";
+	str +=   "<button type=\"button\" class=\"executeButton\" onclick=\"runCode("+number+")\">プログラム実行</button>";
+	str +=  "</div>";
+	str +=  "<div id=\"question-"+number+"\">";
+	str +=  "</div>";
+	str += "</div>";
 	console.log("問題"+(number+1)+"の問題文");
 	console.log(str);
 	return str;
@@ -181,15 +186,15 @@ function buildQuestionArea(number){
 //-----------------------------
 function buildAnswerArea(number){
 	var str = "";
-	str += "<div class=\"waku answerWaku\">\n";
-	str +=  "<div class=\"caption captionForAnswer\">\n";
-	str +=   "<h3>解答欄</h3>\n";
-	str +=  "</div>\n";
-	str +=  "<div class=\"fixedAnswerArea\">\n";
-	str +=   "<div id=\"answerArea-"+number+"\" class=\"answerArea\" >\n";
-	str +=   "</div>\n";
-	str +=  "</div>\n";
-	str += "</div>\n";
+	str += "<div class=\"waku answerWaku\">";
+	str +=  "<div class=\"caption captionForAnswer\">";
+	str +=   "<h3>解答欄</h3>";
+	str +=  "</div>";
+	str +=  "<div class=\"fixedAnswerArea\">";
+	str +=   "<div id=\"answerArea-"+number+"\" class=\"answerArea\" >";
+	str +=   "</div>";
+	str +=  "</div>";
+	str += "</div>";
 	console.log("問題"+(number+1)+"の解答欄");
 	console.log(str);
 	return str;
@@ -200,13 +205,13 @@ function buildAnswerArea(number){
 //-----------------------------
 function buildTanzakuArea(number){
 	var str = "";
-	str += "<div class=\"waku tanzakuWaku\">\n";
-	str +=  "<div class=\"caption captionForTanzaku\">\n";
-	str +=   "<h3>選択肢欄</h3>\n";
-	str +=  "</div>\n";
-	str +=  "<div id=\"tanzakuArea-"+number+"\">\n";
-	str +=  "</div>\n";
-	str += "</div>\n";
+	str += "<div class=\"waku tanzakuWaku\">";
+	str +=  "<div class=\"caption captionForTanzaku\">";
+	str +=   "<h3>選択肢欄</h3>";
+	str +=  "</div>";
+	str +=  "<div id=\"tanzakuArea-"+number+"\">";
+	str +=  "</div>";
+	str += "</div>";
 	console.log("問題"+(number+1)+"の選択肢欄");
 	console.log(str);
 	return str;
@@ -330,7 +335,9 @@ function itemDragStart(e) {
 // 解答欄へドロップされた時の処理
 // ・新規追加（最下）と最下への挿入
 //-----------------------------
+var trashFlug = true;
 function dropToAnswerArea(e){
+	trashFlug = false;
 	if(!canvasCall){
 		console.log("ドロップ：解答欄");
 		var id = e.dataTransfer.getData("text/html",e.target.id);
@@ -360,6 +367,7 @@ function dropToAnswerArea(e){
 			// 要素増えないので to は -1 しておく
 			insertLower(from,(to-1),idElm[1]);
 		}
+		indent(idElm[1]);
 	}else{
 		canvasCall = false;
 	}
@@ -437,6 +445,7 @@ function dropToCanvas(e){
 
 	  }
 	}
+	indent(idElm[1]);
 }
 
 //-----------------------------
@@ -550,6 +559,27 @@ function insertLower(from,to,number){
 // id     ： 追加要素の id
 // number ： 追加場所
 //-----------------------------
+function trashItem(e){
+	var id = e.dataTransfer.getData("text/html",e.target.id);
+	var elmId = id.split("-");
+	if(trashFlug){
+
+		if(elmId[0] == "ci"){
+			returnItem(document.getElementById(id));
+		}else if(elmId[0] == "c"){
+			removeItem(document.getElementById(id));
+		}
+		indent(elmId[1]);
+	}else{
+		trashFlug = true;
+	}
+}
+
+//-----------------------------
+// 解答欄への要素の追加
+// id     ： 追加要素の id
+// number ： 追加場所
+//-----------------------------
 function removeItem(rmElt){
 	var rmNum = rmElt.parentElement.id.split("-");
 	var answerArea = document.getElementById("answerArea-"+rmNum[1])
@@ -561,7 +591,8 @@ function removeItem(rmElt){
 		document.getElementById("canvas-"+rmNum[1]+"-"+i).appendChild(elt);
 	}
 	//余分な欄を消す
-  answerArea.removeChild(document.getElementById("canvas-"+rmNum[1]+"-"+(buildArea.childElementCount-1)));
+	console.log("canvas-"+rmNum[1]+"-"+(answerArea.childElementCount-1));
+  answerArea.removeChild(document.getElementById("canvas-"+rmNum[1]+"-"+(answerArea.childElementCount-1)));
 }
 
 //-----------------------------
@@ -571,18 +602,20 @@ function removeItem(rmElt){
 //-----------------------------
 function returnItem(rtElt){
 	var rtNum = rtElt.parentElement.id.split("-");
+	var rtEltId = rtElt.id.split("-");
 	var answerArea = document.getElementById("answerArea-"+rtNum[1])
-	console.log(rtNum[2]+"番を戻す");
-	rtElt.id = "ii-" +rtNum[1] +"-"+ rtNum[2];
+	console.log(rtEltId[2]+"番を戻す");
+	rtElt.id = "ii-" +rtEltId[1] +"-"+ rtEltId[2];
+	rtElt.style.left = "0px";
 	rtElt.classList.remove("answer");
-	document.getElementById("box-"+rtNum[1]+"-"+rtNum[2]).appendChild(rtElm);
+	document.getElementById("box-"+rtEltId[1]+"-"+rtEltId[2]).appendChild(rtElt);
 
 	for(var i = rtNum[2]; i < answerArea.childElementCount-1;i++){
 		var elt = document.getElementById("canvas-"+rtNum[1]+"-"+(Number(i)+1)).childNodes[0];
 		document.getElementById("canvas-"+rtNum[1]+"-"+i).appendChild(elt);
 	}
 	//余分な欄を消す
-  answerArea.removeChild(document.getElementById("canvas-"+rtNum[1]+"-"+(buildArea.childElementCount-1)));
+  answerArea.removeChild(document.getElementById("canvas-"+rtNum[1]+"-"+(answerArea.childElementCount-1)));
 }
 
 //-----------------------------
@@ -607,7 +640,7 @@ function indent(number){
 	//何問目か取得
 	var answerArea = document.getElementById("answerArea-"+number);
 
-	for(var i = 0; i < answerArea.length; i++){
+	for(var i = 0; i < answerArea.childElementCount; i++){
 		var canvas = answerArea.childNodes[i];
 		level -= (canvas.textContent.match(/を実行する|を繰り返す|を実行し/g)||[]).length
 		if(0 < level){
@@ -619,7 +652,7 @@ function indent(number){
 			level = 0;
 		}
 		//次のレベルを増やしておく
-		level += (canvas.textContent.match(/もし|の間|そうでなければ|増やしながら|減らしながら/g)||[]).length;
+		level += (canvas.textContent.match(/もし|の間|そうでなければ|そうでなければ|そうでなければ|そうでなければ|増やしながら|増やしながら|減らしながら|減らしながら/g)||[]).length;
 	}
 }
 

@@ -35,7 +35,7 @@
 	display: none;
 }
 #buildWaku{
-  height: 40ex;
+  /*height: 40ex;*/
   /*width: 50%;*/
 }
 #editWaku{
@@ -44,7 +44,7 @@
 
 /*  */
 #buildArea{
-  height: 40ex;
+  height: 100%;
   overflow: scroll;
   background-color: #F3F3F3;
 }
@@ -55,13 +55,14 @@
 
 /*  */
 .tanzaku{
-  border: solid black 1px;
 	height:2em;
 	display: flex;
 	align-items: center;
+	border: solid 1px;
+	border-color: #CCCC99;
+	background-color: #FFFFCC;
 }
 .canvas{
-  background-color: #F3F355;
 	/*height: 2em;*/
 }
 
@@ -79,6 +80,11 @@ input.add{
 #captionForTitle{
 	background-color: #D4F3D4;
 }
+
+#captionForAnswer{
+	background-color: #F6E3E3;
+}
+
 #captionForBuild{
 	background-color: #D4D4D4;
 }
@@ -129,5 +135,6 @@ input.add{
 }
 
 #answerArea{
+	background-color: #F6EEEE;
 	height: 15em;
 }

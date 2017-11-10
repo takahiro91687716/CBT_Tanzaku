@@ -19,17 +19,25 @@
 	line-height: 1.0ex;
 	/*position: relative;*/
 }
-
-.bound {
-	padding: 1ex;
-	/*height: 1.0ex;*/
-	background-color: #c8c8c8;
-}
-
 /*ここから3.0*/
 .caption{
-	background-color: #F6E3E3;
 	border: solid black 1px;
+
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+
+	height: 2em;
 }
 
 .waku{
@@ -39,13 +47,13 @@
 
 .fixedAnswerArea{
 	/*height: 40ex;*/
-	height: 15ex;
+	height: 40ex;
 }
 
 .answerArea{
 	height: 100%;
 	overflow: scroll;
-	background-color: #E8E8E8;
+	background-color: #F6EEEE;
 	/*border: solid black 1px;*/
 }
 
@@ -55,9 +63,10 @@
 }
 
 .answer{
-	border: solid black 1px;
-	background-color: #F3F355;
-	height: 2.5em;
+	border: solid 1px;
+	border-color: #AFEEEE;
+	background-color: #ADD8E6;
+	height: 2em;
 }
 
 html,body {
@@ -71,5 +80,27 @@ html,body {
 }
 .box{
 	height: 2.0em;
-	border: solid black 0.1px;
+	border: solid 0.1px;
+	background-color: #FFFFCC;
+	border-color: #CCCC99;
+	/*border-color: #DAC4D4;紫芋っぽいやつ
+	background-color: #E4D4E4;*/
+}
+
+.titleWaku{
+	background-color: #E4F3E4;
+}
+.captionForTitle{
+	background-color: #D4F3D4;
+}
+
+.captionForAnswer{
+	background-color: #F6E3E3;
+}
+
+.tanzakuWaku{
+	background-color: #F3F3F3;
+}
+.captionForTanzaku{
+	background-color: #D4D4D4;
 }
