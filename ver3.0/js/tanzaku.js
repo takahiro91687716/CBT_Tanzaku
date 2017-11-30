@@ -105,6 +105,7 @@ function createTanzaku(item,number,i){
 	}else{
 		newTanzaku.id = "i-" + number + "-" + i;
 		newTanzaku.classList.add("tanzaku");
+		newTanzaku.classList.add("normal");
 	}
 	newTanzaku.innerHTML += buildChoiceParts(item,number,i);
 	newTanzaku.draggable = true;
@@ -120,7 +121,7 @@ function createTanzaku2(item,number,i){
 		str += "class=\"tanzaku unique\" ";
 	}else{
 		str += "i-" + number + "-" + i + "\" ";
-		str += "class=\"tanzaku\" ";
+		str += "class=\"tanzaku normal\" ";
 	}
 	str += "draggable=\"true\" ";
 	str += "ondragstart=\"itemDragStart(event)\">";

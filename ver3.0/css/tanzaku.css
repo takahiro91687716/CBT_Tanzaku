@@ -59,13 +59,14 @@
 
 .tanzaku{
 	/*border: solid black 1px;*/
+	border: solid 1px;
 	height: 100%;
 }
 
 .answer{
 	border: solid 1px;
-	border-color: #AFEEEE;
-	background-color: #ADD8E6;
+	/*border-color: #AFEEEE;
+	background-color: #ADD8E6;*/
 	height: 2em;
 }
 
@@ -76,13 +77,18 @@ html,body {
 	height: 100%;
 }*/
 .unique{
-	font-weight: bold;
+	/*font-weight: bold;*/
+	border-color: #CCCC99;
+	background-color: #CCFFFF;
+}
+.normal{
+	border-color: #CCCC99;
+	background-color: #FFFFCC;
 }
 .box{
 	height: 2.0em;
-	border: solid 0.1px;
-	background-color: #FFFFCC;
-	border-color: #CCCC99;
+	/*background-color: #FFFFCC;
+	border-color: #CCCC99;*/
 	/*border-color: #DAC4D4;紫芋っぽいやつ
 	background-color: #E4D4E4;*/
 }
