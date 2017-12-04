@@ -427,13 +427,42 @@ function toXML(){
     }else{
       xml += "<item>\n";
     }
-    xml += backToEdit(elm.innerHTML)+"\n";
+    xml += exXml(elm.innerHTML)+"\n";
     xml += "</item>\n";
   }
 
   xml+="</question>\n</doc>";
 
   return xml;
+}
+
+function exXml(str){
+  //new RegExp(numInput+'\s*\d+\s*'+endOfInput,'g');
+  var num = str.match(/<input type=\"number\" readonly=\"true\" value=\"\s*\d+\s*\">/g);
+  var text = str.match(/<input type=\"text\" readonly=\"true\" value=\"\s*.*?\s*\">/g);
+  var pd = str.match(/<select><option>\s*.*?\s*<\/option><\/select>/g);
+
+  if(num != null){
+    for(var i = 0; i < num.length;i++){
+      str = str.replace(num[i],"{number:"+num[i].substring(numInput.length,num[i].length-endOfInput.length).replace(/\s+/g,"")+"}");
+    }
+  }
+  if(text != null){
+    for(var i = 0; i < text.length;i++){
+      str = str.replace(text[i],"{text:"+text[i].substring(textInput.length,text[i].length-endOfInput.length)+"}");
+    }
+  }
+  if(pd != null){
+    for(var i = 0; i < pd.length;i++){
+      str = str.replace(pd[i],"{pullDown:"+pd[i].substring(topOfPullDown.length,pd[i].length-endOfPullDown.length).replace(/<\/option><option>/g,",")+"}");
+    }
+  }
+
+  // console.log("数値は"+num);
+  // console.log("テキストは"+text);
+  // console.log("プルダウンは"+pd);
+  // console.log(str);
+  return str;
 }
 
 function download(blob, filename) {
@@ -475,5 +504,5 @@ function fixHeight(areaname){
 }
 
 function changeHorizontal(areaname){
-  
+
 }

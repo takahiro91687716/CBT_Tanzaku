@@ -224,7 +224,67 @@ function buildTanzakuArea(number){
 
 function buildChoiceParts(item,number,j){
 	var str = item.childNodes[0].nodeValue;
-	return pickBrace(str,number,j);
+	//return pickBrace(str,number,j);
+	return pickNormal(str);
+}
+
+var numOfForm = 0;
+function pickNormal(str){
+	var numOfNormal = 0;
+	var numOfBrace = 0;
+
+	var brace = str.match(/\{text\:.*?\}|\{number\:.*?\}|\{pullDown\:.*?\}/g);
+	console.log(brace);
+	if(brace){
+		numOfBrace = brace.length;
+	}
+
+	for(var i = 0; i < numOfBrace; i++){
+		str = str.replace(brace[i],"(@brace"+i+")");
+	}
+
+	//普通の文字をDOMにする ******braceより先にやらないと"="などに対応できない
+	var normal = str.split(/\(@brace\d\)/);
+	if(normal){
+		numOfNormal = normal.length;
+	}
+
+	for(var i = 0; i < str.length ; i++){
+		str = str.replace(normal[i],"<span>"+normal[i]+"</span>");
+	}
+
+	//braceを変換していく
+	for(var i = 0; i < numOfBrace; i++){
+		// { }を取り除く
+		var target = brace[i].substring(1, brace[i].length - 1).split(":");
+		var tmp = "<form name = \""+ numOfForm++ +"\"  style=\"display: inline\">";
+		if(target[0].includes("text")){
+			tmp += "<input type=text name=\"keyboard\" style=\"width:30px;\""
+			if(target[1]){
+				tmp += " value=" + target[1];
+			}
+			tmp += ">";
+		}else if(target[0].includes("number")){
+			console.log("hit");
+			tmp += "<input type=number name=\"keyboard\" style=\"width:30px;\""
+			if(target[1]){
+				tmp += " value=" + target[1];
+			}
+			tmp += ">";
+		}else{
+			var selectList = target[1].split(",");
+			tmp += "<select name=\"pd\">";
+			for(var j = 0; j < selectList.length;j++){
+				tmp += "<option value = \""+selectList[j]+"\">"+selectList[j]+"</option>";
+			}
+			tmp += "</select>";
+		}
+		tmp += "</form>"
+		console.log(str);
+		str = str.replace("(@brace"+i+")",tmp);
+	}
+
+	return str;
 }
 
 function searchNormal(str){
