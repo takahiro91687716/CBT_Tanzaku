@@ -259,14 +259,14 @@ function pickNormal(str){
 		var target = brace[i].substring(1, brace[i].length - 1).split(":");
 		var tmp = "<form name = \""+ numOfForm++ +"\"  style=\"display: inline\">";
 		if(target[0].includes("text")){
-			tmp += "<input type=text name=\"keyboard\" style=\"width:30px;\""
+			tmp += "<input type=text name=\"keyboard\" style=\"width:50px;\""
 			if(target[1]){
 				tmp += " value=" + target[1];
 			}
 			tmp += ">";
 		}else if(target[0].includes("number")){
 			console.log("hit");
-			tmp += "<input type=number name=\"keyboard\" style=\"width:30px;\""
+			tmp += "<input type=number name=\"keyboard\" style=\"width:50px;\""
 			if(target[1]){
 				tmp += " value=" + target[1];
 			}

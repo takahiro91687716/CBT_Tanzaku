@@ -136,9 +136,27 @@ input.add{
 
 #answerArea{
 	background-color: #F6EEEE;
+	height: 100%;
+}
+#answerWaku{
 	height: 15em;
 }
 
 *{
-     font-family: "Hiragino kaku Gothic Pro";
+  font-family: "Hiragino kaku Gothic Pro";
+}
+
+.yokonarabi{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	margin: auto;
 }

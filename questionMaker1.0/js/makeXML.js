@@ -46,14 +46,14 @@ var answerArea = [
   // "<div id=\"answerSizeFixWidth\">",
   "<form name=\"answerSize\">",
   "<label>",
-  "横幅：<input type=\"number\" name=\"answerWidth\">",
+  "横幅：<input type=\"number\" id=\"answerWidth\" onChange=\"fixWidth(\'answer\')\">",
   "</label>",
   // "</form>",
   // "</div>",
   // "<div id=\"answerSizeFixHeight\">",
   // "<form name=\"answerSize\">",
   "<label>",
-  "縦幅：<input type=\"number\"  name=\"answerHeight\">",
+  "縦幅：<input type=\"number\"  id=\"answerHeight\" onChange=\"fixHeight(\'answer\')\">",
   "</label>",
   "</form>",
   // "</div>",
@@ -61,7 +61,7 @@ var answerArea = [
   "</div>",
   "<div id=\"answerArea\"></div>",
   "</div>",
-  "</div>"
+  // "</div>"
 ];
 
 var buildArea = [
@@ -72,14 +72,14 @@ var buildArea = [
   // "<div id=\"buildSizeFixWidth\">",
   "<form name=\"buildSize\">",
   "<label>",
-  "横幅：<input type=\"number\" name=\"buildWidth\">",
+  "横幅：<input type=\"number\" id=\"buildWidth\" onChange=\"fixWidth(\'build\')\">",
   "</label>",
   // "</form>",
   // "</div>",
   // "<div id=\"buildSizeFixHeight\">",
   // "<form name=\"buildSize\">",
   "<label>",
-  "縦幅：<input type=\"number\"  name=\"buildHeight\">",
+  "縦幅：<input type=\"number\"  id=\"buildHeight\" onChange=\"fixHeight(\'build\')\">",
   "</label>",
   "</form>",
   // "</div>",
@@ -492,17 +492,27 @@ function save(){
 }
 
 function fixWidth(areaname){
-  var fixArea = document.getElementById(areaname+"Area");
+  var fixArea = document.getElementById(areaname+"Waku");
   var fixValue = document.getElementById(areaname+"Width").value;
   fixArea.style.width = fixValue + "px";
 }
 
 function fixHeight(areaname){
-  var fixArea = document.getElementById(areaname+"Area");
+  var fixArea = document.getElementById(areaname+"Waku");
+  console.log(fixArea);
   var fixValue = document.getElementById(areaname+"Height").value;
+  console.log(fixValue);
   fixArea.style.height = fixValue + "px";
 }
 
-function changeHorizontal(areaname){
-
+var horizontal = false;
+function changeHorizontal(){
+  var fixArea = document.getElementById("layout");
+  if(!horizontal){
+    fixArea.classList.add("yokonarabi");
+    horizontal = true;
+  }else{
+    fixArea.classList.remove("yokonarabi");
+    horizontal = false;
+  }
 }

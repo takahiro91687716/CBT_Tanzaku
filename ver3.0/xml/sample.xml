@@ -13,7 +13,7 @@
 	<item>整数 num</item>
 	<item>「整数を入力: 」 を表示する</item>
 	<item>num ← input()</item>
-	<item>もし num%{number}=={number} ならば</item>
+	<item>もし num%{number:}=={number} ならば</item>
 	<item>{} を表示する</item>
 	<item>を実行する</item>
 </question>
