@@ -78,17 +78,6 @@ function buildQuestion(number){
 		var newBox = document.createElement("div");
 		newBox.id = "box-" + number + "-" + i;
 		newBox.classList.add("box");
-
-		//
-		// var str = "";
-		// str += "<div id= \"i-" + number + "-" + i + "\" class=\"tanzaku\" ";
-		// str += "draggable=\"true\" ";
-		// str += "ondragstart=\"itemDragStart(event)\">";
-		// str += buildChoiceParts(itemList[i],number,i);
-		// str += "</div>\n";
-		// newBox.innerHTML += str;
-		//
-
 		tanzakuArea.appendChild(newBox);
 		newBox.innerHTML += createTanzaku2(itemList[i],number,i)
 	}
@@ -114,17 +103,17 @@ function createTanzaku(item,number,i){
 }
 
 function createTanzaku2(item,number,i){
-	var str = "<div id= \"";
+	var str = "<div id= '";
 	var unique = item.getAttributeNode("unique")
 	if(unique != null && unique.value == "true"){
-		str += "ii-" + number + "-" + i +"\" ";
-		str += "class=\"tanzaku unique\" ";
+		str += "ii-" + number + "-" + i +"' ";
+		str += "class='tanzaku unique' ";
 	}else{
-		str += "i-" + number + "-" + i + "\" ";
-		str += "class=\"tanzaku normal\" ";
+		str += "i-" + number + "-" + i + "' ";
+		str += "class='tanzaku normal' ";
 	}
-	str += "draggable=\"true\" ";
-	str += "ondragstart=\"itemDragStart(event)\">";
+	str += "draggable='true' ";
+	str += "ondragstart='itemDragStart(event)'>";
 	str += buildChoiceParts(item,number,i);
 	str += "</div>";
 
@@ -169,12 +158,12 @@ function setAnswerAreaAction(answerArea){
 //-----------------------------
 function buildQuestionArea(number){
 	var str = "";
-	str += "<div class=\"waku titleWaku\">";
-	str +=  "<div class=\"caption captionForTitle\">";
+	str += "<div class='waku titleWaku'>";
+	str +=  "<div class='caption captionForTitle'>";
 	str +=   "<h3>問題 "+ ( number + 1 ) +"</h3>";
-	str +=   "<button type=\"button\" class=\"executeButton\" onclick=\"runCode("+number+")\">プログラム実行</button>";
+	str +=   "<button type='button' class='executeButton' onclick='runCode("+number+")'>プログラム実行</button>";
 	str +=  "</div>";
-	str +=  "<div id=\"question-"+number+"\">";
+	str +=  "<div id='question-"+number+"'>";
 	str +=  "</div>";
 	str += "</div>";
 	console.log("問題"+(number+1)+"の問題文");
@@ -187,12 +176,12 @@ function buildQuestionArea(number){
 //-----------------------------
 function buildAnswerArea(number){
 	var str = "";
-	str += "<div class=\"waku answerWaku\">";
-	str +=  "<div class=\"caption captionForAnswer\">";
+	str += "<div class='waku answerWaku'>";
+	str +=  "<div class='caption captionForAnswer'>";
 	str +=   "<h3>解答欄</h3>";
 	str +=  "</div>";
-	str +=  "<div class=\"fixedAnswerArea\">";
-	str +=   "<div id=\"answerArea-"+number+"\" class=\"answerArea\" >";
+	str +=  "<div class='fixedAnswerArea'>";
+	str +=   "<div id='answerArea-"+number+"' class='answerArea' >";
 	str +=   "</div>";
 	str +=  "</div>";
 	str += "</div>";
@@ -206,11 +195,11 @@ function buildAnswerArea(number){
 //-----------------------------
 function buildTanzakuArea(number){
 	var str = "";
-	str += "<div class=\"waku tanzakuWaku\">";
-	str +=  "<div class=\"caption captionForTanzaku\">";
+	str += "<div class='waku tanzakuWaku'>";
+	str +=  "<div class='caption captionForTanzaku'>";
 	str +=   "<h3>選択肢欄</h3>";
 	str +=  "</div>";
-	str +=  "<div id=\"tanzakuArea-"+number+"\">";
+	str +=  "<div id='tanzakuArea-"+number+"'>";
 	str +=  "</div>";
 	str += "</div>";
 	console.log("問題"+(number+1)+"の選択肢欄");
@@ -257,25 +246,25 @@ function pickNormal(str){
 	for(var i = 0; i < numOfBrace; i++){
 		// { }を取り除く
 		var target = brace[i].substring(1, brace[i].length - 1).split(":");
-		var tmp = "<form name = \""+ numOfForm++ +"\"  style=\"display: inline\">";
+		var tmp = "<form name = '"+ numOfForm++ +"'  style='display: inline'>";
 		if(target[0].includes("text")){
-			tmp += "<input type=text name=\"keyboard\" style=\"width:50px;\""
+			tmp += "<input type=text name='keyboard' style='width:50px;'"
 			if(target[1]){
 				tmp += " value=" + target[1];
 			}
 			tmp += ">";
 		}else if(target[0].includes("number")){
 			console.log("hit");
-			tmp += "<input type=number name=\"keyboard\" style=\"width:50px;\""
+			tmp += "<input type=number name='keyboard' style='width:50px;'"
 			if(target[1]){
 				tmp += " value=" + target[1];
 			}
 			tmp += ">";
 		}else{
 			var selectList = target[1].split(",");
-			tmp += "<select name=\"pd\">";
+			tmp += "<select name='pd'>";
 			for(var j = 0; j < selectList.length;j++){
-				tmp += "<option value = \""+selectList[j]+"\">"+selectList[j]+"</option>";
+				tmp += "<option value = '"+selectList[j]+"'>"+selectList[j]+"</option>";
 			}
 			tmp += "</select>";
 		}
@@ -351,9 +340,9 @@ function pickBrace(str,number,j){
 			if(1 < pull.length){
 				result = buildBrace(pull,number,j);
 			}else if(target == ""){
-				result = "<form name = \""+number+"-"+j+"\"  style=\"display: inline\"><input type=text name=\"keyboard\" style=\"width:30px;\"></form>";
+				result = "<form name = '"+number+"-"+j+"'  style='display: inline'><input type=text name='keyboard' style='width:30px;'></form>";
 			}else if(target == "number"){
-				result = "<form name = \""+number+"-"+j+"\"  style=\"display: inline\"><input type=number name=\"keyboard\" style=\"width:30px;\"></form>";
+				result = "<form name = '"+number+"-"+j+"'  style='display: inline'><input type=number name='keyboard' style='width:30px;'></form>";
 			}else{//いらんかも↓
 				result = "<span>"+ seq[i]+"</span>";
 			}
@@ -369,10 +358,10 @@ function pickBrace(str,number,j){
 var forms = 0;
 function buildBrace(choices,number,j){
 
-	var text = "<form name = \""+number+"-"+j+"-"+forms++ +"\"  style=\"display: inline\"><select name=\"pd\">";
+	var text = "<form name = '"+number+"-"+j+"-"+forms++ +"'  style='display: inline'><select name='pd'>";
 
 	for(var i = 0; i < choices.length;i++){
-		text += "<option value = \""+choices[i]+"\">"+choices[i]+"</option>";
+		text += "<option value = '"+choices[i]+"'>"+choices[i]+"</option>";
 	}
 
 	text += "</select></form>";
@@ -751,7 +740,7 @@ function runCode(number){
 		if(codes[i].includes("input()")){
 			tmpLine += "yield inputValueVirPage;\n";
 			tmpLine += codes[i]+"\n";
-			tmpLine += "console.log(\"fin\");"//コンソールで確認中！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+			tmpLine += "console.log('fin');"//コンソールで確認中！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 		}else{
 			//inputが含まれない場合の処理
 			tmpLine += codes[i];
@@ -808,10 +797,10 @@ function toJS(line){
 	line = line.replace(/←/g,"=");
 
 	//変数
-	line = line.replace(/「|」/g,"\"");
+	line = line.replace(/「|」/g,"'");
 
 	//文字列は変えといて最後に戻す
-	var strs = line.match(/\".+?\"/);
+	var strs = line.match(/'.+?'/);
 	if(strs != null){
 	for(var i = 0; i < strs.length ; i++){
 		//console.log(strs[i]+",,,,mojiretsu"+i);
@@ -881,27 +870,28 @@ var scriptBefore = [
   "<html>\n",
 
   " <head>\n",
-  "   <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n",
+  "   <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />\n",
   "   <title>\n",
   "    runProg\n",
   "   </title>\n",
   " </head>\n",
 
-  " <body onLoad = \"start()\">\n",
-  "   <form name=\"in\">\n",
-  "    <input type=\"text\" name=\"keyboard\">\n",
-  "    <input type=\"button\" value=\"入力\" onclick=\"setInputValue()\">\n",
-  "    <input type=\"button\" value=\"リセット\" onclick=\"clean()\">\n",
+  " <body onLoad = 'start()'>\n",
+  "   <form name='in'>\n",
+  "    <input type='text' name='keyboard'>\n",
+  "    <input type='button' value='入力' onclick='setInputValue()'>\n",
+  "    <input type='button' value='リセット' onclick='clean()'>\n",
   "   </form>\n",
 
-  "   <form name=\"program\">\n",
-  "    <textarea name=\"out\" readonly rows=\"8\" cols=\"40\"></textarea>\n",
+  "   <form name='program'>\n",
+  "    <textarea name='out' readonly rows='8' cols='40'></textarea>\n",
+  "    <textarea name='error' readonly rows='8' cols='40'></textarea>\n",
   "   </form>\n",
 
-  "   <script type=\"text/javascript\">\n",
+  "   <script type='text/javascript'>\n",
   "    \/\/ 改行あり出力\n",
   "    function outputWithReturn(res){\n",
-  "      program.out.value += res+\"\\n\";\n",
+  "      program.out.value += res+'\\n';\n",
   "    }\n",
 
   "    \/\/ 改行なし出力\n",
@@ -914,8 +904,8 @@ var scriptBefore = [
 	"    var inputValueVirPage;\n",
   "    function setInputValue(){\n",
   "     inputValueVirPage = document.in.keyboard.value;",
-  "     document.in.keyboard.value = \"\";",
-  "     outputWithReturn(\"＜入力＞　：\"+inputValueVirPage);\n",
+  "     document.in.keyboard.value = '';",
+  "     outputWithReturn('＜入力＞　：'+inputValueVirPage);\n",
   "     gen.next(inputValueVirPage);\n",
   "    }\n",
 
@@ -927,10 +917,15 @@ var scriptBefore = [
   "    \/\/ 入力値の初期化を行う\n",
   "    \/\/ 「リセットボタン」で呼び出す\n",
   "    function clean(){\n",
-  "     program.out.value = \"\";\n",
+  "     program.out.value = '';\n",
   "     gen = result(0);\n",
 	"     gen.next(0);\n",
   "    }\n",
+
+	"    window.onerror = function(msg, url, line, col, error) {",
+  "     program.error.value += msg;",
+	"     console.log(msg);",
+	"    };",
 
   "    function* result(inputValueVirPage){\n",
 ];

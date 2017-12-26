@@ -10,105 +10,76 @@ var buildArea = null;
 var answerWaku = null;
 
 var title = [
-  "<div id=\"titleWaku\" class=\"waku\">",
-  "<div id=\"captionForTitle\" class=\"caption\">",
+  "<div id='titleWaku' class='waku'>",
+  "<div id='captionForTitle' class='caption'>",
   "<h4>問題文編集エリア</h4>",
-  // "<div id=\"titleSizeFix\" class=\"sizeFix\">",
-  // "<div id=\"titleSizeFixWidth\">",
-  // "<form name=\"titleSize\">",
-  // "<label>",
-  // "横幅：<input type=\"number\" name=\"titleWidth\">",
-  // "</label>",
-  // "</form>",
-  // "</div>",
-  // "<div id=\"titleSizeFixHeight\">",
-  // "<form name=\"titleSize\">",
-  // "<label>",
-  // "縦幅：<input type=\"number\"  name=\"titleHeight\">",
-  // "</label>",
-  // "</form>",
-  // "</div>",
-  // "</div>",
   "</div>",
-  "<div id=\"titleEditArea\">",
-  "<form name=\"question\">",
-  "<textarea id=\"questionText\" name=\"text\" rows=\"6\" cols=\"100\"></textarea>",
+  "<div id='titleEditArea'>",
+  "<form name='question'>",
+  "<textarea id='questionText' name='text' rows='6' cols='100'></textarea>",
   "</form>",
   "</div>",
   "</div>"
 ];
 
 var answerArea = [
-  "<div id=\"answerWaku\" class=\"waku\">",
-  "<div id=\"captionForAnswer\" class=\"caption\">",
+  "<div id='answerWaku' class='waku'>",
+  "<div id='captionForAnswer' class='caption'>",
   "<h4>解答欄プレビュー</h4>",
-  "<div id=\"answerSizeFix\" class=\"sizeFix\">",
-  // "<div id=\"answerSizeFixWidth\">",
-  "<form name=\"answerSize\">",
+  "<div id='answerSizeFix' class='sizeFix'>",
+  "<form name='answerSize'>",
   "<label>",
-  "横幅：<input type=\"number\" id=\"answerWidth\" onChange=\"fixWidth(\'answer\')\">",
+  "横幅：<input type='number' id='answerWidth' onChange='fixWidth(\'answer\')'>",
   "</label>",
-  // "</form>",
-  // "</div>",
-  // "<div id=\"answerSizeFixHeight\">",
-  // "<form name=\"answerSize\">",
   "<label>",
-  "縦幅：<input type=\"number\"  id=\"answerHeight\" onChange=\"fixHeight(\'answer\')\">",
+  "縦幅：<input type='number'  id='answerHeight' onChange='fixHeight(\'answer\')'>",
   "</label>",
   "</form>",
-  // "</div>",
   "</div>",
   "</div>",
-  "<div id=\"answerArea\"></div>",
+  "<div id='answerArea'></div>",
   "</div>",
-  // "</div>"
 ];
 
 var buildArea = [
-  "<div id=\"buildWaku\" class=\"waku\">",
-  "<div id=\"captionForBuild\" class=\"caption\">",
+  "<div id='buildWaku' class='waku'>",
+  "<div id='captionForBuild' class='caption'>",
   "<h4>選択肢欄</h4>",
-  "<div id=\"buildSizeFix\" class=\"sizeFix\">",
-  // "<div id=\"buildSizeFixWidth\">",
-  "<form name=\"buildSize\">",
+  "<div id='buildSizeFix' class='sizeFix'>",
+  "<form name='buildSize'>",
   "<label>",
-  "横幅：<input type=\"number\" id=\"buildWidth\" onChange=\"fixWidth(\'build\')\">",
+  "横幅：<input type='number' id='buildWidth' onChange='fixWidth(\'build\')'>",
   "</label>",
-  // "</form>",
-  // "</div>",
-  // "<div id=\"buildSizeFixHeight\">",
-  // "<form name=\"buildSize\">",
   "<label>",
-  "縦幅：<input type=\"number\"  id=\"buildHeight\" onChange=\"fixHeight(\'build\')\">",
+  "縦幅：<input type='number'  id='buildHeight' onChange='fixHeight(\'build\')'>",
   "</label>",
   "</form>",
-  // "</div>",
   "</div>",
   "</div>",
-  "<div id=\"buildAreaFixed\">",
-  "<div id=\"buildArea\" style=\"height:100%;\"></div>",
+  "<div id='buildAreaFixed'>",
+  "<div id='buildArea' style='height:100%;'></div>",
   "</div>",
   "</div>"
 ];
 
 var editAreaList = [
-  "<div id=\"editWaku\" class=\"waku\">",
-  "<div id=\"captionForEdit\" class=\"caption\">",
+  "<div id='editWaku' class='waku'>",
+  "<div id='captionForEdit' class='caption'>",
   "<h4>選択肢編集エリア</h4>",
   "</div>",
-  "<div id=\"box\" class=\"parts\">",
-  "<div id=\"editArea1\" class=\"parts\">",
-  "<div id=\"editArea2\" class=\"parts\">",
-  "<form name=\"tanzaku\" style=\"display: inline\">",
-  "<textarea id=\"Content\" name=\"text\" rows=\"4\" cols=\"70\" ondrop=\"dropToEditArea(event)\"></textarea>",
+  "<div id='box' class='parts'>",
+  "<div id='editArea1' class='parts'>",
+  "<div id='editArea2' class='parts'>",
+  "<form name='tanzaku' style='display: inline'>",
+  "<textarea id='Content' name='text' rows='4' cols='70' ondrop='dropToEditArea(event)'></textarea>",
   "</form>",
-  "<input type=\"button\" class=\"add\" value=\"追加\" style=\"display: inline\" onclick=\"addTanzaku()\"></input>",
+  "<input type='button' class='add' value='追加' style='display: inline' onclick='addTanzaku()'></input>",
   "</div>",
-  "<div id = \"valuableText\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<input type=\"text\" readonly value=\"自由記入欄\"></input>　</div>",
-  "<div id = \"valuableNumber\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<input type=\"number\"readonly value=\"99999\"></input>　</div>",
-  "<div id = \"pullDown\" draggable = \"true\" style=\"display: inline\" ondragstart=\"editDrag(event)\">　<select><option>-未選択-</option><option>選択肢Ａ</option><option>選択肢Ｂ</option></select>　</div>",
+  "<div id = 'valuableText' draggable = 'true' style='display: inline' ondragstart='editDrag(event)'>　<input type='text' readonly value='自由記入欄'></input>　</div>",
+  "<div id = 'valuableNumber' draggable = 'true' style='display: inline' ondragstart='editDrag(event)'>　<input type='number'readonly value='99999'></input>　</div>",
+  "<div id = 'pullDown' draggable = 'true' style='display: inline' ondragstart='editDrag(event)'>　<select><option>-未選択-</option><option>選択肢Ａ</option><option>選択肢Ｂ</option></select>　</div>",
   "</div>",
-  "<div id=\"setsumeibun\" class=\"parts\">",
+  "<div id='setsumeibun' class='parts'>",
   "<p>テキストボックスで選択肢を作成し、ボタンで追加します。３つの部品も選択肢の中で使用することができます。</p>",
   "<p>※ 全角の［ ］、【 】、｛ ｝は使用できません</p>",
   "</div>",
@@ -127,7 +98,7 @@ function buildMaker(){
   for(var i = 0; i < title.length; i ++){
     html += title[i];
   }
-  html += "<div id=\"layout\">";
+  html += "<div id='layout'>";
   for(var i = 0; i < answerArea.length; i ++){
     html += answerArea[i];
   }
@@ -149,6 +120,7 @@ function editDrag(e) {
 
 function setElement(){
   editArea = document.getElementById("Content");
+  editArea.ondragover = prev;//
   buildArea = document.getElementById("buildArea");
   answerWaku = document.getElementById("answerWaku");
 }
@@ -199,9 +171,8 @@ function buildPartsForEdit(id){
 
 //ビルドエリアからエディットエリアへ移した時のパーツの変換
 function backToEdit(str){
-  //new RegExp(numInput+'\s*\d+\s*'+endOfInput,'g');
-  var num = str.match(/<input type=\"number\" readonly=\"true\" value=\"\s*\d+\s*\">/g);
-  var text = str.match(/<input type=\"text\" readonly=\"true\" value=\"\s*.*?\s*\">/g);
+  var num = str.match(/<input type='number' readonly='true' value='\s*\d+\s*'>/g);
+  var text = str.match(/<input type='text' readonly='true' value='\s*.*?\s*'>/g);
   var pd = str.match(/<select><option>\s*.*?\s*<\/option><\/select>/g);
 
   if(num != null){
@@ -219,17 +190,12 @@ function backToEdit(str){
       str = str.replace(pd[i],"｛"+pd[i].substring(topOfPullDown.length,pd[i].length-endOfPullDown.length).replace(/<\/option><option>/g,"｜")+"｝");
     }
   }
-
-  // console.log("数値は"+num);
-  // console.log("テキストは"+text);
-  // console.log("プルダウンは"+pd);
-  // console.log(str);
   return str;
 }
 
-var textInput = "<input type=\"text\" readonly=\"true\" value=\"";
-var numInput = "<input type=\"number\" readonly=\"true\" value=\"";
-var endOfInput = "\">";
+var textInput = "<input type='text' readonly='true' value='";
+var numInput = "<input type='number' readonly='true' value='";
+var endOfInput = "'>";
 var topOfPullDown = "<select><option>";
 var slash = "</option><option>"
 var endOfPullDown = "</option></select>";
@@ -255,10 +221,6 @@ function buildPartsForBuild(str){
       str = str.replace(pd[i],topOfPullDown+pd[i].substring(1,pd[i].length-1).replace(/｜/g,slash)+endOfPullDown);
     }
   }
-  // console.log("数値は"+num);
-  // console.log("テキストは"+text);
-  // console.log("プルダウンは"+pd);
-  // console.log(str);
   return str;
 }
 
@@ -272,7 +234,6 @@ function addTanzaku(){
   if(0 < editArea.value.length){
     var newCanvas = canvasOrigin.cloneNode(true);
     newCanvas.id = "canvas-"+ numOfChoice;
-    //newCanvas.innerHTML += "<input type=\"checkbox\" value=\"unique=\"true\"\">";
     var newTanzaku = document.createElement("div");
     newTanzaku.id = "t-" + numOfChoice ++;
     newTanzaku.classList.add("tanzaku");
@@ -283,18 +244,11 @@ function addTanzaku(){
     newTanzaku.innerHTML += buildPartsForBuild(editArea.value);
     newTanzaku.ondragover = prev;
   	newTanzaku.ondrag=prev;
-    newTanzaku.ondrop = dropToTanzaku;//テストだよおおおおおおおおおおおおおおおお
+    newTanzaku.ondrop = dropToTanzaku;
     newTanzaku.ondblclick = changeToUnique;
-    //newTanzaku.style.display = "inline";
-    // var newBound = boundOrigin.cloneNode(true);
-    // newBound.id = "bound-"+ ++numOfChoice;
-    // newBound.ondragover = prev;
-  	// newBound.ondrag=prev;
-    // newBound.ondrop = dropToBuildArea;
     editArea.value = "";
     buildArea.appendChild(newCanvas);
     newCanvas.appendChild(newTanzaku);
-    // buildArea.appendChild(newBound);
   }else{
     alert("空の選択肢は置けません！");
   }
@@ -416,14 +370,14 @@ function setAnswerArea(){
 
 
 function toXML(){
-  var xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<doc>\n<question>\n";
+  var xml = "<?xml version='1.0' encoding='UTF-8'?>\n<doc>\n<question>\n";
 
   xml += "<text>\n"+document.getElementById("questionText").value+"\n</text>\n";
 
   for(var i = 0; i < numOfChoice; i++){
     var elm = document.getElementById("canvas-"+i).childNodes[0];
     if(elm.id.includes("unique")){
-      xml += "<item unique=\"true\">\n";
+      xml += "<item unique='true'>\n";
     }else{
       xml += "<item>\n";
     }
@@ -437,9 +391,8 @@ function toXML(){
 }
 
 function exXml(str){
-  //new RegExp(numInput+'\s*\d+\s*'+endOfInput,'g');
-  var num = str.match(/<input type=\"number\" readonly=\"true\" value=\"\s*\d+\s*\">/g);
-  var text = str.match(/<input type=\"text\" readonly=\"true\" value=\"\s*.*?\s*\">/g);
+  var num = str.match(/<input type='number' readonly='true' value='\s*\d+\s*'>/g);
+  var text = str.match(/<input type='text' readonly='true' value='\s*.*?\s*'>/g);
   var pd = str.match(/<select><option>\s*.*?\s*<\/option><\/select>/g);
 
   if(num != null){
@@ -457,11 +410,6 @@ function exXml(str){
       str = str.replace(pd[i],"{pullDown:"+pd[i].substring(topOfPullDown.length,pd[i].length-endOfPullDown.length).replace(/<\/option><option>/g,",")+"}");
     }
   }
-
-  // console.log("数値は"+num);
-  // console.log("テキストは"+text);
-  // console.log("プルダウンは"+pd);
-  // console.log(str);
   return str;
 }
 
