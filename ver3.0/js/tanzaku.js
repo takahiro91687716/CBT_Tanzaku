@@ -1,7 +1,7 @@
 //XMLHttpRequestオブジェクトを生成
 var xhr = new XMLHttpRequest();
 
-//問題ファイル
+//問題のDOM
 var question = null;
 
 
@@ -16,28 +16,30 @@ function requestFile(method, fname, async) {
 	//無名functionによるイベント処理
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4) {
-			buildQuestions(xhr);
+			buildQuestions();
 		}
 	}
 	xhr.send();
 }
 
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ページに問題を配置する
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 //--------------------------------------------------
 //ページ全体に問いを配置する関数
 //--------------------------------------------------
-function buildQuestions(HttpObj){
+function buildQuestions(){
 	//xmlからquestion tagのついている内容を取得
-	var resHTTP = HttpObj.responseXML;
+	var resHTTP = xhr.responseXML;
 	question = resHTTP.getElementsByTagName('question');
 
 	for(var number = 0; number < question.length;number++){
 		buildQuestion(number);
 	}
 
-	// document.getElementById("answerArea-0").ondragover = prev;
-	// document.getElementById("answerArea-0").ondrag = prev;
-	// document.getElementById("answerArea-0").ondrop = dropToAnswerArea;
-
+	//関数にしたい！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 	for(var i = 0; i < question.length; i ++){
 		document.getElementById("answerArea-"+i).ondragover = prev;
 		document.getElementById("answerArea-"+i).ondrag = prev;
@@ -66,14 +68,8 @@ function buildQuestion(number){
 	//問題文埋め込み
 	document.getElementById("question-"+number).innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
 
-	//選択肢埋め込み
+	//選択肢埋め込み（DOMだとうまくいかない）
 	for(i = 0; i < itemList.length; i++) {
-		// var newTanzaku = tanzakuOrigin.cloneNode(true);
-		// newTanzaku.id = "i-" + number + "-" + i;
-		// newTanzaku.classList.add("tanzaku");
-		// newTanzaku.ondragstart = itemDragStart;
-		// newTanzaku.innerHTML += buildChoiceParts(itemList[i],number,i);
-		// document.getElementById("tanzakuArea-"+number).appendChild(newTanzaku);
 		var tanzakuArea = document.getElementById("tanzakuArea-"+number);
 		var newBox = document.createElement("div");
 		newBox.id = "box-" + number + "-" + i;
@@ -83,42 +79,29 @@ function buildQuestion(number){
 	}
 }
 
-//DOMだとドラッグ処理が受け継がれない？？
-function createTanzaku(item,number,i){
-	var newTanzaku = document.createElement("div");
-	var unique = item.getAttributeNode("unique")
-	if(unique != null && unique.value == "true"){
-		newTanzaku.id = "ii-" + number + "-" + i;
-		newTanzaku.classList.add("tanzaku");
-		newTanzaku.classList.add("unique");
-	}else{
-		newTanzaku.id = "i-" + number + "-" + i;
-		newTanzaku.classList.add("tanzaku");
-		newTanzaku.classList.add("normal");
-	}
-	newTanzaku.innerHTML += buildChoiceParts(item,number,i);
-	newTanzaku.draggable = true;
-	newTanzaku.ondragstart = itemDragStart;
-	return newTanzaku;
+//--------------------------------------------------
+// "(number)問目"を作成する関数
+//--------------------------------------------------
+function buildQuestion(number){
+	var textarea = question[number].getElementsByTagName('textarea');
+	var answerarea = question[number].getElementsByTagName('answerarea');
+	var itemsarea = question[number].getElementsByTagName('itemsarea');
+
+	//問題要素を表示する領域の生成
+	buildArea(number);
+
+	//問題文要素埋め込み
+	buildTextarea(textarea, number);
+	//解答欄要素埋め込み
+	buildAnswerarea(answerarea, number);
+	//選択肢欄要素埋め込み
+	buildItemsarea(itemsarea, number);
 }
 
-function createTanzaku2(item,number,i){
-	var str = "<div id= '";
-	var unique = item.getAttributeNode("unique")
-	if(unique != null && unique.value == "true"){
-		str += "ii-" + number + "-" + i +"' ";
-		str += "class='tanzaku unique' ";
-	}else{
-		str += "i-" + number + "-" + i + "' ";
-		str += "class='tanzaku normal' ";
-	}
-	str += "draggable='true' ";
-	str += "ondragstart='itemDragStart(event)'>";
-	str += buildChoiceParts(item,number,i);
-	str += "</div>";
 
-	return str;
-}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// １題を構成するHTML要素を作成する
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 //--------------------------------------------------
 // １題の構成要素を設置する
@@ -127,73 +110,52 @@ function buildArea(number){
 	var area = document.getElementById("area");
 
 	//問題文領域の生成
-	area.innerHTML += buildQuestionArea(number);
-
+	area.innerHTML += buildTextareaHTML(number);
 	//解答欄領域の生成
-	area.innerHTML += buildAnswerArea(number);
-	console.log("--"+(number+1)+"問目のイベント設定");
-	// document.getElementById("answerArea-"+number).ondragover = prev;
-	// document.getElementById("answerArea-"+number).ondrag = prev;
-	// document.getElementById("answerArea-"+number).ondrop = dropToAnswerArea;
-
+	area.innerHTML += buildAnswerareaHTML(number);
 	//選択肢領域の生成
-	area.innerHTML += buildTanzakuArea(number);
-
+	area.innerHTML += buildItemsareaHTML(number);
 	//問題区切り
 	area.innerHTML+= "<br>";
 }
 
-function setAnswerAreaAction(answerArea){
-	answerArea.ondragover = prev;
-	answerArea.ondrag = prev;
-	answerArea.ondrop = dropToAnswerArea;
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// １題を構成するＨＴＭＬ要素を作成する
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 //-----------------------------
 // 問題文の表示を行う領域を作成する
 //-----------------------------
-function buildQuestionArea(number){
+function buildTextareaHTML(number){
 	var str = "";
 	str += "<div class='waku titleWaku'>";
 	str +=  "<div class='caption captionForTitle'>";
 	str +=   "<h3>問題 "+ ( number + 1 ) +"</h3>";
-	str +=   "<button type='button' class='executeButton' onclick='runCode("+number+")'>プログラム実行</button>";
 	str +=  "</div>";
 	str +=  "<div id='question-"+number+"'>";
 	str +=  "</div>";
 	str += "</div>";
-	console.log("問題"+(number+1)+"の問題文");
-	console.log(str);
 	return str;
 }
 
 //-----------------------------
 // 解答欄の表示を行う領域を作成する
 //-----------------------------
-function buildAnswerArea(number){
+function buildAnswerareaHTML(number){
 	var str = "";
 	str += "<div class='waku answerWaku'>";
 	str +=  "<div class='caption captionForAnswer'>";
 	str +=   "<h3>解答欄</h3>";
+	str +=   "<button type='button' class='executeButton' onclick='runCode("+number+")'>実行</button>";
 	str +=  "</div>";
 	str +=  "<div class='fixedAnswerArea'>";
 	str +=   "<div id='answerArea-"+number+"' class='answerArea' >";
 	str +=   "</div>";
 	str +=  "</div>";
 	str += "</div>";
-	console.log("問題"+(number+1)+"の解答欄");
-	console.log(str);
 	return str;
 }
 
 //-----------------------------
 // 選択肢の表示を行う領域を作成する
 //-----------------------------
-function buildTanzakuArea(number){
+function buildItemsareaHTML(number){
 	var str = "";
 	str += "<div class='waku tanzakuWaku'>";
 	str +=  "<div class='caption captionForTanzaku'>";
@@ -202,42 +164,123 @@ function buildTanzakuArea(number){
 	str +=  "<div id='tanzakuArea-"+number+"'>";
 	str +=  "</div>";
 	str += "</div>";
-	console.log("問題"+(number+1)+"の選択肢欄");
-	console.log(str);
 	return str;
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// ＸＭＬで記述された短冊をＨＴＭＬ表示形式に変換する
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function buildChoiceParts(item,number,j){
-	var str = item.childNodes[0].nodeValue;
-	//return pickBrace(str,number,j);
-	return pickNormal(str);
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// １題を構成するDOM要素の埋め込み
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+//--------------------------------------------------
+// "(number)問目"の問題文要素を埋め込む関数
+//--------------------------------------------------
+function buildTextarea(textarea, number){
+	var text = textarea[0].getElementsByTagName('text')[0].childNodes[0].nodeValue;
+	document.getElementById("question-"+number).innerHTML += "<p>" + text + "</p>";
 }
 
+//--------------------------------------------------
+// "(number)問目"の解答欄要素を埋め込む関数
+//--------------------------------------------------
+function buildAnswerarea(answerarea, number){
+	var items = answerarea[0].getElementsByTagName('item');
+
+	//選択肢埋め込み
+	for(i = 0; i < items.length; i++) {
+		var answerareaElm = document.getElementById("answerArea-"+number);
+		var newBox = document.createElement("div");
+		newBox.id = "fixedbox-" + number + "-" + i;
+		newBox.classList.add("box");
+		answerareaElm.appendChild(newBox);
+		newBox.innerHTML += buildAnswerareaItemHTML(items[i],number,i)
+	}
+}
+
+//--------------------------------------------------
+// "(number)問目"の選択肢欄要素を埋め込む関数
+//--------------------------------------------------
+function buildItemsarea(itemsarea, number){
+	var items = itemsarea[0].getElementsByTagName('item');
+
+	//選択肢埋め込み
+	for(i = 0; i < items.length; i++) {
+		var tanzakuArea = document.getElementById("tanzakuArea-"+number);
+		var newBox = document.createElement("div");
+		newBox.id = "box-" + number + "-" + i;
+		newBox.classList.add("box");
+		tanzakuArea.appendChild(newBox);
+		newBox.innerHTML += buildItemsareaItemHTML(items[i],number,i)
+	}
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// １選択肢（DOM）からHTML形式の選択肢形成
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+function buildAnswerareaItemHTML(item, numOfQuestion, numOfItems){
+	var itemHTML = "<div id= '";
+
+	// IDなどをどうするか考えなければいけない！！！！！！！！！！！！！！！！！！！！！！！！！！
+	itemHTML += "f-" + numOfQuestion + "-" + numOfItems + "' ";
+	itemHTML += "class='tanzaku fix'>";//とりあえずfixのクラスを追加
+	itemHTML += buildItemIncludesParts(item);
+	itemHTML += "</div>";
+
+	return itemHTML;
+}
+
+function buildItemsareaItemHTML(item, numOfQuestion, numOfItems){
+	//使用回数１回の属性指定がされているか調べる
+	var unique = item.getAttributeNode("unique");
+
+	var itemHTML = "<div id= '";
+	if(unique != null && unique.value == "true"){
+		itemHTML += "ii-" + numOfQuestion + "-" + numOfItems +"' ";
+		itemHTML += "class='tanzaku unique' ";
+	}else{
+		itemHTML += "i-" + numOfQuestion + "-" + numOfItems + "' ";
+		itemHTML += "class='tanzaku normal' ";
+	}
+	itemHTML += "draggable='true' ";
+	itemHTML += "ondragstart='itemDragStart(event)'>";
+	itemHTML += buildItemIncludesParts(item);
+	itemHTML += "</div>";
+
+	return itemHTML;
+}
+
+// フォーム重複を防ぐためにフィールドで変数を持つ
 var numOfForm = 0;
-function pickNormal(str){
+function buildItemIncludesParts(item){
+	// <item> ~~~~~~ </item>の
+	// ~~~~~~部分を取得する
+	var str = item.childNodes[0].nodeValue;
+
+	// 特殊部品 ex) {number:200} とそうでない部分を分解してHTML表示形式に組み替える
 	var numOfNormal = 0;
 	var numOfBrace = 0;
 
+	// 正規表現で特殊部品を探す
 	var brace = str.match(/\{text\:.*?\}|\{number\:.*?\}|\{pullDown\:.*?\}/g);
-	console.log(brace);
 	if(brace){
 		numOfBrace = brace.length;
 	}
 
+	// 特殊部品の部分を一旦わかりやすい形に置き換えておく
+	// ここでは (@brace番号) の形
 	for(var i = 0; i < numOfBrace; i++){
 		str = str.replace(brace[i],"(@brace"+i+")");
 	}
 
-	//普通の文字をDOMにする ******braceより先にやらないと"="などに対応できない
+	// (@brace番号)を区切り文字として使用することで特殊部品以外を取得する
 	var normal = str.split(/\(@brace\d\)/);
 	if(normal){
 		numOfNormal = normal.length;
 	}
 
+	// 特殊部品以外を <span> ~~~~~ </span>という形に置き換える
+	// この置き換えを行わないと，あとで解答を取得するときに面倒になる
 	for(var i = 0; i < str.length ; i++){
 		str = str.replace(normal[i],"<span>"+normal[i]+"</span>");
 	}
@@ -248,14 +291,14 @@ function pickNormal(str){
 		var target = brace[i].substring(1, brace[i].length - 1).split(":");
 		var tmp = "<form name = '"+ numOfForm++ +"'  style='display: inline'>";
 		if(target[0].includes("text")){
-			tmp += "<input type=text name='keyboard' style='width:50px;'"
+			tmp += "<input type=text name='keyboard' style='width:50px;'";
 			if(target[1]){
 				tmp += " value=" + target[1];
 			}
 			tmp += ">";
 		}else if(target[0].includes("number")){
 			console.log("hit");
-			tmp += "<input type=number name='keyboard' style='width:50px;'"
+			tmp += "<input type=number name='keyboard' style='width:50px;'";
 			if(target[1]){
 				tmp += " value=" + target[1];
 			}
@@ -268,105 +311,13 @@ function pickNormal(str){
 			}
 			tmp += "</select>";
 		}
-		tmp += "</form>"
-		console.log(str);
+		tmp += "</form>";
 		str = str.replace("(@brace"+i+")",tmp);
 	}
 
 	return str;
 }
 
-function searchNormal(str){
-	var normal = [];
-	var braceFlug = false;
-
-	//alert(str.length);
-	for(var i = 0; i < str.length;i++){
-		//alert();
-		if(str.charAt(i) != "{"){
-			//console.log();(i);
-			var tmp = "";
-			for(var j = i; j < str.length;j++){
-				//console.log(j);
-				if(str.charAt(j) == "{"){
-					//console.log("break")
-					break;
-				}
-				tmp += str.charAt(j);
-				i = j;
-			}
-			normal.push(tmp);
-		}else{
-			for(var j = i; j < str.length;j++){
-				if(str.charAt(j) == "}"){
-					i = j++;
-					break;
-				}
-				// "{あいうえお"みたいな時にも対応するようにしなければならない！！！！！！！！！！！！！！！！！！！！！！
-			}
-		}
-	}
-	return normal;
-}
-
-function pickBrace(str,number,j){
-	//最短マッチで探す
-	var seq = str.match(/\{(.*?)\}/g);
-	var regExp = null;
-
-	//普通のも探す
-	var normal = searchNormal(str).concat();
-
-	//普通の文字をDOMにする ******braceより先にやらないと"="などに対応できない
-	//console.log(normal);
-	if(normal){
-		for(var i = 0; i < normal.length;i++){
-			//console.log(i +",,,,,,,"+ normal[i]);
-			//console.log(str.includes(normal[i])+"...."+str);
-			//gいらんかも
-			//regExp = new RegExp(normal[i], "g");
-			str = str.replace(normal[i],"<span>"+normal[i]+"</span>");
-			//str.replace("整数","<span>"+normal[i]+"</span>");
-		}
-	}
-
-	//{}を置き換える
-	if(seq){
-		for(var i = 0; i < seq.length;i++){
-			var target = seq[i].substring(1, seq[i].length - 1);
-			var pull = target.split(",");
-			var result = "";
-
-			if(1 < pull.length){
-				result = buildBrace(pull,number,j);
-			}else if(target == ""){
-				result = "<form name = '"+number+"-"+j+"'  style='display: inline'><input type=text name='keyboard' style='width:30px;'></form>";
-			}else if(target == "number"){
-				result = "<form name = '"+number+"-"+j+"'  style='display: inline'><input type=number name='keyboard' style='width:30px;'></form>";
-			}else{//いらんかも↓
-				result = "<span>"+ seq[i]+"</span>";
-			}
-			regExp = new RegExp("{"+target+"}", "g");
-			str = str.replace( regExp , result) ;
-		}
-	}
-
-	return str;
-}
-
-//フォームの区別用
-var forms = 0;
-function buildBrace(choices,number,j){
-
-	var text = "<form name = '"+number+"-"+j+"-"+forms++ +"'  style='display: inline'><select name='pd'>";
-
-	for(var i = 0; i < choices.length;i++){
-		text += "<option value = '"+choices[i]+"'>"+choices[i]+"</option>";
-	}
-
-	text += "</select></form>";
-	return text;
-}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // ドラッグドロップによる解答イベント処理

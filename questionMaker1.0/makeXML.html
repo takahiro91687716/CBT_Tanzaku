@@ -8,16 +8,107 @@
 		<link rel="stylesheet" type="text/css" href="css/makeXML.css"/>
 	</head>
 
-	<body onload="start()">
-    <div id="toolsWaku" class="waku">
-      <input type="button" class="tools" value="新規作成" onclick="addQuestion()">
-			<input type="text" id="filename" value="sample" size="10">
-			<span>.xml</span>
-      <input type="button" class="tools" value="保存" onclick="save()">
-			<input type="button" id="dispAnswer" class="tools" value="解答欄表示" onclick="setAnswerArea()">
-			<input type="button" id="horizon" class="tools" value="横並びにする" onclick="changeHorizontal()">
-    </div>
-		<div id ="area"></div>
+	<body onload="setElement()">
+		<div id ="area">
+			<div id="toolsWaku" class="waku">
+				<div id="tool">
+					<b>ツール欄</b>
+					<input type="text" id="filename" value="sample" size="10">
+					<span>.xml</span>
+					<input type="button" class="tools" value="保存" onclick="save2()">
+					<input type="button" id="dispAnswer" class="tools" value="解答欄表示" onclick="setAnswerArea()">
+					<input type="button" id="horizon" class="tools" value="横並びにする" onclick="changeHorizontal()">
+					<input type="button" id="fileopen" class="tools" value="ファイルリスト" onclick="openFilelist()">
+				</div>
+				<div id="filelist"></div>
+			</div>
+
+			<div id='titleWaku' class='waku'>
+				<div id='captionForTitle' class='caption'>
+					<h4>問題文編集欄</h4>
+				</div>
+				<div id='titleEditArea'>
+					<form name='question'>
+						<textarea id='questionText' name='text' rows='3' cols='100'></textarea>
+					</form>
+				</div>
+			</div>
+
+			<!-- 横並びにするための枠 layout -->
+			<div id='layout'>
+
+				<div id='answerareaWaku' class='waku'>
+					<div id='captionForAnswer' class='caption'>
+						<h4>解答欄</h4>
+						<div id='answerSizeFix' class='sizeFix'>
+							<form name='answerSize'>
+								<label>
+									横幅：<input type='number' id='answerareaWidth' onChange='fixWidth("answerarea")' style="width:45px;">
+								</label>
+								<label>
+									縦幅：<input type='number'  id='answerareaHeight' onChange='fixHeight("answerarea")' style="width:45px;">
+								</label>
+							</form>
+						</div>
+					</div>
+					<div id='answerareaFixed'>
+						<div id='answerarea'></div>
+					</div>
+				</div>
+
+				<div id='itemsareaWaku' class='waku'>
+					<div id='captionForBuild' class='caption'>
+						<h4>選択肢欄</h4>
+						<div id='buildSizeFix' class='sizeFix'>
+							<form name='buildSize'>
+								<label>
+									横幅：<input type='number' id='itemsareaWidth' onChange='fixWidth("itemsarea")' style="width:45px;">
+								</label>
+								<label>
+									縦幅：<input type='number'  id='itemsareaHeight' onChange='fixHeight("itemsarea")' style="width:45px;">
+								</label>
+							</form>
+						</div>
+					</div>
+					<div id='itemsareaFixed'>
+						<div id='itemsarea'></div>
+					</div>
+				</div>
+			</div>
+
+			<div id='editWaku' class='waku'>
+				<div id='captionForEdit' class='caption'>
+					<h4>選択肢編集欄</h4>
+				</div>
+				<div id='box' class='parts'>
+					<div id='editArea1' class='parts'>
+						<div id='editArea2' class='parts'>
+							<form name='tanzaku' style='display: inline'>
+								<textarea id='Content' name='text' rows='2' cols='70' ondrop='dropToEditArea(event)'></textarea>
+							</form>
+							<input type='button' class='add' value='追加' style='display: inline' onclick='addTanzaku()'></input>
+						</div>
+						<div id='sample1' draggable = 'true' style='display: inline' ondragstart='setID(event)'>
+							　<input type='text' readonly value='自由記入欄'></input>　
+						</div>
+						<div id='sample2' draggable = 'true' style='display: inline' ondragstart='setID(event)'>
+							　<input type='number'readonly value='99999'></input>　
+						</div>
+						<div id='sample3' draggable = 'true' style='display: inline' ondragstart='setID(event)'>　
+							<select>
+								<option>-未選択-</option>
+								<option>選択肢Ａ</option>
+								<option>選択肢Ｂ</option>
+							</select>　
+						</div>
+					</div>
+					<div id='setsumeibun' class='parts'>
+						<p>テキストボックスで選択肢を作成し、ボタンで追加します。３つの部品も選択肢の中で使用することができます。</p>
+						<p>※ 全角の［ ］、【 】、｛ ｝は使用できません</p>
+					</div>
+				</div>
+			</div>
+		</div>
 
 	</body>
 </html>

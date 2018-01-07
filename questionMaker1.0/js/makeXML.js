@@ -1,148 +1,57 @@
-var area = "";
-
 var outDir = './file/';
 var extention = '.xml';
 
-var number = 0;
-
+var area = null;
 var editArea = null;
 var buildArea = null;
+var answerarea = null;
 var answerWaku = null;
-
-var title = [
-  "<div id='titleWaku' class='waku'>",
-  "<div id='captionForTitle' class='caption'>",
-  "<h4>問題文編集エリア</h4>",
-  "</div>",
-  "<div id='titleEditArea'>",
-  "<form name='question'>",
-  "<textarea id='questionText' name='text' rows='6' cols='100'></textarea>",
-  "</form>",
-  "</div>",
-  "</div>"
-];
-
-var answerArea = [
-  "<div id='answerWaku' class='waku'>",
-  "<div id='captionForAnswer' class='caption'>",
-  "<h4>解答欄プレビュー</h4>",
-  "<div id='answerSizeFix' class='sizeFix'>",
-  "<form name='answerSize'>",
-  "<label>",
-  "横幅：<input type='number' id='answerWidth' onChange='fixWidth(\'answer\')'>",
-  "</label>",
-  "<label>",
-  "縦幅：<input type='number'  id='answerHeight' onChange='fixHeight(\'answer\')'>",
-  "</label>",
-  "</form>",
-  "</div>",
-  "</div>",
-  "<div id='answerArea'></div>",
-  "</div>",
-];
-
-var buildArea = [
-  "<div id='buildWaku' class='waku'>",
-  "<div id='captionForBuild' class='caption'>",
-  "<h4>選択肢欄</h4>",
-  "<div id='buildSizeFix' class='sizeFix'>",
-  "<form name='buildSize'>",
-  "<label>",
-  "横幅：<input type='number' id='buildWidth' onChange='fixWidth(\'build\')'>",
-  "</label>",
-  "<label>",
-  "縦幅：<input type='number'  id='buildHeight' onChange='fixHeight(\'build\')'>",
-  "</label>",
-  "</form>",
-  "</div>",
-  "</div>",
-  "<div id='buildAreaFixed'>",
-  "<div id='buildArea' style='height:100%;'></div>",
-  "</div>",
-  "</div>"
-];
-
-var editAreaList = [
-  "<div id='editWaku' class='waku'>",
-  "<div id='captionForEdit' class='caption'>",
-  "<h4>選択肢編集エリア</h4>",
-  "</div>",
-  "<div id='box' class='parts'>",
-  "<div id='editArea1' class='parts'>",
-  "<div id='editArea2' class='parts'>",
-  "<form name='tanzaku' style='display: inline'>",
-  "<textarea id='Content' name='text' rows='4' cols='70' ondrop='dropToEditArea(event)'></textarea>",
-  "</form>",
-  "<input type='button' class='add' value='追加' style='display: inline' onclick='addTanzaku()'></input>",
-  "</div>",
-  "<div id = 'valuableText' draggable = 'true' style='display: inline' ondragstart='editDrag(event)'>　<input type='text' readonly value='自由記入欄'></input>　</div>",
-  "<div id = 'valuableNumber' draggable = 'true' style='display: inline' ondragstart='editDrag(event)'>　<input type='number'readonly value='99999'></input>　</div>",
-  "<div id = 'pullDown' draggable = 'true' style='display: inline' ondragstart='editDrag(event)'>　<select><option>-未選択-</option><option>選択肢Ａ</option><option>選択肢Ｂ</option></select>　</div>",
-  "</div>",
-  "<div id='setsumeibun' class='parts'>",
-  "<p>テキストボックスで選択肢を作成し、ボタンで追加します。３つの部品も選択肢の中で使用することができます。</p>",
-  "<p>※ 全角の［ ］、【 】、｛ ｝は使用できません</p>",
-  "</div>",
-  "</div>",
-  "</div>"
-];
-
-function start(){
-  area = document.getElementById('area');
-  area.innerHTML += buildMaker();
-  setElement();
-}
-
-function buildMaker(){
-  var html = '';
-  for(var i = 0; i < title.length; i ++){
-    html += title[i];
-  }
-  html += "<div id='layout'>";
-  for(var i = 0; i < answerArea.length; i ++){
-    html += answerArea[i];
-  }
-  for(var i = 0; i < buildArea.length; i ++){
-    html += buildArea[i];
-  }
-  html += "</div>";
-  for(var i = 0; i < editAreaList.length; i ++){
-    html += editAreaList[i];
-  }
-  return html;
-}
 
 //選択肢をドラッグした時に
 //データを渡す
-function editDrag(e) {
+function setID(e) {
 	e.dataTransfer.setData('text/html',e.target.id);
 }
 
+//--------------------------------------------------
+// ページロードこっちでもいいかも
+//--------------------------------------------------
 function setElement(){
+  area = document.getElementById('area');
   editArea = document.getElementById("Content");
   editArea.ondragover = prev;//
-  buildArea = document.getElementById("buildArea");
-  answerWaku = document.getElementById("answerWaku");
+  buildArea = document.getElementById("itemsarea");
+  answerarea = document.getElementById("answerarea");
+  answerWaku = document.getElementById("answerareaWaku");
+
+  setEvent();
+  addFile();
+}
+
+function setEvent(){
+  console.log("イベント処理を設定します");
+  answerarea.ondragover = prev;
+  answerarea.ondrop = addItemToAnswerarea;
 }
 
 /** エディットエリアでの挙動 */
 function dropToEditArea(e){
   var id = e.dataTransfer.getData("text/html");
   console.log("idは"+id);
-  if(id.includes("valuableText") || id.includes("valuableNumber") || id.includes("pullDown")){
+  if((/sample\d/).test(id)){
     editArea.value += buildPartsForEdit(id);
   }else if((/t-\d+/).test(id)){
     var elm = document.getElementById(id);
     editArea.value += backToEdit(elm.innerHTML);
-    removeItem(elm);
+    returnItem(elm);
     numOfChoice--;//これbuildArea.childElementCountで代用できるわ
   }
   e.preventDefault();
 }
 
-function removeItem(rmElt){
-  var itemId = rmElt.id.split("-");
-  rmElt.parentElement.removeChild(rmElt);
+function returnItem(rtElt){
+  var itemId = rtElt.id.split("-");
+  rtElt.parentElement.removeChild(rtElt);
   //ずらす
   for(var i = itemId[1];i<buildArea.childElementCount-1;i++){
     console.log((Number(i)+1)+"を移動")
@@ -159,11 +68,11 @@ function removeItem(rmElt){
 //エディットエリアでのパーツ表示に変換
 function buildPartsForEdit(id){
   var str = "";
-  if(id.includes("valuableText")){
+  if(id.includes("sample1")){
     str = "［ 自由記入欄 ］";
-  }else if(id.includes("valuableNumber")){
+  }else if(id.includes("sample2")){
     str = "【 99999 】";
-  }else if(id.includes("pullDown")){
+  }else if(id.includes("sample3")){
     str = "｛ 未選択 ｜ 選択肢A ｜ 選択肢B ｝";
   }
   return str;
@@ -171,8 +80,8 @@ function buildPartsForEdit(id){
 
 //ビルドエリアからエディットエリアへ移した時のパーツの変換
 function backToEdit(str){
-  var num = str.match(/<input type='number' readonly='true' value='\s*\d+\s*'>/g);
-  var text = str.match(/<input type='text' readonly='true' value='\s*.*?\s*'>/g);
+  var num = str.match(/<input type=\"number\" readonly=\"true\" value=\"\s*\d+\s*\">/g);
+  var text = str.match(/<input type=\"text\" readonly=\"true\" value=\"\s*.*?\s*\">/g);
   var pd = str.match(/<select><option>\s*.*?\s*<\/option><\/select>/g);
 
   if(num != null){
@@ -224,11 +133,24 @@ function buildPartsForBuild(str){
   return str;
 }
 
-var boundOrigin = document.createElement("div");
-boundOrigin.classList.add("bound");
+
+var itemsOfAnswerarea = 0;
+var itemBoxForAnswer = document.createElement("div");
+//itemBoxForAnswer.classList.add("canvas");
+function addItemToAnswerarea(e){
+  var addElm = document.getElementById(e.dataTransfer.getData("text/html",e.target.id));
+  addElm.id.replace("t","a");
+  addElm.id.replace(/\d/,itemsOfAnswerarea);
+
+  var newItemBox = itemBoxForAnswer.cloneNode(true);
+  newItemBox.id = "itemBoxA-"+itemsOfAnswerarea++;
+
+  answerarea.appendChild(newItemBox);
+  answerarea.appendChild(addElm);
+}
+
 var canvasOrigin = document.createElement("div");
 canvasOrigin.classList.add("canvas");
-
 var numOfChoice = 0;
 function addTanzaku(){
   if(0 < editArea.value.length){
@@ -353,18 +275,31 @@ function insertLower(from,to){
   document.getElementById("canvas-"+to).appendChild(insert);
 }
 
-var display = false;
+var displayAnswer = false;
 function setAnswerArea(){
-  if(display){
+  if(displayAnswer){
     console.log("解答欄を非表示にします");
     answerWaku.style.display = 'none';
     document.getElementById("dispAnswer").value = "解答欄表示";
-    display = false;
+    displayAnswer = false;
   }else{
     console.log("解答欄を表示します");
     answerWaku.style.display = 'block';
     document.getElementById("dispAnswer").value = "解答欄非表示";
-    display = true;
+    displayAnswer = true;
+  }
+}
+
+var displayFilelist = false;
+function openFilelist(){
+  if(displayFilelist){
+    console.log("ファイルを非表示にします");
+    filelist.style.display = 'none';
+    displayFilelist = false;
+  }else{
+    console.log("ファイルを表示します");
+    filelist.style.display = 'block';
+    displayFilelist = true;
   }
 }
 
@@ -439,17 +374,81 @@ function save(){
   download(new Blob([toXML()]), getFilename());
 }
 
+function save2(){
+  if(window.sessionStorage){
+    window.sessionStorage.setItem(getFilename() , toXML());
+  }
+  addFile();
+}
+
+function addFile(){
+  filelist.innerHTML = "";
+  // ウェブストレージに対応している
+  if(window.sessionStorage){
+    for(var i=0;i< window.sessionStorage.length;i++){
+      // 位置を指定して、ストレージからキーを取得する
+      var name = window.sessionStorage.key(i);
+
+      // ストレージからデータを取得する
+      var value = window.sessionStorage.getItem(name);
+
+      filelist.innerHTML += "<input type='button' class='tools' value='読み込み' onclick='removeFile(\""+name+"\")'>"
+      filelist.innerHTML += "<input type='button' class='tools' value='削除' onclick='removeFile(\""+name+"\")'>"
+      filelist.innerHTML +="ファイル名：" + name +"<br>";
+    }
+  }
+}
+
+function removeFile(key){
+  // ウェブストレージに対応している
+  if(window.sessionStorage){
+    // 指定したキーに保存したデータを削除する
+    window.sessionStorage.removeItem(key);
+    addFile();
+  }
+}
+
+var minOfWidth = 350;
 function fixWidth(areaname){
-  var fixArea = document.getElementById(areaname+"Waku");
   var fixValue = document.getElementById(areaname+"Width").value;
+  if(fixValue||horizontal){
+    if(fixValue < minOfWidth){
+      fixValue = minOfWidth;
+    }
+    fixWidth2(areaname,fixValue);
+  }else{
+    document.getElementById(areaname+"Waku").style.width = "";
+  }
+}
+
+//内部操作用
+function fixWidth2(areaname,fixValue){
+  var fixArea = document.getElementById(areaname+"Waku");
+  document.getElementById(areaname+"Width").value = fixValue;
   fixArea.style.width = fixValue + "px";
 }
 
+var minOfHeight = 250;
 function fixHeight(areaname){
-  var fixArea = document.getElementById(areaname+"Waku");
-  console.log(fixArea);
   var fixValue = document.getElementById(areaname+"Height").value;
-  console.log(fixValue);
+  if(fixValue){
+    if(fixValue < minOfHeight){
+      fixValue = minOfHeight;
+    }
+    if(!horizontal){
+      fixHeight2(areaname,fixValue);
+    }else{
+      fixHeight2("answerarea",fixValue);
+      fixHeight2("itemsarea",fixValue);
+    }
+  }else{
+    document.getElementById(areaname+"Fixed").style.height = "";
+  }
+}
+
+function fixHeight2(areaname,fixValue){
+  var fixArea = document.getElementById(areaname+"Fixed");
+  document.getElementById(areaname+"Height").value = fixValue;
   fixArea.style.height = fixValue + "px";
 }
 
@@ -458,6 +457,8 @@ function changeHorizontal(){
   var fixArea = document.getElementById("layout");
   if(!horizontal){
     fixArea.classList.add("yokonarabi");
+    fixWidth2("answerarea",minOfWidth);
+    fixWidth2("itemsarea",minOfWidth);
     horizontal = true;
   }else{
     fixArea.classList.remove("yokonarabi");

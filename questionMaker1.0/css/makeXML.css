@@ -1,6 +1,7 @@
 .waku{
 	margin: 0ex 3ex 1ex;
 	border: solid black 1px;
+	margin: 10px auto;
 }
 .caption{
   border: solid black 1px;
@@ -31,25 +32,29 @@
 	background-color: #E4F3E4;
 	/*text-align: center;*/
 }
-#answerWaku{
+#answerareaWaku{
 	display: none;
+	/* margin: 10px auto; */
 }
-#buildWaku{
-  /*height: 40ex;*/
-  /*width: 50%;*/
+#filelist{
+	height: 5em;
+	display: none;
+	background-color: white;
+	overflow: scroll;
 }
-#editWaku{
-  /*width:50%;*/
+
+#itemsareaWaku{
+	/* margin: 10px auto; */
 }
 
 /*  */
-#buildArea{
+#itemsarea{
   height: 100%;
   overflow: scroll;
   background-color: #F3F3F3;
 }
 /*  */
-#buildAreaFixed{
+#itemsareaFixed{
   height: 35ex;
 }
 
@@ -134,13 +139,17 @@ input.add{
 	margin-right: 50px;
 }
 
-#answerArea{
+#answerareaFixed{
+	height: 35ex;
+}
+#answerarea{
 	background-color: #F6EEEE;
+	overflow: scroll;
 	height: 100%;
 }
-#answerWaku{
+/* #answerWaku{
 	height: 15em;
-}
+} */
 
 *{
   font-family: "Hiragino kaku Gothic Pro";

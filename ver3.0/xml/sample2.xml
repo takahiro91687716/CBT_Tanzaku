@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+<question horizontal="true">
+
+	<textarea>
+		<text>
+			キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.
+		</text>
+	</textarea>
+
+	<answerarea width="500" height="300">
+		<item>
+			「整数を入力してください:」 を表示する
+		</item>
+	</answerarea>
+
+	<itemsarea width="450" height="300">
+		<item>
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			{pullDown:a,b} ← input()
+		</item>
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
+		<item unique="true">
+			{pullDown:a,b} を表示する
+		</item>
+	</itemsarea>
+
+</question>
+<question horizontal="true">
+
+	<textarea>
+		<text>
+			キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.
+		</text>
+	</textarea>
+
+	<answerarea width="500" height="300">
+		<item>
+			「整数を入力してください:」 を表示する
+		</item>
+	</answerarea>
+
+	<itemsarea width="450" height="300">
+		<item>
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			{pullDown:a,b} ← input()
+		</item>
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
+		<item unique="true">
+			{pullDown:a,b} を表示する
+		</item>
+	</itemsarea>
+
+</question>
+</doc>
