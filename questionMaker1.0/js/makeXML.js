@@ -141,6 +141,8 @@ function addItemToAnswerarea(e){
   var addElm = document.getElementById(e.dataTransfer.getData("text/html",e.target.id));
   addElm.id.replace("t","a");
   addElm.id.replace(/\d/,itemsOfAnswerarea);
+  addElm.classList.remove("tanzaku");
+  addElm.classList.add("itemForAnswer");
 
   var newItemBox = itemBoxForAnswer.cloneNode(true);
   newItemBox.id = "itemBoxA-"+itemsOfAnswerarea++;
@@ -370,11 +372,11 @@ function getFilename(){
   return str + ".xml";
 }
 
-function save(){
-  download(new Blob([toXML()]), getFilename());
+function getFile(filename){
+  download(new Blob([window.sessionStorage.getItem(filename)]), getFilename());
 }
 
-function save2(){
+function writeSessionStorage(){
   if(window.sessionStorage){
     window.sessionStorage.setItem(getFilename() , toXML());
   }
@@ -389,11 +391,9 @@ function addFile(){
       // 位置を指定して、ストレージからキーを取得する
       var name = window.sessionStorage.key(i);
 
-      // ストレージからデータを取得する
-      var value = window.sessionStorage.getItem(name);
-
-      filelist.innerHTML += "<input type='button' class='tools' value='読み込み' onclick='removeFile(\""+name+"\")'>"
-      filelist.innerHTML += "<input type='button' class='tools' value='削除' onclick='removeFile(\""+name+"\")'>"
+      filelist.innerHTML += "<input type='button' class='tools' value='読み込み' onclick='removeFile(\""+name+"\")'>";
+      filelist.innerHTML += "<input type='button' class='tools' value='書き出し' onclick='getFile(\""+name+"\")'>"
+      filelist.innerHTML += "<input type='button' class='tools' value='削除' onclick='removeFile(\""+name+"\")'>";
       filelist.innerHTML +="ファイル名：" + name +"<br>";
     }
   }

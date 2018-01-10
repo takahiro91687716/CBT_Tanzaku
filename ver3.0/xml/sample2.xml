@@ -15,17 +15,17 @@
 	</answerarea>
 
 	<itemsarea width="450" height="300">
-		<item>
-			整数 {pullDown:a,b}
+		<item unique="true">
+			{pullDown:a,b} を表示する
 		</item>
 		<item>
 			{pullDown:a,b} ← input()
 		</item>
 		<item>
-			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+			整数 {pullDown:a,b}
 		</item>
-		<item unique="true">
-			{pullDown:a,b} を表示する
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
 		</item>
 	</itemsarea>
 
@@ -39,12 +39,12 @@
 	</textarea>
 
 	<answerarea width="500" height="300">
-		<item>
-			「整数を入力してください:」 を表示する
-		</item>
 	</answerarea>
 
 	<itemsarea width="450" height="300">
+		<item>
+			「整数を入力してください:」 を表示する
+		</item>
 		<item>
 			整数 {pullDown:a,b}
 		</item>
@@ -53,6 +53,9 @@
 		</item>
 		<item>
 			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
+		<item>
+			{text:入力可能です}
 		</item>
 		<item unique="true">
 			{pullDown:a,b} を表示する

@@ -67,6 +67,16 @@
 	border-color: #CCCC99;
 	background-color: #FFFFCC;
 }
+
+.itemForAnswer{
+	height:2em;
+	display: flex;
+	align-items: center;
+	border: solid 1px;
+	border-color: #CCCC99;
+	background-color: #FFCCFF;
+}
+
 .canvas{
 	/*height: 2em;*/
 }

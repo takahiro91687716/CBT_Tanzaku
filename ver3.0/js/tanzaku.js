@@ -55,33 +55,6 @@ function buildQuestions(){
 //--------------------------------------------------
 // "(number)問目"を作成する関数
 //--------------------------------------------------
-var tanzakuOrigin = document.createElement("div");
-tanzakuOrigin.draggable = true;
-
-function buildQuestion(number){
-	var textList = question[number].getElementsByTagName('text');
-	var itemList = question[number].getElementsByTagName('item');
-
-	//問題要素を表示する領域の生成
-	buildArea(number);
-
-	//問題文埋め込み
-	document.getElementById("question-"+number).innerHTML += "<p>" + textList[0].childNodes[0].nodeValue + "</p>";
-
-	//選択肢埋め込み（DOMだとうまくいかない）
-	for(i = 0; i < itemList.length; i++) {
-		var tanzakuArea = document.getElementById("tanzakuArea-"+number);
-		var newBox = document.createElement("div");
-		newBox.id = "box-" + number + "-" + i;
-		newBox.classList.add("box");
-		tanzakuArea.appendChild(newBox);
-		newBox.innerHTML += createTanzaku2(itemList[i],number,i)
-	}
-}
-
-//--------------------------------------------------
-// "(number)問目"を作成する関数
-//--------------------------------------------------
 function buildQuestion(number){
 	var textarea = question[number].getElementsByTagName('textarea');
 	var answerarea = question[number].getElementsByTagName('answerarea');
@@ -190,8 +163,11 @@ function buildAnswerarea(answerarea, number){
 	for(i = 0; i < items.length; i++) {
 		var answerareaElm = document.getElementById("answerArea-"+number);
 		var newBox = document.createElement("div");
-		newBox.id = "fixedbox-" + number + "-" + i;
+		newBox.id = "canvas-" + number + "-" + i;
 		newBox.classList.add("box");
+		// newBox.ondragover = prev;
+		// newBox.ondrag = prev;
+		// newCanvas.ondrop = dropToCanvas;
 		answerareaElm.appendChild(newBox);
 		newBox.innerHTML += buildAnswerareaItemHTML(items[i],number,i)
 	}

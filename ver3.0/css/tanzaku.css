@@ -85,6 +85,10 @@ html,body {
 	border-color: #CCCC99;
 	background-color: #FFFFCC;
 }
+.fix{
+	border-color: #CCCC99;
+	background-color: #FFCCFF;
+}
 .box{
 	height: 2.0em;
 	/*background-color: #FFFFCC;

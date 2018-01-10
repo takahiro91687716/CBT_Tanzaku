@@ -15,12 +15,16 @@
 					<b>ツール欄</b>
 					<input type="text" id="filename" value="sample" size="10">
 					<span>.xml</span>
-					<input type="button" class="tools" value="保存" onclick="save2()">
+					<input type="button" class="tools" value="保存" onclick="writeSessionStorage()">
 					<input type="button" id="dispAnswer" class="tools" value="解答欄表示" onclick="setAnswerArea()">
 					<input type="button" id="horizon" class="tools" value="横並びにする" onclick="changeHorizontal()">
 					<input type="button" id="fileopen" class="tools" value="ファイルリスト" onclick="openFilelist()">
 				</div>
-				<div id="filelist"></div>
+				<div id="file">
+					<div id="filelist"></div>
+					<div id="fileConbiner">
+					</div>
+				</div>
 			</div>
 
 			<div id='titleWaku' class='waku'>
