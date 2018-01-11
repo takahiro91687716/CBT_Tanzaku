@@ -44,6 +44,7 @@ function buildQuestions(){
 		document.getElementById("answerArea-"+i).ondragover = prev;
 		document.getElementById("answerArea-"+i).ondrag = prev;
 		document.getElementById("answerArea-"+i).ondrop = dropToAnswerArea;
+		setActionForAnswerAreaContainer(i);
 	}
 
 	var area = document.getElementById("area");
@@ -69,6 +70,31 @@ function buildQuestion(number){
 	buildAnswerarea(answerarea, number);
 	//選択肢欄要素埋め込み
 	buildItemsarea(itemsarea, number);
+}
+
+function setActionForAnswerAreaContainer(number){
+	var numOfItems = document.getElementById('answerArea-'+number).childElementCount;
+	for(i = 0; i < numOfItems; i++) {
+			var container = document.getElementById('canvas-'+number+'-'+i);
+			container.ondrop = dropToCanvas;
+			container.ondragover = prev;
+			container.ondrag = prev;
+
+	}
+}
+
+function setActionForAnswerArea(number){
+	var answerArea = document.getElementById('answerArea-'+number);
+	answerArea.ondrop = dropToAnswerArea;
+	answerArea.ondragover = prev;
+	answerArea.ondrag = prev;
+}
+
+function setTrashActionForArea(){
+	var area = document.getElementById("area");
+	area.ondragover = prev;
+	area.ondrag = prev;
+	area.ondrop = trashItem;
 }
 
 
@@ -165,11 +191,12 @@ function buildAnswerarea(answerarea, number){
 		var newBox = document.createElement("div");
 		newBox.id = "canvas-" + number + "-" + i;
 		newBox.classList.add("box");
-		// newBox.ondragover = prev;
-		// newBox.ondrag = prev;
-		// newCanvas.ondrop = dropToCanvas;
+
 		answerareaElm.appendChild(newBox);
-		newBox.innerHTML += buildAnswerareaItemHTML(items[i],number,i)
+		// (function(j){
+		// 	makeContainer(number,j);}(i));
+		// makeContainer(number,i);
+		document.getElementById("canvas-"+number+"-"+i).innerHTML += buildAnswerareaItemHTML(items[i],number,i);
 	}
 }
 
@@ -198,8 +225,8 @@ function buildAnswerareaItemHTML(item, numOfQuestion, numOfItems){
 	var itemHTML = "<div id= '";
 
 	// IDなどをどうするか考えなければいけない！！！！！！！！！！！！！！！！！！！！！！！！！！
-	itemHTML += "f-" + numOfQuestion + "-" + numOfItems + "' ";
-	itemHTML += "class='tanzaku fix'>";//とりあえずfixのクラスを追加
+	itemHTML += "c-" + numOfQuestion + "-" + numOfItems + "-" + idc++ +"' ";
+	itemHTML += "class='tanzaku fix answer' data-type='fixed' draggable='true' ondragstart='itemDragStart(event)'>";//とりあえずfixのクラスを追加
 	itemHTML += buildItemIncludesParts(item);
 	itemHTML += "</div>";
 
@@ -212,11 +239,11 @@ function buildItemsareaItemHTML(item, numOfQuestion, numOfItems){
 
 	var itemHTML = "<div id= '";
 	if(unique != null && unique.value == "true"){
-		itemHTML += "ii-" + numOfQuestion + "-" + numOfItems +"' ";
-		itemHTML += "class='tanzaku unique' ";
+		itemHTML += "i-" + numOfQuestion + "-" + numOfItems +"' ";
+		itemHTML += "class='tanzaku unique' data-type='unique' ";
 	}else{
 		itemHTML += "i-" + numOfQuestion + "-" + numOfItems + "' ";
-		itemHTML += "class='tanzaku normal' ";
+		itemHTML += "class='tanzaku normal' data-type='normal'";
 	}
 	itemHTML += "draggable='true' ";
 	itemHTML += "ondragstart='itemDragStart(event)'>";
@@ -333,11 +360,11 @@ function dropToAnswerArea(e){
 
 		var to = document.getElementById("answerArea-"+idElm[1]).childElementCount;
 
-		if(idElm[0] == "i"||idElm[0] == "ii"){
+		if(idElm[0] == "i"){
 			// 選択肢欄からの要素の処理
 			console.log("新規追加："+ "answerArea-"+idElm[1]);
 			addAnswer(id,to);
-		}else if(idElm[0] == "c"||idElm[0] == "ci"){
+		}else if(idElm[0] == "c"){
 			// 解答欄からの要素の処理
 			var insert = document.getElementById(id);
 			var from = insert.parentElement.id.split("-")[2];
@@ -373,6 +400,7 @@ function dropToCanvas(e){
 	// idElm[3] ： 解答済み番号
 
 	var canvasId = this.id;
+	console.log(this.id);
 	var canvasIdElm = canvasId.split("-");
 
 	// (3) canvasの情報
@@ -389,7 +417,7 @@ function dropToCanvas(e){
 	var harfOfdiv = divClientRect.height/2;
 	var elmY = divClientRect.top+harfOfdiv;
 
-	if(idElm[0] == "i"||idElm[0] == "ii"){
+	if(idElm[0] == "i"){
 		// 選択肢欄からの要素の処理
 		console.log("新規追加");
 
@@ -404,7 +432,7 @@ function dropToCanvas(e){
 			console.log("下半分に落とされました");
 	    addAnswer(id,(Number(this.id.split("-")[2])+1));
 	  }
-	}else if(idElm[0] == "c"||idElm[0] == "ci"){
+	}else if(idElm[0] == "c"){
 		// 解答欄からの要素の処理
 		console.log("要素移動");
 
@@ -434,15 +462,15 @@ var idc = 0;
 var canvasOrigin = document.createElement("div");
 function addAnswer(id,number){
 	var idElm = id.split("-");
+	var newAnswer = document.getElementById(id);
 
-	if(idElm[0] == "i"){
-		var newAnswer = document.getElementById(id).cloneNode(true);
-		newAnswer.id = "c-" + idElm[1] + "-" + idElm[2] + "-" + idc++;
-	}else if(idElm[0] == "ii"){
-		var newAnswer = document.getElementById(id);
-		newAnswer.id = "ci-" + idElm[1] + "-" + idElm[2] + "-" + idc++;
+	if(newAnswer.getAttribute('data-type').includes('normal')){
+		newAnswer = newAnswer.cloneNode(true);
 	}
+
+	newAnswer.id = "c-" + idElm[1] + "-" + idElm[2] + "-" + idc++;
 	newAnswer.classList.add("answer");
+	//console.log(newAnswer.getAttribute('data-type'));
 
 	var answerArea = document.getElementById("answerArea-"+idElm[1]);
 
@@ -450,12 +478,14 @@ function addAnswer(id,number){
 	var numOfAnswer = answerArea.childElementCount;
 
 	// 追加場所をつくる
-	var newCanvas = canvasOrigin.cloneNode(true);
-	newCanvas.id = "canvas-" + idElm[1] + "-" + numOfAnswer;
-	newCanvas.ondragover = prev;
-	newCanvas.ondrag = prev;
-	newCanvas.ondrop = dropToCanvas;
-	answerArea.appendChild(newCanvas);
+	// var newCanvas = canvasOrigin.cloneNode(true);
+	// newCanvas.id = "canvas-" + idElm[1] + "-" + numOfAnswer;
+	// newCanvas.ondragover = prev;
+	// newCanvas.ondrag = prev;
+	// newCanvas.ondrop = dropToCanvas;
+	// answerArea.appendChild(newCanvas);
+
+	makeContainer(idElm[1],numOfAnswer)
 
 	// number以降をずらしていく
 	console.log(number+"番から"+(numOfAnswer-1)+"をずらして");
@@ -468,6 +498,16 @@ function addAnswer(id,number){
 	// 新しい解答の追加
 	console.log("canvas-" + idElm[1] + "-" + number);
 	document.getElementById("canvas-" + idElm[1] + "-" + number).appendChild(newAnswer);
+}
+
+function makeContainer(number,numOfAnswer){
+	var answerArea = document.getElementById("answerArea-"+number);
+	var newCanvas = canvasOrigin.cloneNode(true);
+	newCanvas.id = "canvas-" + number + "-" + numOfAnswer;
+	newCanvas.ondragover = prev;
+	newCanvas.ondrag = prev;
+	newCanvas.ondrop = dropToCanvas;
+	answerArea.appendChild(newCanvas);
 }
 
 //-----------------------------
@@ -539,15 +579,16 @@ function insertLower(from,to,number){
 function trashItem(e){
 	var id = e.dataTransfer.getData("text/html",e.target.id);
 	var elmId = id.split("-");
+	var elm = document.getElementById(id);
 	if(trashFlug){
-
-		if(elmId[0] == "ci"){
+		if(elmId[1] == 'c'){
+		if(elm.getAttribute('data-type').includes("unique")){
 			returnItem(document.getElementById(id));
-		}else if(elmId[0] == "c"){
+		}else if(elm.getAttribute('data-type').includes("normal")){
 			removeItem(document.getElementById(id));
 		}
 		indent(elmId[1]);
-	}else{
+	}}else{
 		trashFlug = true;
 	}
 }
@@ -582,8 +623,8 @@ function returnItem(rtElt){
 	var rtEltId = rtElt.id.split("-");
 	var answerArea = document.getElementById("answerArea-"+rtNum[1])
 	console.log(rtEltId[2]+"番を戻す");
-	rtElt.id = "ii-" +rtEltId[1] +"-"+ rtEltId[2];
-	rtElt.style.left = "0px";
+	rtElt.id = "i-" +rtEltId[1] +"-"+ rtEltId[2];
+	rtElt.style.left = "0px";//インデント残ってるのを消す
 	rtElt.classList.remove("answer");
 	document.getElementById("box-"+rtEltId[1]+"-"+rtEltId[2]).appendChild(rtElt);
 

@@ -83,14 +83,12 @@
 
 /*  */
 input.tools{
-	font-size: 1.5em;
+	font-size: 1em;
 }
 input.add{
-	font-size: 1.5em;
-	height: 8em;
+	font-size: 1em;
+	/* height: 8em; */
 }
-/*#captionForAnswer{
-}*/
 
 #captionForTitle{
 	background-color: #D4F3D4;

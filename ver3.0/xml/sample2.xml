@@ -12,6 +12,9 @@
 		<item>
 			「整数を入力してください:」 を表示する
 		</item>
+		<item>
+			もひとつどうぞ
+		</item>
 	</answerarea>
 
 	<itemsarea width="450" height="300">
@@ -39,6 +42,12 @@
 	</textarea>
 
 	<answerarea width="500" height="300">
+		<item>
+			「整数を入力してください:」 を表示する
+		</item>
+		<item>
+			もひとつどうぞ
+		</item>
 	</answerarea>
 
 	<itemsarea width="450" height="300">

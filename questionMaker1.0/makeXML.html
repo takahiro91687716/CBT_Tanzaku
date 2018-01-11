@@ -47,7 +47,7 @@
 						<div id='answerSizeFix' class='sizeFix'>
 							<form name='answerSize'>
 								<label>
-									横幅：<input type='number' id='answerareaWidth' onChange='fixWidth("answerarea")' style="width:45px;">
+									横幅：<input type='number' id='answerareaWidth' class='width' onChange='fixWidth("answerarea")' style="width:45px;">
 								</label>
 								<label>
 									縦幅：<input type='number'  id='answerareaHeight' onChange='fixHeight("answerarea")' style="width:45px;">
@@ -66,7 +66,7 @@
 						<div id='buildSizeFix' class='sizeFix'>
 							<form name='buildSize'>
 								<label>
-									横幅：<input type='number' id='itemsareaWidth' onChange='fixWidth("itemsarea")' style="width:45px;">
+									横幅：<input type='number' id='itemsareaWidth' class='width' onChange='fixWidth("itemsarea")' style="width:45px;">
 								</label>
 								<label>
 									縦幅：<input type='number'  id='itemsareaHeight' onChange='fixHeight("itemsarea")' style="width:45px;">
@@ -88,7 +88,7 @@
 					<div id='editArea1' class='parts'>
 						<div id='editArea2' class='parts'>
 							<form name='tanzaku' style='display: inline'>
-								<textarea id='Content' name='text' rows='2' cols='70' ondrop='dropToEditArea(event)'></textarea>
+								<textarea id='Content' name='text' rows='2' cols='50' ondrop='dropToEditArea(event)'></textarea>
 							</form>
 							<input type='button' class='add' value='追加' style='display: inline' onclick='addTanzaku()'></input>
 						</div>
