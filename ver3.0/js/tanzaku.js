@@ -41,16 +41,10 @@ function buildQuestions(){
 
 	//関数にしたい！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 	for(var i = 0; i < question.length; i ++){
-		document.getElementById("answerArea-"+i).ondragover = prev;
-		document.getElementById("answerArea-"+i).ondrag = prev;
-		document.getElementById("answerArea-"+i).ondrop = dropToAnswerArea;
+		setActionForAnswerArea(i);
 		setActionForAnswerAreaContainer(i);
 	}
-
-	var area = document.getElementById("area");
-	area.ondragover = prev;
-	area.ondrag = prev;
-	area.ondrop = trashItem;
+	setTrashActionForArea();
 }
 
 //--------------------------------------------------
@@ -159,7 +153,9 @@ function buildAnswerAreaBox(number){
 	var button = document.createElement('button');
 	button.type = 'button';
 	button.classList.add('executeButton');
-	button.onclick = 'runCode('+number+')';
+	button.onclick = function(){
+		runCode(number);
+	};
 	button.innerHTML += "実行";
 
 	captionContents.appendChild(button);
@@ -248,7 +244,7 @@ function buildAnswerAreaItemElm(itemContent, numOfQuestion, numOfItem){
 	item.setAttribute('data-item',(numOfItem+100));//いらないかも
 	item.draggable=true;
 	item.ondragstart = itemDragStart;
-	item.innerHTML += buildItemIncludesParts(itemContent);
+	buildItemIncludesParts(item,itemContent);
 	return item;
 }
 
@@ -289,14 +285,14 @@ function buildItemsAreaItemElm(itemContent, numOfQuestion, numOfItem){
 	item.setAttribute('data-item',numOfItem);
 	item.draggable=true;
 	item.ondragstart = itemDragStart;
-	item.innerHTML += buildItemIncludesParts(itemContent);
+	buildItemIncludesParts(item,itemContent);
 
 	return item;
 }
 
 // フォーム重複を防ぐためにフィールドで変数を持つ
 var numOfForm = 0;
-function buildItemIncludesParts(item){
+function buildItemIncludesParts(parent,item){
 	// <item> ~~~~~~ </item>の
 	// ~~~~~~部分を取得する
 	var str = item.childNodes[0].nodeValue;
@@ -311,7 +307,7 @@ function buildItemIncludesParts(item){
 		numOfBrace = brace.length;
 	}
 
-	// 特殊部品の部分を一旦わかりやすい形に置き換えておく
+	// 特殊部品の部分をわかりやすい形に置き換えておく
 	// ここでは (@brace番号) の形
 	for(var i = 0; i < numOfBrace; i++){
 		str = str.replace(brace[i],"(@brace"+i+")");
@@ -324,55 +320,86 @@ function buildItemIncludesParts(item){
 	// splitで "" が配列に含まれてしまうため削除
 	normal.some(function(remove, i){
     if (remove==""){
-		normal.splice(i,1);}
+			normal.splice(i,1);
+		}
 	});
+	if(normal&&normal[0]==("")){
+		normal = null;
+	}
 
 	//特殊部品以外を含んでいる場合はその数をカウントしておく
 	if(normal){
 		numOfNormal = normal.length;
 	}
 
-	// 特殊部品以外を <span> ~~~~~ </span>という形に置き換える
-	// この置き換えを行わないと，あとで解答を取得するときに面倒になる
-	for(var i = 0; i < str.length ; i++){
-		str = str.replace(normal[i],"<span>"+normal[i]+"</span>");
+	// 基本部品の部分をわかりやすい形に置き換えておく
+	// ここでは (@normal番号) の形
+	for(var i = 0; i < numOfNormal; i++){
+		str = str.replace(normal[i],"(@normal"+i+")");
 	}
 
-	//braceを変換していく
-	for(var i = 0; i < numOfBrace; i++){
-		// { }を取り除く
-		var target = brace[i].substring(1, brace[i].length - 1).split(":");
-		var tmp = "<form name = '"+ numOfForm++ +"'  style='display: inline'>";
-		if(target[0].includes("text")){
-			tmp += "<input type=text name='keyboard' style='width:50px;' onkeyup='changeWidthOfInput(this)'";
-			if(target[1]){
-				tmp += " value=" + target[1];
+	//ここで要素を順番通りに取得できる
+	//あとはelementsをDOMにしてparentに追加していく
+	var elements = str.match(/\(.*?\)/g);
+
+	for(var i = 0;i<elements.length;i++){
+		var child = null;
+		if(elements[i].includes("normal")){
+			child = document.createElement("span");
+			child.innerHTML = normal[elements[i].match(/\d/)];
+		}else if(elements[i].includes("brace")){
+			child = document.createElement("form");
+			child.name = numOfForm++;
+			child.style.display = "inline";
+			var number = elements[i].match(/\d/);
+			var target = brace[number].substring(1, brace[number].length - 1).split(":");
+			var son = null;
+			if(target[0].includes("text")){
+				son = document.createElement("input");
+				son.type = "text";
+				son.name = "keyboard";
+				son.onkeyup = function(){
+					changeWidthOfInput(this);
+				}
+				if(target[1]){
+					son.value = target[1];
+				}
+				changeWidthOfInput(son);
+			}else if(target[0].includes("number")){
+				son = document.createElement("input");
+				son.type = "number";
+				son.name = "keyboard";
+				son.onkeyup = function(){
+					changeWidthOfInput(this);
+				}
+				if(target[1]){
+					son.value = target[1];
+				}
+				changeWidthOfInput(son);
+			}else{
+				var selectList = target[1].split(",");
+				son = document.createElement("select");
+				son.name = 'pd';
+				for(var j = 0; j < selectList.length;j++){
+					var tmp = document.createElement("option");
+					tmp.value = selectList[j];
+					tmp.innerHTML += selectList[j];
+					son.appendChild(tmp);
+				}
 			}
-			tmp += ">";
-		}else if(target[0].includes("number")){
-			tmp += "<input type=number name='keyboard' style='width:50px;'";
-			if(target[1]){
-				tmp += " value=" + target[1];
-			}
-			tmp += ">";
+			child.appendChild(son);
 		}else{
-			var selectList = target[1].split(",");
-			tmp += "<select name='pd'>";
-			for(var j = 0; j < selectList.length;j++){
-				tmp += "<option value = '"+selectList[j]+"'>"+selectList[j]+"</option>";
-			}
-			tmp += "</select>";
+			//これが出たら作り直し
+			console.log("例外");
 		}
-		tmp += "</form>";
-		str = str.replace("(@brace"+i+")",tmp);
+		parent.appendChild(child);
 	}
-
-	return str;
 }
 
-//emとexをどれくらいと仮定するか
-var expx = 10;
+//emとexをpxだとどれくらいと仮定するか
+var expx = 8;
 var empx = 13;
+var min = 50;
 function changeWidthOfInput(input){
 	var ex = 0;
 	var em = 0;
@@ -384,7 +411,11 @@ function changeWidthOfInput(input){
 	if(zenkaku){
 		em = zenkaku.length;
 	}
-	input.style.width = ((ex*expx)+(em*empx))+'px';
+	var size = (ex*expx)+(em*empx);
+	if(size < min){
+		size = min;
+	}
+	input.style.width = size+'px';
 }
 
 
@@ -530,8 +561,8 @@ function addAnswer(id,here){
 	console.log(here+"番から"+(numOfAnswer-1)+"をずらして");
 	for(var i = here; i < numOfAnswer ; i++){
 		var to = document.getElementById("container-" + number + "-" + ( Number(i) + 1 ));
-		var elm = document.getElementById("container-" + number + "-" + i).childNodes[0];
-		to.appendChild(elm);
+		var tmpElm = document.getElementById("container-" + number + "-" + i).childNodes[0];
+		to.appendChild(tmpElm);
 	}
 
 	// 新しい解答の追加
