@@ -1,10 +1,13 @@
-
-/* 問題文、解答欄、選択肢欄それぞれの一番外枠 */
+/*** 外枠の設定 ***/
 .box{
-	margin: 0ex 3ex 1ex;
+	/* margin: 0ex 3ex 1ex; */
 	border: solid black 1px;
+	margin: 10px auto;
+	/* width: 1000px; */
 }
 
+/* 外枠の個別設定 */
+/* 色の変更だけ */
 .textAreaBox{
 	background-color: #E4F3E4;
 }
@@ -15,7 +18,8 @@
 	background-color: #F3F3F3;
 }
 
-/* 枠の説明文 */
+
+/*** 説明欄の設定 ***/
 .caption{
 	border: solid black 1px;
 
@@ -32,14 +36,14 @@
 
 	/* 縦中央 */
 	align-items: center;
-
 	height: 2em;
 }
 
+/* 説明欄の個別設定 */
+/* 色の変更だけ */
 .captionForTextArea{
 	background-color: #D4F3D4;
 }
-
 .captionForAnswerArea{
 	background-color: #F6E3E3;
 }
@@ -47,66 +51,43 @@
 	background-color: #D4D4D4;
 }
 
-.container{
-	padding: 1ex;
-	/*height: 1.75ex;*/
-	line-height: 1.0ex;
-	/*position: relative;*/
-}
-/*ここから3.0*/
-.caption{
-	border: solid black 1px;
 
-	display: flex;
-	display: -moz-flex;
-	display: -o-flex;
-	display: -webkit-flex;
-	display: -ms-flex;
-	flex-direction: row;
-	-moz-flex-direction: row;
-	-o-flex-direction: row;
-	-webkit-flex-direction: row;
-	-ms-flex-direction: row;
+/*** 解答欄 ***/
 
-	/* 縦中央 */
-	align-items: center;
-
-	height: 2em;
-}
-
-.fixedAnswerArea{
-	/*height: 40ex;*/
+/* 置けるところの外枠 */
+.fixedArea{
 	height: 40ex;
 }
 
+/* 解答を置くところ */
 .answerArea{
 	height: 100%;
 	overflow: scroll;
 	background-color: #F6EEEE;
-	/*border: solid black 1px;*/
 }
 
+.itemsArea{
+	height: 100%;
+	overflow: scroll;
+}
+
+/* コンテナ */
+.container{
+	padding: 1ex;
+	line-height: 1.0ex;
+}
+
+
+/*** 選択肢 ***/
+
+/* 選択肢 */
 .item{
-	/*border: solid black 1px;*/
 	border: solid 1px;
 	height: 100%;
-}
-
-.answer{
-	border: solid 1px;
-	/*border-color: #AFEEEE;
-	background-color: #ADD8E6;*/
 	height: 2em;
 }
 
-html,body {
-	height:100%;
-}
-/*area{
-	height: 100%;
-}*/
 .unique{
-	/*font-weight: bold;*/
 	border-color: #CCCC99;
 	background-color: #CCFFFF;
 }
@@ -118,10 +99,34 @@ html,body {
 	border-color: #CCCC99;
 	background-color: #FFCCFF;
 }
-.boxx{
-	height: 2.0em;
-	/*background-color: #FFFFCC;
-	border-color: #CCCC99;*/
-	/*border-color: #DAC4D4;紫芋っぽいやつ
-	background-color: #E4D4E4;*/
+
+/*** その他 ***/
+
+/* ページをゴミ箱にするため */
+html,body {
+	height:100%;
+}
+
+input.executeButton{
+	font-size: : 1em;
+	height: 2em;
+}
+
+*{
+  font-family: "Hiragino kaku Gothic Pro";
+}
+
+.horizontal{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	margin: auto;
 }

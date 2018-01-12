@@ -8,7 +8,7 @@
 		</text>
 	</textarea>
 
-	<answerarea width="500" height="300">
+	<answerarea width="400" height="300">
 		<item>
 			「整数を入力してください:」 を表示する
 		</item>
@@ -17,7 +17,31 @@
 		</item>
 	</answerarea>
 
-	<itemsarea width="450" height="300">
+	<itemsarea width="400" height="300">
+		<item unique="true">
+			{pullDown:a,b} を表示する
+		</item>
+		<item>
+			{pullDown:a,b} ← input()
+		</item>
+		<item>
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
+		<item unique="true">
+			{pullDown:a,b} を表示する
+		</item>
+		<item>
+			{pullDown:a,b} ← input()
+		</item>
+		<item>
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
 		<item unique="true">
 			{pullDown:a,b} を表示する
 		</item>
@@ -33,7 +57,7 @@
 	</itemsarea>
 
 </question>
-<question horizontal="true">
+<question horizontal="">
 
 	<textarea>
 		<text>
@@ -41,16 +65,10 @@
 		</text>
 	</textarea>
 
-	<answerarea width="500" height="300">
-		<item>
-			「整数を入力してください:」 を表示する
-		</item>
-		<item>
-			もひとつどうぞ
-		</item>
+	<answerarea height="300">
 	</answerarea>
 
-	<itemsarea width="450" height="300">
+	<itemsarea height="300">
 		<item>
 			「整数を入力してください:」 を表示する
 		</item>

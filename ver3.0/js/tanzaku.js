@@ -39,7 +39,6 @@ function buildQuestions(){
 		buildQuestion(number);
 	}
 
-	//関数にしたい！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 	for(var i = 0; i < question.length; i ++){
 		setActionForAnswerArea(i);
 		setActionForAnswerAreaContainer(i);
@@ -104,10 +103,18 @@ function buildArea(number){
 
 	//問題文領域の生成
 	area.appendChild(buildTextAreaBox(number));
+
+	var layout = document.createElement('div');
 	//解答欄領域の生成
-	area.appendChild(buildAnswerAreaBox(number));
+	layout.appendChild(buildAnswerAreaBox(number));
 	//選択肢領域の生成
-	area.appendChild(buildItemsAreaBox(number));
+	layout.appendChild(buildItemsAreaBox(number));
+	area.appendChild(layout);
+
+	if(question[number].getAttribute('horizontal')){
+		layout.classList.add('horizontal');
+
+	}
 }
 
 //-----------------------------
@@ -142,6 +149,7 @@ function buildAnswerAreaBox(number){
 	var box = document.createElement('div');
 	box.classList.add('box');
 	box.classList.add('answerAreaBox');
+	box.id = "answerAreaBox-" + number;//width変更するため
 
 	var caption = document.createElement('div');
 	caption.classList.add('caption');
@@ -150,13 +158,13 @@ function buildAnswerAreaBox(number){
 	var captionContents = document.createElement('h3');
 	captionContents.innerHTML = "解答欄";
 
-	var button = document.createElement('button');
+	var button = document.createElement('input');
 	button.type = 'button';
 	button.classList.add('executeButton');
 	button.onclick = function(){
 		runCode(number);
 	};
-	button.innerHTML += "実行";
+	button.value = "実行";
 
 	captionContents.appendChild(button);
 
@@ -164,7 +172,8 @@ function buildAnswerAreaBox(number){
 	box.appendChild(caption);
 
 	var fixedAnswerArea = document.createElement('div');
-	fixedAnswerArea.classList.add('fixedAnswerArea');
+	// fixedAnswerArea.classList.add('fixedArea');
+	fixedAnswerArea.id = "fixedAnswerArea-" + number;//height変更するため
 
 	var answerArea = document.createElement('div');
 	answerArea.id = "answerArea-" + number;
@@ -182,6 +191,7 @@ function buildItemsAreaBox(number){
 	var box = document.createElement('div');
 	box.classList.add('box');
 	box.classList.add('itemsAreaBox');
+	box.id = "itemsAreaBox-" + number;
 
 	var caption = document.createElement('div');
 	caption.classList.add('caption');
@@ -193,11 +203,16 @@ function buildItemsAreaBox(number){
 	caption.appendChild(captionContents);
 	box.appendChild(caption);
 
+	var fixedItemsArea = document.createElement('div');
+	// fixedItemsArea.classList.add('fixedArea');
+	fixedItemsArea.id = "fixedItemsArea-" + number;//height変更するため
+
 	var itemsArea = document.createElement('div');
 	itemsArea.id = "itemsArea-" + number;
 	itemsArea.classList.add('itemsArea');
 
-	box.appendChild(itemsArea);
+	fixedItemsArea.appendChild(itemsArea);
+	box.appendChild(fixedItemsArea);
 	return box;
 }
 
@@ -220,6 +235,12 @@ function buildTextArea(textArea, number){
 //--------------------------------------------------
 function buildAnswerArea(answerAreaTag, number){
 	var items = answerAreaTag[0].getElementsByTagName('item');
+	if(answerAreaTag[0].getAttribute('width')){
+		document.getElementById("answerAreaBox-"+number).style.width = answerAreaTag[0].getAttribute('width') + 'px';
+	}
+	if(answerAreaTag[0].getAttribute('height')){
+		document.getElementById("fixedAnswerArea-"+number).style.height = answerAreaTag[0].getAttribute('height') + 'px';
+	}
 
 	//選択肢埋め込み
 	for(i = 0; i < items.length; i++) {
@@ -237,7 +258,6 @@ function buildAnswerAreaItemElm(itemContent, numOfQuestion, numOfItem){
 	item.id = numOfQuestion + "-" + idc++;
 	item.classList.add('item');
 	item.classList.add('fixed');
-	item.classList.add('answer');
 	item.setAttribute('data-type','fixed');
 	item.setAttribute('data-question',numOfQuestion);
 	item.setAttribute('data-answer','true');
@@ -253,13 +273,18 @@ function buildAnswerAreaItemElm(itemContent, numOfQuestion, numOfItem){
 //--------------------------------------------------
 function buildItemsArea(itemsAreaTag, number){
 	var items = itemsAreaTag[0].getElementsByTagName('item');
+	if(itemsAreaTag[0].getAttribute('width')){
+		document.getElementById("itemsAreaBox-"+number).style.width = itemsAreaTag[0].getAttribute('width') + 'px';
+	}
+	if(itemsAreaTag[0].getAttribute('height')){
+		document.getElementById("fixedItemsArea-"+number).style.height = itemsAreaTag[0].getAttribute('height') + 'px';
+	}
 
 	//選択肢埋め込み
 	for(i = 0; i < items.length; i++) {
 		var itemsArea = document.getElementById("itemsArea-"+number);
 		var container = document.createElement("div");//aaaaaaaaaaaaa
 		container.id = "box-" + number + "-" + i;//aaaaaaaaaaaaa
-		container.classList.add("boxx");//aaaaaaaaaaaaa
 		itemsArea.appendChild(container);
 		container.appendChild(buildItemsAreaItemElm(items[i],number,i));
 	}
@@ -547,7 +572,7 @@ function addAnswer(id,here){
 		elm.ondragstart = itemDragStart;
 	}
 
-	elm.classList.add("answer");
+	// elm.classList.add("answer");
 	elm.setAttribute('data-answer','true');
 
 	var answerArea = document.getElementById("answerArea-"+number);
@@ -698,7 +723,6 @@ function returnItem(rtElm){
 	var here = Number(rtElm.parentElement.id.split("-")[2]);
 	console.log(here+"番を戻す");
 	rtElm.style.left = "0px";//インデント残ってるのを消す
-	rtElm.classList.remove("answer");
 	rtElm.setAttribute('data-answer','');
 	document.getElementById("box-"+number+"-"+rtElm.getAttribute('data-item')).appendChild(rtElm);
 
