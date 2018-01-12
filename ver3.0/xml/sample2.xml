@@ -58,6 +58,9 @@
 			整数 {pullDown:a,b}
 		</item>
 		<item>
+			a
+		</item>
+		<item>
 			{pullDown:a,b} ← input()
 		</item>
 		<item>

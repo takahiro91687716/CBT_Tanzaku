@@ -1,19 +1,53 @@
-#waku1, #waku3 {
+
+/* 問題文、解答欄、選択肢欄それぞれの一番外枠 */
+.box{
 	margin: 0ex 3ex 1ex;
 	border: solid black 1px;
 }
 
-.waku2{
-	margin: 0ex 3ex 1ex;
+.textAreaBox{
+	background-color: #E4F3E4;
+}
+.answerAreaBox{
+	background-color: #FAEAFA;
+}
+.itemsAreaBox{
+	background-color: #F3F3F3;
+}
+
+/* 枠の説明文 */
+.caption{
 	border: solid black 1px;
+
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+
+	height: 2em;
 }
 
-.waku2{
-	height: 40ex;
-	overflow: scroll;
+.captionForTextArea{
+	background-color: #D4F3D4;
 }
 
-.canvas {
+.captionForAnswerArea{
+	background-color: #F6E3E3;
+}
+.captionForItemsArea{
+	background-color: #D4D4D4;
+}
+
+.container{
 	padding: 1ex;
 	/*height: 1.75ex;*/
 	line-height: 1.0ex;
@@ -40,11 +74,6 @@
 	height: 2em;
 }
 
-.waku{
-	margin: 0ex 3ex 1ex;
-	border: solid black 1px;
-}
-
 .fixedAnswerArea{
 	/*height: 40ex;*/
 	height: 40ex;
@@ -57,7 +86,7 @@
 	/*border: solid black 1px;*/
 }
 
-.tanzaku{
+.item{
 	/*border: solid black 1px;*/
 	border: solid 1px;
 	height: 100%;
@@ -85,32 +114,14 @@ html,body {
 	border-color: #CCCC99;
 	background-color: #FFFFCC;
 }
-.fix{
+.fixed{
 	border-color: #CCCC99;
 	background-color: #FFCCFF;
 }
-.box{
+.boxx{
 	height: 2.0em;
 	/*background-color: #FFFFCC;
 	border-color: #CCCC99;*/
 	/*border-color: #DAC4D4;紫芋っぽいやつ
 	background-color: #E4D4E4;*/
-}
-
-.titleWaku{
-	background-color: #E4F3E4;
-}
-.captionForTitle{
-	background-color: #D4F3D4;
-}
-
-.captionForAnswer{
-	background-color: #F6E3E3;
-}
-
-.tanzakuWaku{
-	background-color: #F3F3F3;
-}
-.captionForTanzaku{
-	background-color: #D4D4D4;
 }
