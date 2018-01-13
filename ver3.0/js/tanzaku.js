@@ -392,7 +392,6 @@ function buildItemIncludesParts(parent,item){
 	var str = item.childNodes[0].nodeValue;
 
 	// 特殊部品 ex) {number:200} とそうでない部分を分解してHTML表示形式に組み替える
-	var numOfNormal = 0;
 	var numOfBrace = 0;
 
 	// 正規表現で特殊部品を探す
@@ -421,15 +420,24 @@ function buildItemIncludesParts(parent,item){
 		normal = null;
 	}
 
-	//特殊部品以外を含んでいる場合はその数をカウントしておく
-	if(normal){
-		numOfNormal = normal.length;
-	}
-
 	// 基本部品の部分をわかりやすい形に置き換えておく
 	// ここでは (@normal番号) の形
-	for(var i = 0; i < numOfNormal; i++){
-		str = str.replace(normal[i],"(@normal"+i+")");
+	if(normal){
+		console.log(str);
+		for(var i = 0; i < normal.length; i++){
+			var tmpElm = str.match(/\(@.*?\)/g);
+			if(tmpElm){
+				for(var j = 0; j < tmpElm.length; j++){
+					str = str.replace(tmpElm[j],'＠');
+				}
+			}
+			str = str.replace(normal[i],"(@normal"+i+")");
+			if(tmpElm){
+				for(var j = 0; j < tmpElm.length; j++){
+					str = str.replace('＠',tmpElm[j]);
+				}
+			}
+		}
 	}
 
 	//ここで要素を順番通りに取得できる

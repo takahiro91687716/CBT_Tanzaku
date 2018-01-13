@@ -1,4 +1,4 @@
-.waku{
+.box{
 	margin: 0ex 3ex 1ex;
 	border: solid black 1px;
 	margin: 10px auto;
@@ -25,14 +25,14 @@
 }
 
 /*  */
-#toolsWaku{
+#toolsBox{
 	background-color: #A1A1A1;
 }
 #titleEditArea{
 	background-color: #E4F3E4;
 	/*text-align: center;*/
 }
-#answerareaWaku{
+#answerAreaBox{
 	display: none;
 	/* margin: 10px auto; */
 }
@@ -43,18 +43,18 @@
 	overflow: scroll;
 }
 
-#itemsareaWaku{
+#itemsAreaBox{
 	/* margin: 10px auto; */
 }
 
 /*  */
-#itemsarea{
+#itemsArea{
   height: 100%;
   overflow: scroll;
   background-color: #F3F3F3;
 }
 /*  */
-#itemsareaFixed{
+#itemsAreaFixed{
   height: 35ex;
 }
 
@@ -106,7 +106,7 @@ input.add{
 	background-color: #D4D4F3;
 }
 
-#box{
+#editAndAtentionArea{
 	display: flex;
 	display: -moz-flex;
 	display: -o-flex;
@@ -121,24 +121,6 @@ input.add{
 	/* 背景色 */
 	background-color: #E4E4F3;
 }
-#editArea1{
-	margin-top: 1em;
-}
-#editArea2{
-	display: flex;
-	display: -moz-flex;
-	display: -o-flex;
-	display: -webkit-flex;
-	display: -ms-flex;
-	flex-direction: row;
-	-moz-flex-direction: row;
-	-o-flex-direction: row;
-	-webkit-flex-direction: row;
-	-ms-flex-direction: row;
-
-	/* 縦中央 */
-	align-items: center;
-}
 
 .sizeFix{
 	/*width: 80%;
@@ -147,15 +129,15 @@ input.add{
 	margin-right: 50px;
 }
 
-#answerareaFixed{
+#answerAreaFixed{
 	height: 35ex;
 }
-#answerarea{
+#answerArea{
 	background-color: #F6EEEE;
 	overflow: scroll;
 	height: 100%;
 }
-/* #answerWaku{
+/* #answerBox{
 	height: 15em;
 } */
 
@@ -176,4 +158,16 @@ input.add{
 	-ms-flex-direction: row;
 
 	margin: auto;
+}
+#atentionForEdit{
+	margin-left: auto;
+	margin-right: 50px;
+	width: 450px;
+}
+
+#editArea{
+	margin-top: 1.5em;
+}
+#textOfItemEditArea{
+	align-items: center;
 }

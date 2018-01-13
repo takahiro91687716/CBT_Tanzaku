@@ -10,7 +10,7 @@
 
 	<body onload="setElement()">
 		<div id ="area">
-			<div id="toolsWaku" class="waku">
+			<div id="toolsBox" class="box">
 				<div id="tool">
 					<b>ツール欄</b>
 					<input type="text" id="filename" value="sample" size="10">
@@ -27,9 +27,12 @@
 				</div>
 			</div>
 
-			<div id='titleWaku' class='waku'>
+			<div id='titleBox' class='box'>
 				<div id='captionForTitle' class='caption'>
 					<h4>問題文編集欄</h4>
+				</div>
+				<div class='atention'>
+					<p>【　】で囲んだ文字は<mark>強調</mark>することができます。</p>
 				</div>
 				<div id='titleEditArea'>
 					<form name='question'>
@@ -41,72 +44,77 @@
 			<!-- 横並びにするための枠 layout -->
 			<div id='layout'>
 
-				<div id='answerareaWaku' class='waku'>
+				<div id='answerAreaBox' class='box'>
 					<div id='captionForAnswer' class='caption'>
 						<h4>解答欄</h4>
 						<div id='answerSizeFix' class='sizeFix'>
 							<form name='answerSize'>
 								<label>
-									横幅：<input type='number' id='answerareaWidth' class='width' onChange='fixWidth("answerarea")' style="width:45px;">
+									横幅：<input type='number' id='answerAreaWidth' class='width' onChange='fixWidth("answerArea")' style="width:45px;">
 								</label>
 								<label>
-									縦幅：<input type='number'  id='answerareaHeight' onChange='fixHeight("answerarea")' style="width:45px;">
+									縦幅：<input type='number'  id='answerAreaHeight' onChange='fixHeight("answerArea")' style="width:45px;">
 								</label>
 							</form>
 						</div>
 					</div>
-					<div id='answerareaFixed'>
-						<div id='answerarea'></div>
+					<div id='answerAreaFixed'>
+						<div id='answerArea'></div>
 					</div>
 				</div>
 
-				<div id='itemsareaWaku' class='waku'>
+				<div id='itemsAreaBox' class='box'>
 					<div id='captionForBuild' class='caption'>
 						<h4>選択肢欄</h4>
 						<div id='buildSizeFix' class='sizeFix'>
 							<form name='buildSize'>
 								<label>
-									横幅：<input type='number' id='itemsareaWidth' class='width' onChange='fixWidth("itemsarea")' style="width:45px;">
+									横幅：<input type='number' id='itemsAreaWidth' class='width' onChange='fixWidth("itemsArea")' style="width:45px;">
 								</label>
 								<label>
-									縦幅：<input type='number'  id='itemsareaHeight' onChange='fixHeight("itemsarea")' style="width:45px;">
+									縦幅：<input type='number'  id='itemsAreaHeight' onChange='fixHeight("itemsArea")' style="width:45px;">
 								</label>
 							</form>
 						</div>
 					</div>
-					<div id='itemsareaFixed'>
-						<div id='itemsarea'></div>
+					<div class='atention'>
+						<p>選択肢は基本的に何度でも使えますが、ダブルクリックすることで１度しか使えないように設定できます。</p>
+					</div>
+					<div id='itemsAreaFixed'>
+						<div id='itemsArea'></div>
 					</div>
 				</div>
 			</div>
 
-			<div id='editWaku' class='waku'>
+			<div id='editBox' class='box'>
 				<div id='captionForEdit' class='caption'>
 					<h4>選択肢編集欄</h4>
 				</div>
-				<div id='box' class='parts'>
-					<div id='editArea1' class='parts'>
-						<div id='editArea2' class='parts'>
-							<form name='tanzaku' style='display: inline'>
-								<textarea id='Content' name='text' rows='2' cols='50' ondrop='dropToEditArea(event)'></textarea>
+				<div id='editAndAtentionArea'>
+					<div id='editArea'>
+						<div id='textOfItemEditArea'>
+							<form name='itemEditArea'>
+								<textarea id='itemText' name='text' rows='2' cols='50' ondrop='dropToEditArea(event)'></textarea>
+								<input type='button' class='add' value='追加' onclick='addItemToItemsArea()'>
 							</form>
-							<input type='button' class='add' value='追加' style='display: inline' onclick='addTanzaku()'></input>
 						</div>
-						<div id='sample1' draggable = 'true' style='display: inline' ondragstart='setID(event)'>
-							　<input type='text' readonly value='自由記入欄'></input>　
-						</div>
-						<div id='sample2' draggable = 'true' style='display: inline' ondragstart='setID(event)'>
-							　<input type='number'readonly value='99999'></input>　
-						</div>
-						<div id='sample3' draggable = 'true' style='display: inline' ondragstart='setID(event)'>　
-							<select>
-								<option>-未選択-</option>
-								<option>選択肢Ａ</option>
-								<option>選択肢Ｂ</option>
-							</select>　
+						<div id='samplePartsArea'>
+							<div id='sample1' draggable = 'true' data-value='［ 自由記入欄 ］' style='display: inline' ondragstart='itemDragStart(event)'>
+								　<input type='text' readonly value='自由記入欄'></input>　
+							</div>
+							<div id='sample2' draggable = 'true' data-value='【 99999 】' style='display: inline' ondragstart='itemDragStart(event)'>
+								　<input type='number'readonly value='99999'></input>　
+							</div>
+							<div id='sample3' draggable = 'true' data-value='｛ 未選択 ｜ 選択肢A ｜ 選択肢B ｝' style='display: inline' ondragstart='itemDragStart(event)'>　
+								<select>
+									<option>-未選択-</option>
+									<option>選択肢Ａ</option>
+									<option>選択肢Ｂ</option>
+								</select>　
+							</div>
 						</div>
 					</div>
-					<div id='setsumeibun' class='parts'>
+					<div id='atentionForEdit'>
 						<p>テキストボックスで選択肢を作成し、ボタンで追加します。３つの部品も選択肢の中で使用することができます。</p>
 						<p>※ 全角の［ ］、【 】、｛ ｝は使用できません</p>
 					</div>

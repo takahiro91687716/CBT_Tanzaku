@@ -31,7 +31,7 @@
 			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
 		</item>
 		<item unique="true">
-			{pullDown:a,b} を表示する
+			a{pullDown:a,b} を表示する
 		</item>
 		<item>
 			{pullDown:a,b} ← input()
