@@ -113,8 +113,9 @@ function buildArea(number){
 
 	if(question[number].getAttribute('horizontal')){
 		layout.classList.add('horizontal');
-
 	}
+
+	area.appendChild(document.createElement('br'));
 }
 
 //-----------------------------
@@ -224,10 +225,78 @@ function buildItemsAreaBox(number){
 // "(number)問目"の問題文要素を埋め込む関数
 //--------------------------------------------------
 function buildTextArea(textArea, number){
-	var text = textArea[0].getElementsByTagName('text')[0].childNodes[0].nodeValue;
+	var text = textArea[0].getElementsByTagName('text')[0];
 	var textContent = document.createElement('p');
-	textContent.innerHTML += text;
+	buildTextIncludesMarks(textContent,text);
 	document.getElementById("textArea-"+number).appendChild(textContent);
+}
+
+function buildTextIncludesMarks(parent,text){
+	// <text> ~~~~~~ </text>の
+	// ~~~~~~部分を取得する
+	var str = text.childNodes[0].nodeValue;
+
+	// マークされているところ ex) {mark:3倍} とそうでない部分を分解してHTML表示形式に組み替える
+	var numOfNormal = 0;
+	var numOfMark = 0;
+
+	// 正規表現で特殊部品を探す
+	var mark = str.match(/\{mark\:.*?\}/g);
+	if(mark){
+		numOfMark = mark.length;
+	}
+
+	// マークされているところの部分をわかりやすい形に置き換えておく
+	// ここでは (@mark番号) の形
+	for(var i = 0; i < numOfMark; i++){
+		str = str.replace(mark[i],"(@mark"+i+")");
+	}
+
+	//改行と水平タブを削除
+	// (@brace番号)を区切り文字として使用することで特殊部品以外を取得する
+	var normal =str.replace(/\n|\t/g,"").split(/\(@mark\d\)/);
+
+	// splitで "" が配列に含まれてしまうため削除
+	normal.some(function(remove, i){
+    if (remove==""){
+			normal.splice(i,1);
+		}
+	});
+	if(normal&&normal[0]==("")){
+		normal = null;
+	}
+
+	//マークされているところ以外を含んでいる場合はその数をカウントしておく
+	if(normal){
+		numOfNormal = normal.length;
+	}
+
+	// 基本形式の部分をわかりやすい形に置き換えておく
+	// ここでは (@normal番号) の形
+	for(var i = 0; i < numOfNormal; i++){
+		str = str.replace(normal[i],"(@normal"+i+")");
+	}
+
+	//ここで要素を順番通りに取得できる
+	//あとはelementsをDOMにしてparentに追加していく
+	var elements = str.match(/\(.*?\)/g);
+
+	for(var i = 0;i<elements.length;i++){
+		var child = null;
+		if(elements[i].includes("normal")){
+			child = document.createElement("span");
+			child.innerHTML = normal[elements[i].match(/\d/)];
+		}else if(elements[i].includes("mark")){
+			child = document.createElement("mark");
+			var number = elements[i].match(/\d/);
+			var target = mark[number].substring(1, mark[number].length - 1).split(":");
+			child.innerHTML = target[1];
+		}else{
+			//これが出たら作り直し
+			console.log("例外");
+		}
+		parent.appendChild(child);
+	}
 }
 
 //--------------------------------------------------
