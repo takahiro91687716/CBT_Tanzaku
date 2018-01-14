@@ -1,3 +1,7 @@
+/* ページをゴミ箱にするため */
+html,body {
+	height:100%;
+}
 .box{
 	margin: 0ex 3ex 1ex;
 	border: solid black 1px;
@@ -59,7 +63,7 @@
 }
 
 /*  */
-.tanzaku{
+.item{
 	height:2em;
 	display: flex;
 	align-items: center;
@@ -68,7 +72,7 @@
 	background-color: #FFFFCC;
 }
 
-.itemForAnswer{
+.answer{
 	height:2em;
 	display: flex;
 	align-items: center;
@@ -145,7 +149,7 @@ input.add{
   font-family: "Hiragino kaku Gothic Pro";
 }
 
-.yokonarabi{
+.horizontal{
 	display: flex;
 	display: -moz-flex;
 	display: -o-flex;

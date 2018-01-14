@@ -19,7 +19,7 @@ function itemDragStart(e) {
 function setElement(){
   area = document.getElementById('area');
   editArea = document.getElementById("itemText");
-  editArea.ondragover = prev;//
+
   itemsArea = document.getElementById("itemsArea");
   answerArea = document.getElementById("answerArea");
   answerBox = document.getElementById("answerAreaBox");
@@ -30,63 +30,88 @@ function setElement(){
 
 function setEvent(){
   console.log("イベント処理を設定します");
+	editArea.ondragover = prev;//
   answerArea.ondragover = prev;
-  answerArea.ondrop = addItemToAnswerArea;
+  answerArea.ondrop = dropToAnswerArea;
+	itemsArea.ondragover = prev;
+  itemsArea.ondrop = dropToItemsArea;
+	area.ondragover = prev;
+	area.ondrag = prev;
+	area.ondrop = trashItem;
 }
 
 /** エディットエリアでの挙動 */
 function dropToEditArea(e){
+	trashFlug = false;
   var id = e.dataTransfer.getData("text/html");
 	var elm = document.getElementById(id);
   console.log("idは"+id);
   if((/sample\d/).test(id)){
     editArea.value += elm.getAttribute('data-value');
   }else if((/\d+/).test(id)){
-    editArea.value += elm.getAttribute('data-value');
-    returnItem(elm);
-    numOfChoice--;//これitemsArea.childElementCountで代用できるわ
+		for(var i = 0; i < elm.childElementCount;i++){
+			editArea.value += elm.childNodes[i].getAttribute('data-value');
+		}
+    removeItem(elm);
   }
   e.preventDefault();
 }
 
-function returnItem(rtElm){
-  var itemId = rtElm.id.split("-");
-  rtElm.parentElement.removeChild(rtElm);
-  //ずらす
-  for(var i = itemId[1];i<itemsArea.childElementCount-1;i++){
-    console.log((Number(i)+1)+"を移動")
-    //移動対象要素の取得
-    var elt = document.getElementById("canvas-"+(Number(i)+1)).childNodes[0];
-    //IDの書き換え
-    elt.id = "t-"+i;
-    document.getElementById("canvas-"+i).appendChild(elt);
-  }
-  //余分な欄を消す
-  itemsArea.removeChild(document.getElementById("canvas-"+(itemsArea.childElementCount-1)));
+function trashItem(e){
+	var id = e.dataTransfer.getData("text/html",e.target.id);
+	var elm = document.getElementById(id);
+	if(trashFlug){
+		removeItem(elm);
+	}else{
+		trashFlug = true;
+	}
 }
 
-//ビルドエリアからエディットエリアへ移した時のパーツの変換
-function backToEdit(str){
-  var num = str.match(/<input type=\"number\" readonly=\"true\" value=\"\s*\d+\s*\">/g);
-  var text = str.match(/<input type=\"text\" readonly=\"true\" value=\"\s*.*?\s*\">/g);
-  var pd = str.match(/<select><option>\s*.*?\s*<\/option><\/select>/g);
+function removeItem(rmElm){
+	var parent = rmElm.parentElement
+  parent.removeChild(rmElm);
+	moveUpContainer(parent);
+}
 
-  if(num != null){
-    for(var i = 0; i < num.length;i++){
-      str = str.replace(num[i],"【"+num[i].substring(numInput.length,num[i].length-endOfInput.length).replace(/\s+/g,"")+"】");
-    }
-  }
-  if(text != null){
-    for(var i = 0; i < text.length;i++){
-      str = str.replace(text[i],"［"+text[i].substring(textInput.length,text[i].length-endOfInput.length)+"］");
-    }
-  }
-  if(pd != null){
-    for(var i = 0; i < pd.length;i++){
-      str = str.replace(pd[i],"｛"+pd[i].substring(topOfPullDown.length,pd[i].length-endOfPullDown.length).replace(/<\/option><option>/g,"｜")+"｝");
-    }
-  }
-  return str;
+function moveUpContainer(blank){
+	var area = null;
+	var areaname = blank.getAttribute('data-area');
+	if(areaname=='answerArea'){
+		area = answerArea;
+	}else if(areaname=='itemsArea'){
+		area = itemsArea;
+	}else{
+		console.log(areaname);
+	}
+
+	for(var i = Number(blank.getAttribute('data-number')); i < area.childElementCount-1;i++){
+		console.log(areaname+'の'+(Number(i)+1)+"番を移動");
+		//移動対象要素の取得
+		var tmpElt = document.getElementById(areaname+"Container-"+(Number(i)+1)).childNodes[0];
+		document.getElementById(areaname +"Container-"+i).appendChild(tmpElt);
+	}
+	//余分な欄を消す
+  area.removeChild(document.getElementById(areaname+"Container-"+(area.childElementCount-1)));
+}
+
+function moveDownContainer(point){
+	var area = null;
+	var areaname = point.getAttribute('data-area')
+	if(areaname=='answerArea'){
+		area = answerArea;
+	}else if(areaname=='itemsArea'){
+		area = itemsArea;
+	}
+
+	for(var i = area.childElementCount-1; Number(point.getAttribute('data-number')) < i;i--){
+		console.log(areaname+'の'+(Number(i)-1)+"番を移動");
+		//移動対象要素の取得
+		var tmpElt = document.getElementById(areaname+"Container-"+(Number(i)-1)).childNodes[0];
+		var moveTo = document.getElementById(areaname+"Container-"+i)
+		console.log(tmpElt);
+		console.log(moveTo);
+		moveTo.appendChild(tmpElt);
+	}
 }
 
 var textInput = document.createElement('input');
@@ -137,10 +162,6 @@ function buildPartsForItemArea(parent){
 	if(normal&&normal[0]==("")){
 		normal = null;
 	}
-	console.log(normal);
-	console.log(text);
-	console.log(num);
-	console.log(pd);
 
 	// 基本部品の部分をわかりやすい形に置き換えておく
 	// ここでは (@normal番号) の形
@@ -163,8 +184,6 @@ function buildPartsForItemArea(parent){
 	}
 
 	var elements = str.match(/\(.*?\)/g);
-	console.log(str);
-	console.log(elements);
 
 	for(var i = 0; i < elements.length;i++){
 		var child = null;
@@ -211,21 +230,82 @@ function buildPartsForItemArea(parent){
 	}
 }
 
-function addItemToAnswerArea(id,to){
-  var addElm = document.getElementById(e.dataTransfer.getData("text/html",e.target.id));
-	addElm.setAttribute('data-type','answer')
-  addElm.classList.add("itemForAnswer");
-	addElm.ondblclick = '';
 
-  makeContainer('answerArea');
+var trashFlug = true;
+function dropToAnswerArea(e){
+	trashFlug = false;
+	var id = e.dataTransfer.getData("text/html",e.target.id);
+	var elm = document.getElementById(id);
+	var to = answerArea.childElementCount;
+	if(!containerCall){
+	if(elm.getAttribute('data-type')=='item'){
+		var parent = elm.parentElement;
+		//itemsareaからanswerarea
+		//answerareaの最後尾に追加
+		addItemByDrop('answerArea',elm,to);
+		//追加後itemsareaのコンテナ１つ消す
+		moveUpContainer(parent);
+	}else if (elm.getAttribute('data-type')=='answer') {
+		//answerareaからanswerarea
+		//answerareaの最後尾に移動
+		var from = Number(elm.parentElement.getAttribute('data-number'));
+		insertLower('answerArea',from,(to-1));
+	}else{
+		console.log('例外：dropToAnswerArea');
+	}}else{containerCall = false;}
+}
 
-	//to以降ずらす
-	for(var i = answerArea.childElementCount - 1 ; to <= i;i--){
+function dropToItemsArea(e){
+	trashFlug = false;
+	var id = e.dataTransfer.getData("text/html",e.target.id);
+	var elm = document.getElementById(id);
+	var to = itemsArea.childElementCount;
+	if(!containerCall){
+	if(elm.getAttribute('data-type')=='answer'){
+		var parent = elm.parentElement;
+		//itemsareaからanswerarea
+		//answerareaの最後尾に追加
+		addItemByDrop('itemsArea',elm,to);
+		//追加後itemsareaのコンテナ１つ消す
+		moveUpContainer(parent);
+	}else if (elm.getAttribute('data-type')=='item') {
+		//answerareaからanswerarea
+		//answerareaの最後尾に移動
+		var from = Number(elm.parentElement.getAttribute('data-number'));
+		insertLower('itemsArea',from,(to-1));
+	}else{
+		console.log('例外：dropToItemsArea');
+	}
+}else{
+	containerCall = false;
+}
+}
 
-		document.getElementById('answerAreaContainer-'+Number(i)).appendChild();
+// toは移動先
+function addItemByDrop(areaname,elm,to){
+
+	//移動先によって属性を変更する
+	if(areaname=='answerArea'){
+		if(elm.getAttribute('data-unique')){
+	    elm.setAttribute('data-unique','');
+	    elm.style. backgroundColor = '';
+	  }
+		elm.setAttribute('data-type','answer');
+	  elm.classList.add("answer");
+		elm.ondblclick = '';
+	}else if(areaname=='itemsArea'){
+		elm.setAttribute('data-type','item');
+	  elm.classList.remove("answer");
+		elm.ondblclick = changeToUnique;
 	}
 
-	document.getElementById()
+  makeContainer(areaname);
+	console.log(to+'に移動');
+	var point = document.getElementById(areaname+'Container-'+to)
+
+	//to以降ずらす
+	moveDownContainer(point);
+	point.appendChild(elm);
 }
 
 var idc = 0;
@@ -261,13 +341,15 @@ function makeContainer(areaname){
 		console.log('関数：makeContainerでエラー')
 	}
 
-	var number = itemsArea.childElementCount
+	var number = area.childElementCount
 	var container = containerOrigin.cloneNode(true);
 	container.id = areaname + 'Container-' + number;
+	container.setAttribute('data-number',number);
+	container.setAttribute('data-area',areaname);
 
 	container.ondragover = prev;
 	container.ondrag = prev;
-	// container.ondrop = dropToContainer;ドロップの関数ne
+	container.ondrop = dropToContainer;
 	area.appendChild(container);
 
 	return container;
@@ -279,29 +361,56 @@ function prev(e) {
 	}
 }
 
+var containerCall = false;
 function dropToContainer(e){
+	containerCall = true;
+	console.log("ドロップ：コンテナ");
+	var id = e.dataTransfer.getData("text/html",e.target.id);
+	var elm = document.getElementById(id);
+	var parent = elm.parentElement;
+
   var divClientRect = this.getBoundingClientRect();
   var harfOfdiv = divClientRect.height/2;
   var mouseY = e.clientY;
-  var from = e.dataTransfer.getData("text/html").split("-");//ここから変える
+  var from = Number(parent.getAttribute('data-number'));
+	var fromArea = parent.getAttribute('data-area');
   console.log("fromのidは："+from);
-  var to = this.id.split("-");
+	console.log("fromのareaは："+fromArea);
+
+	var to = Number(this.getAttribute('data-number'));
+	var toArea = this.getAttribute('data-area');
   console.log("toのidは："+to);
+	console.log("toのareaは："+toArea);
 
-  if(mouseY<(divClientRect.top+harfOfdiv)){
-    //上半分に落とされた時
-    console.log("上半分に落とされました");
-    insertUpper(from[1],to[1]);
-  }else if((divClientRect.top+harfOfdiv)<=mouseY){
-    console.log("下半分に落とされました");
-    //下半分に落とされた時
-    insertLower(from[1],to[1]);
+	if(fromArea == toArea){
+		if(mouseY<(divClientRect.top+harfOfdiv)){
+			console.log("要素移動（同じエリア）");
+	    //上半分に落とされた時
+	    console.log("上半分に落とされました");
+	    insertUpper(toArea,from,to);
+	  }else if((divClientRect.top+harfOfdiv)<=mouseY){
+	    console.log("下半分に落とされました");
+	    //下半分に落とされた時
+	    insertLower(toArea,from,to);
+	  }
+	}else{
+		if(mouseY<(divClientRect.top+harfOfdiv)){
+			console.log("要素移動（違うエリア）");
+	    //上半分に落とされた時
+	    console.log("上半分に落とされました");
+			console.log(fromArea+"の"+from+'から'+toArea+'の'+to);
+	    addItemByDrop(toArea,elm,to);
+	  }else if((divClientRect.top+harfOfdiv)<=mouseY){
+	    console.log("下半分に落とされました");
+	    //下半分に落とされた時
+			console.log(fromArea+"の"+from+'から'+toArea+'の'+(to+1));
+	    addItemByDrop(toArea,elm,(to+1));
+	  }
+	}
 
-  }
 }
 
 function changeToUnique(e){
-
   if(this.getAttribute('data-unique')){
     this.setAttribute('data-unique','');
     this.style. backgroundColor = '#FFFFCC';
@@ -312,10 +421,10 @@ function changeToUnique(e){
 }
 
 /** 上半分にドロップされた時 */
-function insertUpper(from,to){
+function insertUpper(areaname,from,to){
+
   console.log(from+"から"+to);
-  var insert = document.getElementById("t-"+from);
-  insert.id = "insert";
+  var insert = document.getElementById(areaname+"Container-"+from).childNodes[0];
 
   if(from<to){
     //上から下へ持ってきた時
@@ -323,29 +432,25 @@ function insertUpper(from,to){
     for(var i = from; i < to ; i++){
       console.log("上から下へ持ってきました");
       console.log(i+"を動かす：to"+to+",from"+from);
-      var tmpElt = document.getElementById("t-"+(Number(i)+1));
-      tmpElt.id = "t-"+Number(i);
-      document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+      var tmpElt = document.getElementById(areaname+"Container-"+(Number(i)+1)).childNodes[0];
+      document.getElementById(areaname+"Container-"+Number(i)).appendChild(tmpElt);
     }
   }else{
     //下から上へ持ってきた時、または同値
     for(var i = from; to < i; i--){
       console.log("下から上へ持ってきました");
       console.log(i+"を動かす：to"+to+",from"+from);
-      var tmpElt = document.getElementById("t-"+(Number(i)-1));
-      tmpElt.id = "t-"+Number(i);
-      document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+      var tmpElt = document.getElementById(areaname+"Container-"+(Number(i)-1)).childNodes[0];
+      document.getElementById(areaname+"Container-"+Number(i)).appendChild(tmpElt);
     }
   }
-  insert.id = "t-"+to;
-  document.getElementById("canvas-"+to).appendChild(insert);
+  document.getElementById(areaname+"Container-"+to).appendChild(insert);
 }
 
 /** 下半分にドロップされた時 */
-function insertLower(from,to){
+function insertLower(areaname,from,to){
   console.log(from+"から"+to);
-  var insert = document.getElementById("t-"+from);
-  insert.id = "insert";
+  var insert = document.getElementById(areaname+"Container-"+from).childNodes[0];
 
   if(to<from){
     //下から上へ持ってきた時
@@ -353,22 +458,19 @@ function insertLower(from,to){
     for(var i = from; to < i; i--){
       console.log("下から上へ持ってきました");
       console.log(i+"を動かす：to"+to+",from"+from);
-      var tmpElt = document.getElementById("t-"+(Number(i)-1));
-      tmpElt.id = "t-"+Number(i);
-      document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+      var tmpElt = document.getElementById(areaname+"Container-"+(Number(i)-1)).childNodes[0];
+      document.getElementById(areaname+"Container-"+Number(i)).appendChild(tmpElt);
     }
   }else{
     //上から下へ持ってきた時、または同値
     for(var i = from; i < to ; i++){
       console.log("上から下へ持ってきました");
       console.log(i+"を動かす：to"+to+",from"+from);
-      var tmpElt = document.getElementById("t-"+(Number(i)+1));
-      tmpElt.id = "t-"+Number(i);
-      document.getElementById("canvas-"+Number(i)).appendChild(tmpElt);
+      var tmpElt = document.getElementById(areaname+"Container-"+(Number(i)+1)).childNodes[0];
+      document.getElementById(areaname+"Container-"+Number(i)).appendChild(tmpElt);
     }
   }
-  insert.id = "t-"+to;
-  document.getElementById("canvas-"+to).appendChild(insert);
+  document.getElementById(areaname+"Container-"+to).appendChild(insert);
 }
 
 var displayAnswer = false;
@@ -550,12 +652,12 @@ var horizontal = false;
 function changeHorizontal(){
   var fixArea = document.getElementById("layout");
   if(!horizontal){
-    fixArea.classList.add("yokonarabi");
+    fixArea.classList.add("horizontal");
     fixWidth2("answerArea",minOfWidth);
     fixWidth2("itemsArea",minOfWidth);
     horizontal = true;
   }else{
-    fixArea.classList.remove("yokonarabi");
+    fixArea.classList.remove("horizontal");
     horizontal = false;
   }
 }

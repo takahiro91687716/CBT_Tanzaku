@@ -555,7 +555,7 @@ function dropToAnswerArea(e){
 				addAnswer(id,to);
 			}else{
 				// 解答欄からの要素の処理
-				var from = elm.parentElement.id.split("-")[2];
+				var from = elm.parentElement.id.split("-")[2];//data-numberつけたほうがきれい
 				// 要素増えないので to は -1 しておく
 				insertLower(from,(to-1),number);
 			}
