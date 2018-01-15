@@ -125,8 +125,7 @@ numberInput.setAttribute('readonly',true);
 var pullDown = document.createElement('select');
 
 //エディットエリアからビルドエリアへ移した時のパーツの変換
-function buildPartsForItemArea(parent){
-	var str = editArea.value
+function buildPartsForItemArea(parent,str){
 
   var num = str.match(/【\s*\d+\s*】/g);
   var text = str.match(/［\s*.*?\s*］/g);
@@ -321,12 +320,36 @@ function addItemToItemsArea(){
 		item.ondragstart = itemDragStart;
 		item.ondblclick = changeToUnique;
 
-		buildPartsForItemArea(item);
+		buildPartsForItemArea(item,editArea.value);
 		makeContainer('itemsArea').appendChild(item);
     editArea.value = "";
   }else{
     alert("空の選択肢は置けません！");
   }
+}
+
+function loadItem(areaname,str,unique){
+	var area = null;
+	var item = itemOrigin.cloneNode(true);
+	item.id = idc++;
+	item.draggable = true;
+	item.ondragstart = itemDragStart;
+	if(areaname=='answerArea'){
+		area = answerArea;
+		item.setAttribute('data-type','answer');
+	  item.classList.add("answer");
+	}else if(areaname=='itemsArea'){
+		area = itemsArea;
+		item.ondblclick = changeToUnique;
+		if(unique){
+			item.setAttribute('data-unique','true');
+	    item.style.backgroundColor = '#CCFFFF';
+		}
+	}else{
+		console.log(areaname);
+	}
+	buildPartsForItemArea(item,str);
+	makeContainer(areaname).appendChild(item);
 }
 
 var containerOrigin = document.createElement("div");
@@ -501,22 +524,184 @@ function openFilelist(){
   }
 }
 
+function saveFile(){
+	var question = document.createElement('div');
+	question.setAttribute('data-horizontal',horizontal);
+	question.setAttribute('data-idc',idc);
+	question.setAttribute('data-displayAnswer',displayAnswer);
 
-function toXML(){
-  var xml = "<?xml version='1.0' encoding='UTF-8'?>\n<doc>\n<question>\n";
+	var text = document.createElement('div');
+	text.id = 'text';
+	text.setAttribute('data-value',document.getElementById("questionText").value);
 
-  xml += "<text>\n"+document.getElementById("questionText").value+"\n</text>\n";
+	var answer = document.createElement('div');
+	answer.id = 'answer';
+	answer.setAttribute('data-width',document.getElementById("answerAreaWidth").value);
+	answer.setAttribute('data-height',document.getElementById("answerAreaHeight").value);
+	// answer.setAttribute('data-value',document.getElementById("questionText").value);
 
-  for(var i = 0; i < numOfChoice; i++){
-    var elm = document.getElementById("canvas-"+i).childNodes[0];
-    if(elm.id.includes("unique")){
-      xml += "<item unique='true'>\n";
-    }else{
-      xml += "<item>\n";
-    }
-    xml += exXml(elm.innerHTML)+"\n";
-    xml += "</item>\n";
-  }
+	for(var i = 0; i < answerArea.childElementCount;i++){
+		answer.appendChild(answerArea.childNodes[i].childNodes[0]);
+	}
+
+	var items = document.createElement('div');
+	items.id = 'items';
+	items.setAttribute('data-width',document.getElementById("itemsAreaWidth").value);
+	items.setAttribute('data-height',document.getElementById("itemsAreaHeight").value);
+	// items.setAttribute('data-value',document.getElementById("questionText").value);
+
+	for(var i = 0; i < itemsArea.childElementCount;i++){
+		items.appendChild(itemsArea.childNodes[i].childNodes[0]);
+	}
+
+	question.appendChild(text);
+	question.appendChild(answer);
+	question.appendChild(items);
+
+	return question;
+}
+
+function loadFile(filename){
+	var question = window.sessionStorage.getItem(filename).split('＠');
+	console.log(question);
+	idc = 0;
+  //
+	// for(var i = 0; i < answerArea.childElementCount;i++){
+	// 	answerArea.removeChild(answerArea.childNodes[0]);
+	// }
+  //
+	// for(var i = 0; i < itemsArea.childElementCount;i++){
+	// 	itemsArea.removeChild(itemsArea.childNodes[0]);
+	// }
+	while (answerArea.hasChildNodes()) {
+		answerArea.removeChild(answerArea.lastChild);
+	}
+
+	while (itemsArea.hasChildNodes()) {
+		itemsArea.removeChild(itemsArea.lastChild);
+	}
+
+
+	if(question[question.indexOf('[horizontal]')+1] != String(horizontal)){
+		changeHorizontal();
+	}
+
+	if(question[question.indexOf('[displayAnswer]')+1] !=String(displayAnswer)){
+		setAnswerArea();
+	}
+
+	document.getElementById("questionText").value = question[question.indexOf('[text]')+1];
+
+
+	fixWidth2('answerArea',question[question.indexOf('[answerWidth]')+1]);
+	fixHeight2('answerArea',question[question.indexOf('[answerHeight]')+1]);
+
+	for(var i = question.indexOf('[answerItem]'); i <= question.lastIndexOf('[answerItem]');i+=2){
+		loadItem('answerArea',question[i+1],false);
+	}
+
+	fixWidth2('itemsArea',question[question.indexOf('[itemsWidth]')+1]);
+	fixHeight2('itemsArea',question[question.indexOf('[itemsHeight]')+1]);
+
+	console.log();
+
+	for(var i = question.indexOf('[itemsItem]'); i <= question.lastIndexOf('[itemsItem]');i+=3){
+		var unique = false;
+		if(String(unique) != question[i+2]){
+			unique = true;
+		}
+		loadItem('itemsArea',question[i+1],unique);
+	}
+}
+
+function dataOfStorage(){
+	var str = '';
+
+	str += '[horizontal]＠';
+	str += horizontal+'＠';
+
+	str += '[displayAnswer]＠';
+	str += displayAnswer+'＠';
+
+	str += '[text]＠';
+	str += document.getElementById("questionText").value+'＠';
+
+	str += '[answerWidth]＠';
+	str += document.getElementById("answerAreaWidth").value+'＠';
+	str += '[answerHeight]＠';
+	str += document.getElementById("answerAreaHeight").value+'＠';
+
+	for(var i = 0; i < answerArea.childElementCount;i++){
+		str += '[answerItem]＠';
+		var item = answerArea.childNodes[i].childNodes[0];
+		for(var j = 0; j < item.childElementCount;j++){
+			str += item.childNodes[j].getAttribute('data-value');
+		}
+		str += '＠';
+	}
+
+	str += '[itemsWidth]＠';
+	str += document.getElementById("itemsAreaWidth").value+'＠';
+
+	str += '[itemsHeight]＠';
+	str += document.getElementById("itemsAreaHeight").value+'＠';
+
+	for(var i = 0; i < itemsArea.childElementCount;i++){
+		str += '[itemsItem]＠';
+		var item = itemsArea.childNodes[i].childNodes[0];
+		for(var j = 0; j < item.childElementCount;j++){
+			str += item.childNodes[j].getAttribute('data-value');
+		}
+		str += '＠';
+		str += Boolean(itemsArea.childNodes[i].childNodes[0].getAttribute('data-unique')) + '＠';
+	}
+
+	return str;
+}
+
+
+function toXML(){//上のquestionを読み込めるように変形させる．先にロードつくるか
+  var xml = '';
+	xml += "<?xml version='1.0' encoding='UTF-8'?>\n";
+	xml += "<doc>\n";
+	xml += "<question";
+	xml += " horizontal='"+horizontal+"'";
+	xml += ">\n";
+
+	xml += "<textArea>\n"
+  xml += "<text>\n"
+	xml += document.getElementById("questionText").value.replace('【','{mark:').replace('】','}');
+	xml += "\n</text>\n";
+	xml += "</textArea>\n"
+
+	xml += "<answerArea ";
+	xml += " width='"+document.getElementById("answerAreaWidth").value+"'";
+	xml += " height='"+document.getElementById("answerAreaHeight").value+"'";
+	xml += ">\n";
+	for(var i = 0; i < answerArea.childElementCount; i++){
+		var item = answerArea.childNodes[i].childNodes[0];
+		for(var j = 0; j < item.childElementCount; j++){
+			xml += "<item>";
+			xml += item.childNodes[j].getAttribute('data-value');
+			xml += "</item>\n";
+		}
+	}
+	xml += "</answerArea>\n";
+
+	xml += "<itemsArea ";
+	xml += " width='"+document.getElementById("itemsAreaWidth").value+"'";
+	xml += " height='"+document.getElementById("itemsAreaHeight").value+"'";
+	xml += ">\n";
+	for(var i = 0; i < itemsArea.childElementCount; i++){
+		var item = itemsArea.childNodes[i].childNodes[0];
+		for(var j = 0; j < item.childElementCount; j++){
+			xml += "<item";
+			xml += " unique='"+item.childNodes[j].getAttribute('data-unique')+"'>"
+			xml += item.childNodes[j].getAttribute('data-value');
+			xml += "</item>\n";
+		}
+	}
+	xml += "</itemsArea>\n";
 
   xml+="</question>\n</doc>";
 
@@ -574,7 +759,7 @@ function getFile(filename){
 
 function writeSessionStorage(){
   if(window.sessionStorage){
-    window.sessionStorage.setItem(getFilename() , toXML());
+    window.sessionStorage.setItem(getFilename() , dataOfStorage());
   }
   addFile();
 }
@@ -587,10 +772,10 @@ function addFile(){
       // 位置を指定して、ストレージからキーを取得する
       var name = window.sessionStorage.key(i);
 
-      filelist.innerHTML += "<input type='button' class='tools' value='読み込み' onclick='removeFile(\""+name+"\")'>";
+      filelist.innerHTML += "<input type='button' class='tools' value='読み込み' onclick='loadFile(\""+name+"\")'>";
       filelist.innerHTML += "<input type='button' class='tools' value='書き出し' onclick='getFile(\""+name+"\")'>"
       filelist.innerHTML += "<input type='button' class='tools' value='削除' onclick='removeFile(\""+name+"\")'>";
-      filelist.innerHTML +="ファイル名：" + name +"<br>";
+      filelist.innerHTML +="ファイル名：" + window.sessionStorage.getItem(name) +"<br>";
     }
   }
 }
@@ -621,7 +806,11 @@ function fixWidth(areaname){
 function fixWidth2(areaname,fixValue){
   var fixArea = document.getElementById(areaname+"Box");
   document.getElementById(areaname+"Width").value = fixValue;
-  fixArea.style.width = fixValue + "px";
+	if(fixValue){
+		fixArea.style.width = fixValue + "px";
+	}else{
+		fixArea.style.width = fixValue;
+	}
 }
 
 var minOfHeight = 250;
@@ -638,14 +827,24 @@ function fixHeight(areaname){
       fixHeight2("itemsArea",fixValue);
     }
   }else{
-    document.getElementById(areaname+"Fixed").style.height = "";
+		if(horizontal){
+			fixHeight2("answerArea",fixValue);
+      fixHeight2("itemsArea",fixValue);
+		}else{
+			document.getElementById(areaname+"Fixed").style.height = "";
+		}
   }
 }
 
 function fixHeight2(areaname,fixValue){
   var fixArea = document.getElementById(areaname+"Fixed");
   document.getElementById(areaname+"Height").value = fixValue;
-  fixArea.style.height = fixValue + "px";
+	if(fixValue){
+		fixArea.style.height = fixValue + "px";
+	}else{
+		fixArea.style.height = fixValue;
+	}
+
 }
 
 var horizontal = false;

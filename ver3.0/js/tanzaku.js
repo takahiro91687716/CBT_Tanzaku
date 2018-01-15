@@ -50,9 +50,9 @@ function buildQuestions(){
 // "(number)問目"を作成する関数
 //--------------------------------------------------
 function buildQuestion(number){
-	var textarea = question[number].getElementsByTagName('textarea');
-	var answerarea = question[number].getElementsByTagName('answerarea');
-	var itemsarea = question[number].getElementsByTagName('itemsarea');
+	var textarea = question[number].getElementsByTagName('textArea');
+	var answerarea = question[number].getElementsByTagName('answerArea');
+	var itemsarea = question[number].getElementsByTagName('itemsArea');
 
 	//問題要素を表示する領域の生成
 	buildArea(number);
@@ -111,7 +111,7 @@ function buildArea(number){
 	layout.appendChild(buildItemsAreaBox(number));
 	area.appendChild(layout);
 
-	if(question[number].getAttribute('horizontal')){
+	if(question[number].getAttribute('horizontal')=='true'){
 		layout.classList.add('horizontal');
 	}
 
