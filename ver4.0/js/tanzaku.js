@@ -286,9 +286,13 @@ function buildAnswerArea(answerAreaTag, number){
 	var items = answerAreaTag[0].getElementsByTagName('item');
 	if(answerAreaTag[0].getAttribute('width')){
 		document.getElementById("answerAreaBox-"+number).style.width = answerAreaTag[0].getAttribute('width') + 'px';
+	}else{
+		document.getElementById("answerAreaBox-"+number).style.width = 400 + 'px';
 	}
 	if(answerAreaTag[0].getAttribute('height')){
 		document.getElementById("fixedAnswerArea-"+number).style.height = answerAreaTag[0].getAttribute('height') + 'px';
+	}else{
+		document.getElementById("fixedAnswerArea-"+number).style.height = 300 + 'px';
 	}
 
 	//選択肢埋め込み
@@ -322,9 +326,13 @@ function buildItemsArea(itemsAreaTag, number){
 	var items = itemsAreaTag[0].getElementsByTagName('item');
 	if(itemsAreaTag[0].getAttribute('width')){
 		document.getElementById("itemsAreaBox-"+number).style.width = itemsAreaTag[0].getAttribute('width') + 'px';
+	}else{
+		document.getElementById("itemsAreaBox-"+number).style.width = 400 + 'px';
 	}
 	if(itemsAreaTag[0].getAttribute('height')){
 		document.getElementById("fixedItemsArea-"+number).style.height = itemsAreaTag[0].getAttribute('height') + 'px';
+	}else{
+		document.getElementById("fixedItemsArea-"+number).style.height = 300 + 'px';
 	}
 
 	//選択肢埋め込み
@@ -455,7 +463,7 @@ function buildItemIncludesParts(parent,item){
 					changeWidthOfInput(this);
 				}
 				if(target[1]){
-					son.value = target[1];
+					son.value = target[1].replace(/\s/g,'');
 				}
 				changeWidthOfInput(son);
 			}else{

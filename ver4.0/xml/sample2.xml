@@ -8,7 +8,7 @@
 		</text>
 	</textArea>
 
-	<answerArea width="400" height="300">
+	<answerArea width="400" height="">
 		<item>
 			「整数を入力してください:」 を表示する
 		</item>
@@ -17,7 +17,7 @@
 		</item>
 	</answerArea>
 
-	<itemsArea width="400" height="300">
+	<itemsArea width="400" height="">
 		<item unique="true">
 			{pullDown:a,b} を表示する
 		</item>

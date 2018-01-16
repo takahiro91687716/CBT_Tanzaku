@@ -24,7 +24,6 @@ function setElement(){
   answerBox = document.getElementById("answerAreaBox");
 
   setEvent();
-  addFile();
 }
 
 function setEvent(){
@@ -51,7 +50,7 @@ function dropToEditArea(e){
 		for(var i = 0; i < elm.childElementCount;i++){
 			editArea.value += elm.childNodes[i].getAttribute('data-value');
 		}
-    removeItem(elm);
+    elm.parentElement.removeChild(elm);
   }
   e.preventDefault();
 }
@@ -60,16 +59,10 @@ function trashItem(e){
 	var id = e.dataTransfer.getData("text/html",e.target.id);
 	var elm = document.getElementById(id);
 	if(trashFlug){
-		removeItem(elm);
+		elm.parentElement.removeChild(elm);
 	}else{
 		trashFlug = true;
 	}
-}
-
-function removeItem(rmElm){
-	var parent = rmElm.parentElement
-  parent.removeChild(rmElm);
-	moveUpContainer(parent);
 }
 
 var textInput = document.createElement('input');
@@ -365,21 +358,13 @@ function setAnswerArea(){
   }
 }
 
-var displayFilelist = false;
 function openFilelist(){
-  if(displayFilelist){
-    console.log("ファイルを非表示にします");
-    filelist.style.display = 'none';
-    displayFilelist = false;
-  }else{
-    console.log("ファイルを表示します");
-    filelist.style.display = 'block';
-    displayFilelist = true;
-  }
+  window.open('fileOpener.html', 'child', 'width=500,height=250');
 }
 
 function loadFile(filename){
-	var question = window.sessionStorage.getItem(filename).split('＠');
+	console.log(window.localStorage.getItem(filename));
+	var question = window.localStorage.getItem(filename).split('＠');
 	console.log(question);
 
 	//作成状態を削除する
@@ -406,21 +391,23 @@ function loadFile(filename){
 	fixWidth2('answerArea',question[question.indexOf('[answerWidth]')+1]);
 	fixHeight2('answerArea',question[question.indexOf('[answerHeight]')+1]);
 
-	for(var i = question.indexOf('[answerItem]'); i <= question.lastIndexOf('[answerItem]');i+=2){
-		loadItem('answerArea',question[i+1],false);
+	if(0<question.indexOf('[answerItem]')){
+		for(var i = question.indexOf('[answerItem]'); i <= question.lastIndexOf('[answerItem]');i+=2){
+			loadItem('answerArea',question[i+1],false);
+		}
 	}
 
 	fixWidth2('itemsArea',question[question.indexOf('[itemsWidth]')+1]);
 	fixHeight2('itemsArea',question[question.indexOf('[itemsHeight]')+1]);
 
-	console.log();
-
-	for(var i = question.indexOf('[itemsItem]'); i <= question.lastIndexOf('[itemsItem]');i+=3){
-		var unique = false;
-		if(String(unique) != question[i+2]){
-			unique = true;
+	if(0<question.indexOf('[itemsItem]')){
+		for(var i = question.indexOf('[itemsItem]'); i <= question.lastIndexOf('[itemsItem]');i+=3){
+			var unique = false;
+			if(String(unique) != question[i+2]){
+				unique = true;
+			}
+			loadItem('itemsArea',question[i+1],unique);
 		}
-		loadItem('itemsArea',question[i+1],unique);
 	}
 }
 
@@ -470,44 +457,48 @@ function dataOfStorage(){
 }
 
 
-function toXML(){//上のquestionを読み込めるように変形させる．先にロードつくるか
+function toXML(filename){//上のquestionを読み込めるように変形させる．先にロードつくるか
+	var question = window.localStorage.getItem(filename).split('＠');
   var xml = '';
 	xml += "<?xml version='1.0' encoding='UTF-8'?>\n";
 	xml += "<doc>\n";
 	xml += "<question";
-	xml += " horizontal='"+horizontal+"'";
+	xml += " horizontal='"+question[question.indexOf('[horizontal]')+1]+"'";
 	xml += ">\n";
 
 	xml += "<textArea>\n"
   xml += "<text>\n"
-	xml += document.getElementById("questionText").value.replace('【','{mark:').replace('】','}');
+	xml += question[question.indexOf('[text]')+1].replace('【','{mark:').replace('】','}');
 	xml += "\n</text>\n";
 	xml += "</textArea>\n"
 
 	xml += "<answerArea ";
-	xml += " width='"+document.getElementById("answerAreaWidth").value+"'";
-	xml += " height='"+document.getElementById("answerAreaHeight").value+"'";
+	xml += " width='"+question[question.indexOf('[answerWidth]')+1]+"'";
+	xml += " height='"+question[question.indexOf('[answerHeight]')+1]+"'";
 	xml += ">\n";
-	for(var i = 0; i < answerArea.childElementCount; i++){
-		var item = answerArea.childNodes[i].childNodes[0];
-		for(var j = 0; j < item.childElementCount; j++){
+	if(0<question.indexOf('[answerItem]')){
+		for(var i = question.indexOf('[answerItem]'); i <= question.lastIndexOf('[answerItem]');i+=2){
 			xml += "<item>";
-			xml += item.childNodes[j].getAttribute('data-value');
+			xml += exchangePartsToXML(question[i+1]);
 			xml += "</item>\n";
 		}
 	}
 	xml += "</answerArea>\n";
 
 	xml += "<itemsArea ";
-	xml += " width='"+document.getElementById("itemsAreaWidth").value+"'";
-	xml += " height='"+document.getElementById("itemsAreaHeight").value+"'";
+	xml += " width='"+question[question.indexOf('[itemsWidth]')+1]+"'";
+	xml += " height='"+question[question.indexOf('[itemsHeight]')+1]+"'";
 	xml += ">\n";
-	for(var i = 0; i < itemsArea.childElementCount; i++){
-		var item = itemsArea.childNodes[i].childNodes[0];
-		for(var j = 0; j < item.childElementCount; j++){
+
+	if(0<question.indexOf('[itemsItem]')){
+		for(var i = question.indexOf('[itemsItem]'); i <= question.lastIndexOf('[itemsItem]');i+=3){
+			var unique = false;
+			if(String(unique) != question[i+2]){
+				unique = true;
+			}
 			xml += "<item";
-			xml += " unique='"+item.childNodes[j].getAttribute('data-unique')+"'>"
-			xml += item.childNodes[j].getAttribute('data-value');
+			xml += " unique='"+unique+"'>"
+			xml += exchangePartsToXML(question[i+1]);
 			xml += "</item>\n";
 		}
 	}
@@ -518,26 +509,12 @@ function toXML(){//上のquestionを読み込めるように変形させる．�
   return xml;
 }
 
-function exXml(str){
-  var num = str.match(/<input type='number' readonly='true' value='\s*\d+\s*'>/g);
-  var text = str.match(/<input type='text' readonly='true' value='\s*.*?\s*'>/g);
-  var pd = str.match(/<select><option>\s*.*?\s*<\/option><\/select>/g);
-
-  if(num != null){
-    for(var i = 0; i < num.length;i++){
-      str = str.replace(num[i],"{number:"+num[i].substring(numInput.length,num[i].length-endOfInput.length).replace(/\s+/g,"")+"}");
-    }
-  }
-  if(text != null){
-    for(var i = 0; i < text.length;i++){
-      str = str.replace(text[i],"{text:"+text[i].substring(textInput.length,text[i].length-endOfInput.length)+"}");
-    }
-  }
-  if(pd != null){
-    for(var i = 0; i < pd.length;i++){
-      str = str.replace(pd[i],"{pullDown:"+pd[i].substring(topOfPullDown.length,pd[i].length-endOfPullDown.length).replace(/<\/option><option>/g,",")+"}");
-    }
-  }
+function exchangePartsToXML(str){
+  str = str.replace(/［/g,'{text:');
+	str = str.replace(/【/g,'{number:');
+	str = str.replace(/｛/g,'{pullDown:');
+	str = str.replace(/｜/g,',');//この辺変えたほうがいいかも
+	str = str = str.replace(/］|】|｝/g,'}');
   return str;
 }
 
@@ -563,38 +540,21 @@ function getFilename(){
   return str + ".xml";
 }
 
-function getFile(filename){
-  download(new Blob([window.sessionStorage.getItem(filename)]), getFilename());
+function outputFile(filename){
+  download(new Blob([toXML(filename)]), getFilename());
 }
 
-function writeSessionStorage(){
-  if(window.sessionStorage){
-    window.sessionStorage.setItem(getFilename() , dataOfStorage());
-  }
-  addFile();
-}
-
-function addFile(){
-  filelist.innerHTML = "";
-  // ウェブストレージに対応している
-  if(window.sessionStorage){
-    for(var i=0;i< window.sessionStorage.length;i++){
-      // 位置を指定して、ストレージからキーを取得する
-      var name = window.sessionStorage.key(i);
-
-      filelist.innerHTML += "<input type='button' class='tools' value='読み込み' onclick='loadFile(\""+name+"\")'>";
-      filelist.innerHTML += "<input type='button' class='tools' value='書き出し' onclick='getFile(\""+name+"\")'>"
-      filelist.innerHTML += "<input type='button' class='tools' value='削除' onclick='removeFile(\""+name+"\")'>";
-      filelist.innerHTML +="ファイル名：" + window.sessionStorage.getItem(name) +"<br>";
-    }
+function writeLocalStorage(){
+  if(window.localStorage){
+    window.localStorage.setItem(getFilename() , dataOfStorage());
   }
 }
 
-function removeFile(key){
+function removeFile(filename){
   // ウェブストレージに対応している
-  if(window.sessionStorage){
+  if(window.localStorage){
     // 指定したキーに保存したデータを削除する
-    window.sessionStorage.removeItem(key);
+    window.localStorage.removeItem(filename);
     addFile();
   }
 }

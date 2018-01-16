@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>File Opener</title>
+		<!-- JavaScriptの読み込み -->
+		<script type="text/javascript" src="./js/fileOpener.js" ></script>
+		<!-- <link rel="stylesheet" type="text/css" href="css/makeXML.css"/> -->
+	</head>
+
+	<body onload="loadStorage()">
+		<div id='buttons'>
+			<input type='button' value='読み込み' onclick='loadFile()'>
+			<input type='button' value='書き出し' onclick='outputFile()'>
+			<input type='button' value='削除' onclick='removeFile()'>
+		</div>
+		<select id="filelist" size="10">
+		</select>
+
+	</body>
+</html>

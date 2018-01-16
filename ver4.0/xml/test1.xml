@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<doc>
+<question horizontal='true'>
+<textArea>
+<text>
+sdfadsfadfasdgadfgfshfg
+</text>
+</textArea>
+<answerArea  width='467' height=''>
+<item>dafsdfa</item>
+<item>[horizontal]{number: 99999 }{text: 自由記入欄 }</item>
+<item>sdfasdaf</item>
+</answerArea>
+<itemsArea  width='350' height=''>
+<item unique='false'>asdfasdfa</item>
+<item unique='true'>sdfada</item>
+<item unique='false'>asdfasdfas</item>
+<item unique='true'>dsafsdaf</item>
+<item unique='false'>dsfafsada</item>
+<item unique='true'>{number: 99999 }{text: 自由記入欄 }</item>
+<item unique='true'>sdfa</item>
+</itemsArea>
+</question>
+</doc>
