@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+<question horizontal="false">
+
+	<textArea>
+		<text>
+			キーボードから{mark:1つの整数}を入力し，それを{mark:3倍した値}を出力するプログラムを書いてみよう.
+		</text>
+	</textArea>
+
+	<answerArea width="400" height="300">
+		<item>
+			「整数を入力してください:」 を表示する
+		</item>
+		<item>
+			もひとつどうぞ{text:}
+		</item>
+	</answerArea>
+
+	<itemsArea width="400" height="300">
+		<item unique="true">
+			{pullDown:a,b} を表示する
+		</item>
+		<item>
+			{pullDown:a,b} ← input()
+		</item>
+		<item unique="null">
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
+		<item unique="true">
+			a{pullDown:a,b} を表示する
+		</item>
+		<item>
+			{pullDown:a,b} ← input()
+		</item>
+		<item>
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
+		<item unique="true">
+			{pullDown:a,b} を表示する
+		</item>
+		<item>
+			{pullDown:a,b} ← input()
+		</item>
+		<item>
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
+	</itemsArea>
+
+</question>
+<question horizontal="">
+
+	<textArea>
+		<text>
+			キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.
+		</text>
+	</textArea>
+
+	<answerArea height="300">
+	</answerArea>
+
+	<itemsArea height="300">
+		<item>
+			「整数を入力してください:」 を表示する
+		</item>
+		<item>
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			a
+		</item>
+		<item>
+			{pullDown:a,b} ← input()
+		</item>
+		<item>
+			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+		</item>
+		<item>
+			{text:入力可能です}
+		</item>
+		<item unique="true">
+			{pullDown:a,b} を表示する
+		</item>
+	</itemsArea>
+
+</question>
+<question horizontal='true'>
+<textArea>
+<text>
+あいうえお{mark:おおおおおお}し
+</text>
+</textArea>
+<answerArea  width='350' height='281'>
+<item>あsdふぁ</item>
+<item>【 99999 】</item>
+</answerArea>
+<itemsArea  width='391' height='281'>
+<item unique='null'>dふぁd</item>
+<item unique='null'>［ 自由記入欄 ］</item>
+</itemsArea>
+</question>
+</doc>

@@ -1,0 +1,177 @@
+/* ページをゴミ箱にするため */
+html,body {
+	height:100%;
+}
+.box{
+	margin: 0ex 3ex 1ex;
+	border: solid black 1px;
+	margin: 10px auto;
+}
+.caption{
+  border: solid black 1px;
+	/*background-color: #F6E3E3;*/
+
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+
+	height: 2em;
+}
+
+/*  */
+#toolsBox{
+	background-color: #A1A1A1;
+}
+#titleEditArea{
+	background-color: #E4F3E4;
+	/*text-align: center;*/
+}
+#answerAreaBox{
+	display: none;
+	/* margin: 10px auto; */
+}
+#filelist{
+	height: 5em;
+	display: none;
+	background-color: white;
+	overflow: scroll;
+}
+
+#itemsAreaBox{
+	/* margin: 10px auto; */
+}
+
+/*  */
+#itemsArea{
+  height: 100%;
+  overflow: scroll;
+  background-color: #F3F3F3;
+}
+/*  */
+#itemsAreaFixed{
+  height: 35ex;
+}
+
+/*  */
+.item{
+	height:2em;
+	display: flex;
+	align-items: center;
+	border: solid 1px;
+	border-color: #CCCC99;
+	background-color: #FFFFCC;
+}
+
+.answer{
+	height:2em;
+	display: flex;
+	align-items: center;
+	border: solid 1px;
+	border-color: #CCCC99;
+	background-color: #FFCCFF;
+}
+
+.canvas{
+	/*height: 2em;*/
+}
+
+/*  */
+input.tools{
+	font-size: 1em;
+}
+input.add{
+	font-size: 1em;
+	/* height: 8em; */
+}
+
+#captionForTitle{
+	background-color: #D4F3D4;
+}
+
+#captionForAnswer{
+	background-color: #F6E3E3;
+}
+
+#captionForBuild{
+	background-color: #D4D4D4;
+}
+
+#captionForEdit{
+	background-color: #D4D4F3;
+}
+
+#editAndAtentionArea{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 背景色 */
+	background-color: #E4E4F3;
+}
+
+.sizeFix{
+	/*width: 80%;
+	text-align: right;*/
+	margin-left: auto;
+	margin-right: 50px;
+}
+
+#answerAreaFixed{
+	height: 35ex;
+}
+#answerArea{
+	background-color: #F6EEEE;
+	overflow: scroll;
+	height: 100%;
+}
+/* #answerBox{
+	height: 15em;
+} */
+
+*{
+  font-family: "Hiragino kaku Gothic Pro";
+}
+
+.horizontal{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	margin: auto;
+}
+#atentionForEdit{
+	margin-left: auto;
+	margin-right: 50px;
+	width: 450px;
+}
+
+#editArea{
+	margin-top: 1.5em;
+}
+#textOfItemEditArea{
+	align-items: center;
+}

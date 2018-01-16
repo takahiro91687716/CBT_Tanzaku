@@ -1,0 +1,132 @@
+/*** 外枠の設定 ***/
+.box{
+	/* margin: 0ex 3ex 1ex; */
+	border: solid black 1px;
+	margin: 10px auto;
+	/* width: 1000px; */
+}
+
+/* 外枠の個別設定 */
+/* 色の変更だけ */
+.textAreaBox{
+	background-color: #E4F3E4;
+}
+.answerAreaBox{
+	background-color: #FAEAFA;
+}
+.itemsAreaBox{
+	background-color: #F3F3F3;
+}
+
+
+/*** 説明欄の設定 ***/
+.caption{
+	border: solid black 1px;
+
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	/* 縦中央 */
+	align-items: center;
+	height: 2em;
+}
+
+/* 説明欄の個別設定 */
+/* 色の変更だけ */
+.captionForTextArea{
+	background-color: #D4F3D4;
+}
+.captionForAnswerArea{
+	background-color: #F6E3E3;
+}
+.captionForItemsArea{
+	background-color: #D4D4D4;
+}
+
+
+/*** 解答欄 ***/
+
+/* 置けるところの外枠 */
+.fixedArea{
+	height: 40ex;
+}
+
+/* 解答を置くところ */
+.answerArea{
+	height: 100%;
+	overflow: scroll;
+	background-color: #F6EEEE;
+}
+
+.itemsArea{
+	height: 100%;
+	overflow: scroll;
+}
+
+/* コンテナ */
+.container{
+	padding: 1ex;
+	line-height: 1.0ex;
+}
+
+
+/*** 選択肢 ***/
+
+/* 選択肢 */
+.item{
+	border: solid 1px;
+	height: 100%;
+	height: 2em;
+}
+
+.unique{
+	border-color: #CCCC99;
+	background-color: #CCFFFF;
+}
+.normal{
+	border-color: #CCCC99;
+	background-color: #FFFFCC;
+}
+.fixed{
+	border-color: #CCCC99;
+	background-color: #FFCCFF;
+}
+
+/*** その他 ***/
+
+/* ページをゴミ箱にするため */
+html,body {
+	height:100%;
+}
+
+input.executeButton{
+	font-size: : 1em;
+	height: 2em;
+}
+
+*{
+  font-family: "Hiragino kaku Gothic Pro";
+}
+
+.horizontal{
+	display: flex;
+	display: -moz-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	flex-direction: row;
+	-moz-flex-direction: row;
+	-o-flex-direction: row;
+	-webkit-flex-direction: row;
+	-ms-flex-direction: row;
+
+	margin: auto;
+}
