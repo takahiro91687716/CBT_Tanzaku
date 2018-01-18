@@ -73,8 +73,9 @@
 
 /* コンテナ */
 .container{
-	padding: 1ex;
-	line-height: 1.0ex;
+	/* padding: 1ex; */
+	/* line-height: 1.0ex; */
+	height: 2em;
 }
 
 

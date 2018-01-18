@@ -66,6 +66,24 @@
 	</textArea>
 
 	<answerArea height="300">
+		<item>
+			「整数を入力してください:」 を表示する
+		</item>
+		<item>
+			整数 {pullDown:a,b}
+		</item>
+		<item>
+			整数 a
+		</item>
+		<item>
+			a ← input()
+		</item>
+		<item>
+			a ← {pullDown:a,b} * {number:3}
+		</item>
+		<item>
+			a を表示する
+		</item>
 	</answerArea>
 
 	<itemsArea height="300">
@@ -90,6 +108,14 @@
 		<item unique="true">
 			{pullDown:a,b} を表示する
 		</item>
+		<item>整数 num</item>
+		<item>「整数を入力: 」 を改行なしで表示する</item>
+		<item>num ← input()</item>
+		<item>もし num%3==0 ならば</item>
+		<item unique="true">「3 の倍数」 を表示する</item>
+		<item>を実行し，そうでなければ</item>
+		<item>「3 の倍数でない」 を表示する</item>
+		<item>を実行する</item>
 	</itemsArea>
 
 </question>

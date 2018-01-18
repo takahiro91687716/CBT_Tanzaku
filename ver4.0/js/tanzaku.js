@@ -286,7 +286,7 @@ function buildAnswerArea(answerAreaTag, number){
 	var items = answerAreaTag[0].getElementsByTagName('item');
 	if(answerAreaTag[0].getAttribute('width')){
 		document.getElementById("answerAreaBox-"+number).style.width = answerAreaTag[0].getAttribute('width') + 'px';
-	}else{
+	}else{//horizontalも見ないといけない
 		document.getElementById("answerAreaBox-"+number).style.width = 400 + 'px';
 	}
 	if(answerAreaTag[0].getAttribute('height')){
@@ -340,6 +340,7 @@ function buildItemsArea(itemsAreaTag, number){
 		var itemsArea = document.getElementById("itemsArea-"+number);
 		var container = document.createElement("div");//aaaaaaaaaaaaa
 		container.id = "container-" + number + "-" + i;//aaaaaaaaaaaaa
+		container.classList.add('container');
 		itemsArea.appendChild(container);
 		container.appendChild(buildItemsAreaItemElm(items[i],number,i));
 	}
