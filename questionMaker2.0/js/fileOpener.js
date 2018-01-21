@@ -15,14 +15,15 @@ function setFormInput() {
 
 }
 
-var file = document.createElement('option');
+
 function loadStorage(){
   var filelist = document.getElementById('filelist');
   if(window.localStorage){
     for(var i=0;i< window.localStorage.length;i++){
       // 位置を指定して、ストレージからキーを取得する
       var name = window.localStorage.key(i);
-
+      console.log(name);
+      var file = document.createElement('option');
       file.setAttribute('value',name);
       file.innerHTML = name;
       filelist.appendChild(file);
