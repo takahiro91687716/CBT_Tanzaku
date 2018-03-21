@@ -13,9 +13,6 @@
 			<div id="toolsBox" class="box">
 				<div id="tool">
 					<b>ツール欄</b>
-					<input type="text" id="filename" value="sample" size="10">
-					<span>.xml</span>
-					<input type="button" class="tools" value="保存" onclick="writeLocalStorage()">
 					<input type="button" id="dispAnswer" class="tools" value="解答欄表示" onclick="setAnswerArea()">
 					<input type="button" id="horizon" class="tools" value="横並びにする" onclick="changeHorizontal()">
 					<input type="button" id="fileopen" class="tools" value="ファイルリスト" onclick="openFilelist()">
@@ -93,13 +90,13 @@
 							</form>
 						</div>
 						<div id='samplePartsArea'>
-							<div id='sample1' draggable = 'true' data-value='［ 自由記入欄 ］' style='display: inline' ondragstart='itemDragStart(event)'>
+							<div id='sample1' class='sample' draggable = 'true' data-value='［ 自由記入欄 ］' style='display: inline-block' ondragstart='itemDragStart(event)'>
 								　<input type='text' readonly value='自由記入欄'></input>　
 							</div>
-							<div id='sample2' draggable = 'true' data-value='【 99999 】' style='display: inline' ondragstart='itemDragStart(event)'>
+							<div id='sample2' class='sample' draggable = 'true' data-value='【 99999 】' style='display: inline-block' ondragstart='itemDragStart(event)'>
 								　<input type='number'readonly value='99999'></input>　
 							</div>
-							<div id='sample3' draggable = 'true' data-value='｛ 未選択 ｜ 選択肢A ｜ 選択肢B ｝' style='display: inline' ondragstart='itemDragStart(event)'>　
+							<div id='sample3' class='sample' draggable = 'true' data-value='｛ 未選択 ｜ 選択肢A ｜ 選択肢B ｝' style='display: inline-block' ondragstart='itemDragStart(event)'>　
 								<select>
 									<option>-未選択-</option>
 									<option>選択肢Ａ</option>

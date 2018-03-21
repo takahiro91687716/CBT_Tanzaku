@@ -9,7 +9,9 @@
 	</head>
 
 	<body onload="loadStorage()">
+		<input type="text" id="filename" value="question" size="10">
 		<div id='buttons'>
+			<input type="button" value="保存" onclick="saveFile()">
 			<input type='button' value='読み込み' onclick='loadFile()'>
 			<input type='button' value='書き出し' onclick='outputFile()'>
 			<input type='button' value='削除' onclick='removeFile()'>

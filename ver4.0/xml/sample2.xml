@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <doc>
-<question horizontal="false">
+<question horizontal="true">
 
 	<textArea>
 		<text>
@@ -8,18 +8,15 @@
 		</text>
 	</textArea>
 
-	<answerArea width="400" height="">
+	<answerArea width="400" height="200">
 		<item>
 			「整数を入力してください:」 を表示する
 		</item>
-		<item>
-			もひとつどうぞ{text:}
-		</item>
 	</answerArea>
 
-	<itemsArea width="400" height="">
+	<itemsArea width="300" height="200">
 		<item unique="true">
-			{pullDown:a,b} を表示する
+			a を表示する
 		</item>
 		<item>
 			{pullDown:a,b} ← input()
@@ -30,42 +27,21 @@
 		<item>
 			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
 		</item>
-		<item unique="true">
-			a{pullDown:a,b} を表示する
-		</item>
 		<item>
-			{pullDown:a,b} ← input()
-		</item>
-		<item>
-			整数 {pullDown:a,b}
-		</item>
-		<item>
-			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
-		</item>
-		<item unique="true">
-			{pullDown:a,b} を表示する
-		</item>
-		<item>
-			{pullDown:a,b} ← input()
-		</item>
-		<item>
-			整数 {pullDown:a,b}
-		</item>
-		<item>
-			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
+			「{text:文字を入力できます}」を表示する
 		</item>
 	</itemsArea>
 
 </question>
-<question horizontal="">
+<question horizontal="true">
 
 	<textArea>
 		<text>
-			キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.
+			キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.{mark:（実行テストです）}
 		</text>
 	</textArea>
 
-	<answerArea height="300">
+	<answerArea width="500" height="200">
 		<item>
 			「整数を入力してください:」 を表示する
 		</item>
@@ -86,52 +62,59 @@
 		</item>
 	</answerArea>
 
-	<itemsArea height="300">
-		<item>
-			「整数を入力してください:」 を表示する
-		</item>
-		<item>
-			整数 {pullDown:a,b}
-		</item>
-		<item>
-			a
-		</item>
-		<item>
-			{pullDown:a,b} ← input()
-		</item>
-		<item>
-			{pullDown:a,b} ← {pullDown:a,b} * {number:999}
-		</item>
-		<item>
-			{text:入力可能です}
-		</item>
-		<item unique="true">
-			{pullDown:a,b} を表示する
-		</item>
-		<item>整数 num</item>
-		<item>「整数を入力: 」 を改行なしで表示する</item>
-		<item>num ← input()</item>
-		<item>もし num%3==0 ならば</item>
-		<item unique="true">「3 の倍数」 を表示する</item>
-		<item>を実行し，そうでなければ</item>
-		<item>「3 の倍数でない」 を表示する</item>
+	<itemsArea width="200" height="200">
+		<item>もし {text:テスト用} ならば</item>
 		<item>を実行する</item>
 	</itemsArea>
+	</question>
 
-</question>
-<question horizontal='true'>
-<textArea>
-<text>
-あいうえお{mark:おおおおおお}し
-</text>
-</textArea>
-<answerArea  width='350' height='281'>
-<item>あsdふぁ</item>
-<item>【 99999 】</item>
-</answerArea>
-<itemsArea  width='391' height='281'>
-<item unique='null'>dふぁd</item>
-<item unique='null'>［ 自由記入欄 ］</item>
-</itemsArea>
-</question>
+	<question horizontal="true">
+
+		<textArea>
+			<text>
+				キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.{mark:（エラーテストです）}
+			</text>
+		</textArea>
+
+		<answerArea width="400" height="50">
+			<item>
+				a を表示する
+			</item>
+		</answerArea>
+
+		<itemsArea width="300" height="50">
+		</itemsArea>
+		</question>
+		<question horizontal="false">
+
+			<textArea>
+				<text>
+					キーボードから1つの整数を入力し，それを3倍した値を出力するプログラムを書いてみよう.
+				</text>
+			</textArea>
+
+			<answerArea width="" height="300">
+				<item>
+					a を表示する
+				</item>
+				<item>
+					b を表示する
+				</item>
+				<item>
+					c を表示する
+				</item>
+			</answerArea>
+
+			<itemsArea width="" height="200">
+				<item>もし {text:テスト用} ならば</item>
+				<item>を実行し，そうでなければ</item>
+				<item>を実行し，そうでなくもし {text:テスト用} ならば</item>
+				<item>を実行する</item>
+				<item>{text:テスト用} の間，</item>
+				<item>{text:テスト用} を {text:テスト用} から {text:テスト用} まで {number:1} ずつ増やしながら</item>
+				<item>{text:テスト用} を {text:テスト用} から {text:テスト用} まで {number:1} ずつ減らしながら</item>
+				<item>を繰り返す</item>
+				<item>{text:テスト用}</item>
+			</itemsArea>
+			</question>
 </doc>

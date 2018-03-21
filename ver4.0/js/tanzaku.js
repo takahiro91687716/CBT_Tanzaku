@@ -284,9 +284,10 @@ function buildTextIncludesMarks(parent,text){
 //--------------------------------------------------
 function buildAnswerArea(answerAreaTag, number){
 	var items = answerAreaTag[0].getElementsByTagName('item');
+	var horizontal = question[number].getAttribute('horizontal');
 	if(answerAreaTag[0].getAttribute('width')){
 		document.getElementById("answerAreaBox-"+number).style.width = answerAreaTag[0].getAttribute('width') + 'px';
-	}else{//horizontalも見ないといけない
+	}else if(horizontal=='true'){//horizontalも見ないといけない
 		document.getElementById("answerAreaBox-"+number).style.width = 400 + 'px';
 	}
 	if(answerAreaTag[0].getAttribute('height')){
@@ -324,9 +325,10 @@ function buildAnswerAreaItemElm(itemContent, numOfQuestion, numOfItem){
 //--------------------------------------------------
 function buildItemsArea(itemsAreaTag, number){
 	var items = itemsAreaTag[0].getElementsByTagName('item');
+	var horizontal = question[number].getAttribute('horizontal');
 	if(itemsAreaTag[0].getAttribute('width')){
 		document.getElementById("itemsAreaBox-"+number).style.width = itemsAreaTag[0].getAttribute('width') + 'px';
-	}else{
+	}else if(horizontal=='true'){
 		document.getElementById("itemsAreaBox-"+number).style.width = 400 + 'px';
 	}
 	if(itemsAreaTag[0].getAttribute('height')){
@@ -621,6 +623,14 @@ function addAnswer(elm1,elm2,before){
 		elm1.id = number+ "-" + idc++;
 		//クローンしたらイベントは引き継がれない
 		elm1.ondragstart = itemDragStart;
+		var input = elm1.getElementsByTagName('input');
+		if(input){//inputのイベントを再付与
+			for(var i = 0; i < input.length;i++){
+				input[i].onkeyup = function(){
+					changeWidthOfInput(this);
+				}
+			}
+		}
 	}
 
 	elm1.ondragover = prev;
@@ -796,8 +806,16 @@ function makeJS(number){
 }
 
 //1行ごとに変換を行う
+//**TODO
+//*全角スペースの除去
+//*1ずつ増やしながら...の1ずつ以外も実装
 function toJS(line){
 	//xDNCL→JavaScript
+	console.log(line);
+	for(var i = 0; i < line.length ; i++){
+		console.log(line.charAt(i));
+	}
+
 
 	//代入
 	line = line.replace(/←/g,"=");
@@ -823,12 +841,22 @@ function toJS(line){
 	if(line.includes("を改行なしで表示する")){
 		line = "outputLessReturn("+ line.replace(/を改行なしで表示する/g,"")+")";
 	}
+	if(line.includes("を改行なしで表示する")){
+		line = "outputLessReturn("+ line.replace(/を改行なしで表示する/g,"")+")";
+	}
 
-	if(line.includes("を実行する"||"を繰り返す")){
+	if(line.includes("を実行する")){
 		line = "}";
 	}
 
-	if(line.includes("を実行し、そうでなければ")){
+	if(line.includes("を繰り返す")){
+		line = "}";
+	}
+
+	if(line.includes("を実行し，そうでなければ")){
+		line = "} else {";
+	}
+	if(line.includes("を実行し，そうでなければ")){
 		line = "} else {";
 	}
 
@@ -836,28 +864,46 @@ function toJS(line){
 		line = line.replace(/を実行し，そうでなくもし/g,"");
 		line = "} else if("+ line.replace(/ならば/g,""); +"){";
 	}
+	if(line.includes("を実行し，そうでなくもし")){
+		line = line.replace(/を実行し，そうでなくもし/g,"");
+		line = "} else if("+ line.replace(/ならば/g,""); +"){";
+	}
 
 	if(line.includes("もし")){
 		line = line.replace(/もし/g,"");
-		// for(var i = 0; i < line.length; i ++ ){
-		// 	alert(line.charAt(i));
-		// }
+		line = "if("+line.replace(/ならば/g,"")+"){";
+	}
+	if(line.includes("もし")){
+		line = line.replace(/もし/g,"");
 		line = "if("+line.replace(/ならば/g,"")+"){";//注意！！ 「ならは+ ゙」
-		//alert(line);
 	}
 
 	if(line.includes("の間，")){
 		line = "while(" + line.replace(/の間，/g,"") + "){";
 	}
 
-	if(line.includes("まで 1 ずつ増やしながら，")){
-		var equation =  line.replace(/を|から|まで/g,",").replace(/ずつ増やしながら，/g,"").split(",");
-		line = "for("+ equation[0] + " = " +  equation[1] + ";" + equation[0] + "<"+ equation[2] + ";" + equation[0] + "+" +equation[3];
+	//濁点が独立
+	if(line.includes("ずつ増やしながら，")){
+		var equation =  line.replace(/を|から|まで/g,",").replace(/ずつ増やしながら，/g,"").split(",");
+		line = "for("+ equation[0] + " = " +  equation[1] + ";" + equation[0] + "<="+ equation[2] + ";" + equation[0] + "+=" +equation[3] + "){";
 	}
 
-	if(line.includes("まで 1 ずつ減らしながら，")){
+	//濁点が結合
+	if(line.includes("ずつ増やしながら，")){
+		var equation =  line.replace(/を|から|まで/g,",").replace(/ずつ増やしながら，/g,"").split(",");
+		line = "for("+ equation[0] + " = " +  equation[1] + ";" + equation[0] + "<="+ equation[2] + ";" + equation[0] + "+=" +equation[3] + "){";
+	}
+
+	//濁点が独立
+	if(line.includes("ずつ減らしながら，")){
+		var equation =  line.replace(/を|から|まで/g,",").replace(/ずつ減らしながら，/g,"").split(",");
+		line = "for(" + equation[0] + " = " + equation[1] + ";" + equation[0] + "<="+ equation[2] + ";" + equation[0] + "-=" +equation[3] + "){";
+	}
+
+	//濁点が結合
+	if(line.includes("ずつ減らしながら，")){
 		var equation =  line.replace(/を|から|まで/g,",").replace(/ずつ減らしながら，/g,"").split(",");
-		line = "for(" + equation[0] + " = " + equation[1] + ";" + equation[0] + "<"+ equation[2] + ";" + equation[0] + "-" +equation[3];
+		line = "for(" + equation[0] + " = " + equation[1] + ";" + equation[0] + "<"+ equation[2] + ";" + equation[0] + "-=" +equation[3] + "){";
 	}
 
 	if(strs!=null){

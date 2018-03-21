@@ -175,3 +175,16 @@ input.add{
 #textOfItemEditArea{
 	align-items: center;
 }
+
+.sample{
+	height: 30px;
+}
+#sample1{
+	background-color: #EEEEFF;
+}
+#sample2{
+	background-color: #FFFFEE;
+}
+#sample3{
+	background-color: #FFEEEE;
+}

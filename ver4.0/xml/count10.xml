@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<doc>
+<question horizontal='true'>
+<textArea>
+<text>繰り返し文を用いて１から１００までの数で、３で割り切れるものを表示しなさい。
+</text>
+</textArea>
+<answerArea  width='500' height='250'>
+<item>整数 count</item>
+</answerArea>
+<itemsArea  width='500' height='250'>
+<item unique='false'>もし count%3==0 ならば</item>
+<item unique='true'>count を改行なしで表示する</item>
+<item unique='false'>count ← 0</item>
+<item unique='false'>を実行する</item>
+<item unique='false'>count を {pullDown: 0 , 1} から {number:5} まで 1 ずつ増やしながら，</item>
+<item unique='false'>を繰り返す</item>
+</itemsArea>
+</question>
+</doc>

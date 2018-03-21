@@ -1,21 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <doc>
 <question>
-	<text>自由にプログラムを書いてみよう.</text>
-	<item>もし {} ならば</item>
+	<textArea>
+	<text>自由にプログラムを書いてみよう．
+	</text>
+	</textArea>
+	<answerArea>
+	</answerArea>
+	<itemsArea>
+	<item>もし {text:条件式} ならば</item>
 	<item>を実行し，そうでなければ</item>
-	<item>を実行し，そうでなくもし {} ならば</item>
+	<item>を実行し，そうでなくもし {text:条件式} ならば</item>
 	<item>を実行する</item>
-	<item>{} の間，</item>
-	<item>{} を {} から {} まで {number} ずつ増やしながら</item>
-	<item>{} を {} から {} まで {} ずつ減らしながら</item>
+	<item>{text:条件式} の間，</item>
+	<item>{text:変数} を {number:0} から {number:10} まで {number:1} ずつ増やしながら，</item>
+	<item>{text:変数} を {number:10} から {number:0} まで {number:1} ずつ減らしながら，</item>
 	<item>を繰り返す</item>
-	<item>{} ← input()</item>
-	<item>{} を表示する</item>
-	<item>{} を改行なしで表示する</item>
-	<item>{} ← {}</item>
-	<item>変数 {}</item>
-	<item>「{}」</item>
-	<item>{}</item>
+	<item>{text:変数} ← input()</item>
+	<item>{text:} を表示する</item>
+	<item>{text:} を改行なしで表示する</item>
+	<item>{text:変数} ← {text:変数}</item>
+	<item>{text:変数} ← {number:0}</item>
+	<item>変数 {text:変数}</item>
+	<item>「{text:文字列}」</item>
+	<item>{text:自由記述}</item>
+</itemsArea>
 </question>
 </doc>

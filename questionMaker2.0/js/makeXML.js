@@ -59,7 +59,9 @@ function trashItem(e){
 	var id = e.dataTransfer.getData("text/html",e.target.id);
 	var elm = document.getElementById(id);
 	if(trashFlug){
-		elm.parentElement.removeChild(elm);
+		if(!(/sample\d/).test(id)){
+			elm.parentElement.removeChild(elm);
+		}
 	}else{
 		trashFlug = true;
 	}
@@ -124,6 +126,7 @@ function buildPartsForItemArea(parent,str){
 					str = str.replace(tmpElm[j],'＠');
 				}
 			}
+			console.log(normal);
 			str = str.replace(normal[i],"(@normal"+i+")");
 			if(tmpElm){
 				for(var j = 0; j < tmpElm.length; j++){
@@ -142,6 +145,7 @@ function buildPartsForItemArea(parent,str){
 			child = document.createElement('span');
 			var number = elements[i].match(/\d/);
 			var target = normal[number];
+			// var target = target.replace(/\s/g,"&nbsp");これを直さないといけない
 			child.setAttribute('data-value',target);
 			child.innerHTML = target;
 
@@ -280,11 +284,14 @@ function dropToItem(e){
 			console.log("要素移動（同じエリア）");
 	    //上半分に落とされた時
 	    console.log("上半分に落とされました");
-			answerArea.insertBefore(elm, this);
+			console.log(answerArea);
+			console.log(elm);
+			console.log(this);
+			itemsArea.insertBefore(elm, this);
 	  }else if(elmY<=mouseY){
 	    console.log("下半分に落とされました");
 	    //下半分に落とされた時
-	    answerArea.insertBefore(elm, this.nextSibling);
+	    itemsArea.insertBefore(elm, this.nextSibling);
 	  }
 	}else{
 		if(mouseY<elmY){
@@ -409,6 +416,7 @@ function loadFile(filename){
 			loadItem('itemsArea',question[i+1],unique);
 		}
 	}
+	// setElement();
 }
 
 function dataOfStorage(){
@@ -532,21 +540,13 @@ function download(blob, filename) {
   a.dispatchEvent(e);
 }
 
-function getFilename(){
-  var str = document.getElementById("filename").value;
-  if(str.includes(".xml")){
-    str = str.replace(/\.xml/g,"");
-  }
-  return str + ".xml";
-}
-
 function outputFile(filename){
   download(new Blob([toXML(filename)]), getFilename());
 }
 
-function writeLocalStorage(){
+function writeLocalStorage(filename){
   if(window.localStorage){
-    window.localStorage.setItem(getFilename() , dataOfStorage());
+    window.localStorage.setItem(filename , dataOfStorage());
   }
 }
 
@@ -555,7 +555,7 @@ function removeFile(filename){
   if(window.localStorage){
     // 指定したキーに保存したデータを削除する
     window.localStorage.removeItem(filename);
-    addFile();
+    // addFile();
   }
 }
 
